@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Dashboard • Gauri Creations</title>
+
+<style>
+  :root {
+    --bg-grad: linear-gradient(135deg, #86e1ff, #ffd4b8);
+    --glass-bg: rgba(255, 255, 255, 0.22);
+    --glass-border: rgba(255, 255, 255, 0.45);
+    --accent: #007aff;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Poppins", system-ui, -apple-system, sans-serif;
+    background: var(--bg-grad);
+    padding: 18px;
+    color: #0f172a;
+    display: flex;
+    justify-content: center;
+  }
+
+  .shell {
+    width: 100%;
+    max-width: 1120px;
+  }
+
+  /* LOGIN OVERLAY */
+  #loginOverlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at top, #ffffffdd, #000000bb);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 40;
+  }
+
+  .login-box {
+    width: 90%;
+    max-width: 320px;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.95);
+    border-radius: 18px;
+    color: #e5e7eb;
+    text-align: center;
+  }
+
+  .login-box h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+  }
+
+  .login-input {
+    width: 100%;
+    margin-top: 10px;
+    padding: 11px 13px;
+    border-radius: 10px;
+    border: 1px solid #4b5563;
+    background: #020617;
+    color: #e5e7eb;
+    font-size: 14px;
+  }
+
+  .btn-primary-small {
+    margin-top: 12px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: none;
+    background: #22c55e;
+    color: #022c22;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .error-msg {
+    font-size: 12px;
+    color: #fecaca;
+    margin-top: 6px;
+    display: none;
+  }
+
+  .small {
+    font-size: 12px;
+    color: #9ca3af;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 20px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(18px);
+    margin-bottom: 16px;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.28);
+  }
+
+  .top-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    object-fit: cover;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.5);
+  }
+
+  .title-main {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    color: #4b5563;
+  }
+
+  .top-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pill-btn {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid #cbd5e1;
+    background: #ffffffcc;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .pill-btn.primary {
+    background: #ef4444;
+    color: #fff;
+    border-color: #f97373;
+  }
+
+  /* LAYOUT */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  @media (max-width: 860px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* SIDEBAR */
+  .nav-card {
+    background: var(--glass-bg);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    padding: 14px 12px;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.32);
+  }
+
+  .nav-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6b7280;
+    margin-bottom: 8px;
+  }
+
+  .nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-item {
+    margin-bottom: 6px;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: #ffffffdd;
+    border: 1px solid transparent;
+    font-size: 13px;
+    text-decoration: none;
+    color: #111827;
+    cursor: pointer;
+    transition: 0.16s ease;
+  }
+
+  .nav-link span.icon {
+    font-size: 16px;
+  }
+
+  .nav-link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.22);
+    border-color: #cbd5e1;
+  }
+
+  .nav-link.active {
+    background: linear-gradient(135deg, #e0f2fe, #eff6ff);
+    border-color: rgba(37, 99, 235, 0.7);
+  }
+
+  /* CONTENT */
+  .content {
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(148, 163, 184, 0.55);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+    padding: 14px;
+  }
+
+  .content-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+
+  .content-header h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .tiny-text {
+    font-size: 12px;
+    color: #6b7280;
+  }
+
+  /* STATS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  @media (max-width: 960px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stat-card {
+    border-radius: 18px;
+    padding: 10px 12px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .stat-sub {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #9ca3af;
+  }
+
+  /* LOWER GRID */
+  .lower-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  @media (max-width: 960px) {
+    .lower-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel {
+    border-radius: 18px;
+    padding: 10px 12px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+  }
+
+  .panel h3 {
+    margin: 0 0 4px;
+    font-size: 14px;
+  }
+
+  .panel small {
+    font-size: 11px;
+    color: #6b7280;
+  }
+
+  .quick-links {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 6px;
+  }
+
+  .quick-link {
+    font-size: 13px;
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .quick-link:hover {
+    text-decoration: underline;
+  }
+
+  .list-mini {
+    list-style: none;
+    padding-left: 0;
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: #4b5563;
+  }
+
+  .list-mini li {
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+
+<body>
+<div class="shell">
+
+  <!-- LOGIN OVERLAY -->
+  <div id="loginOverlay">
+    <div class="login-box">
+      <h2>Admin Login</h2>
+      <p class="small">Enter your secret PIN to access the dashboard.</p>
+      <input id="adminPin" type="password" class="login-input" placeholder="Admin PIN" />
+      <button id="loginBtn" class="btn-primary-small">Login</button>
+      <div id="loginError" class="error-msg">Incorrect PIN, please try again.</div>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD -->
+  <div id="adminMain" style="display:none;">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="top-left">
+        <img src="logo-gauri.jpeg" alt="Gauri Creations" class="logo" />
+        <div>
+          <div class="title-main">Gauri Creations • Admin</div>
+          <div class="subtitle">Control center for orders, products & tracking.</div>
+        </div>
+      </div>
+      <div class="top-right">
+        <button class="pill-btn" onclick="refreshSummary()">Refresh</button>
+        <button class="pill-btn primary" onclick="adminLogout()">Logout</button>
+      </div>
+    </header>
+
+    <!-- MAIN LAYOUT -->
+    <div class="layout">
+
+      <!-- SIDEBAR NAV -->
+      <aside class="nav-card">
+        <div class="nav-title">Navigation</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a class="nav-link active" href="admin.html">
+              <span class="icon">🏠</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="admin-orders.html">
+              <span class="icon">📦</span>
+              <span>Orders</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="admin-add-product.html">
+              <span class="icon">➕</span>
+              <span>Add Product</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="admin-manage-products.html">
+              <span class="icon">🧺</span>
+              <span>Manage Products</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="seller-hub.html">
+              <span class="icon">🧑‍🏭</span>
+              <span>Seller Hub</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="admin-analytics.html">
+              <span class="icon">📊</span>
+              <span>Sales & Reports</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- CONTENT -->
+      <main class="content">
+        <div class="content-header">
+          <h2>Today’s Overview</h2>
+          <div class="tiny-text" id="todayLine"></div>
+        </div>
+
+        <!-- STATS CARDS -->
+        <section class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Orders Today</div>
+            <div class="stat-value" id="statOrdersToday">–</div>
+            <div class="stat-sub">New + repeat customers</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Revenue Today</div>
+            <div class="stat-value" id="statRevenueToday">₹–</div>
+            <div class="stat-sub">All payment methods</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Pending Orders</div>
+            <div class="stat-value" id="statPending">–</div>
+            <div class="stat-sub">Need packing / shipping</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Delivered This Month</div>
+            <div class="stat-value" id="statDelivered">–</div>
+            <div class="stat-sub">Successfully closed</div>
+          </div>
+        </section>
+
+        <!-- PANELS -->
+        <section class="lower-grid">
+          <div class="panel">
+            <h3>Sales Pulse</h3>
+            <small>Later we’ll plug this into live data & charts.</small>
+            <ul class="list-mini">
+              <li>• Daily revenue & order count</li>
+              <li>• Top-selling products</li>
+              <li>• UPI vs other payment split</li>
+              <li>• Repeat customers performance</li>
+            </ul>
+          </div>
+
+          <div class="panel">
+            <h3>Quick Actions</h3>
+            <small>Most common admin tasks in one tap.</small>
+            <div class="quick-links">
+              <a class="quick-link" href="admin-add-product.html">➕ Add a new product</a>
+              <a class="quick-link" href="admin-orders.html">📦 View & manage orders</a>
+              <a class="quick-link" href="seller-hub.html">🧑‍🏭 Open seller hub</a>
+              <a class="quick-link" href="track.html">🔍 Track order (customer view)</a>
+              <a class="quick-link" href="admin-manage-products.html">🧺 Edit existing products</a>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================
+   ADMIN LOGIN (same PIN as admin-add-product)
+============================ */
+const ADMIN_PIN = "1234";          // change when you want
+const ADMIN_FLAG = "gc_admin_auth";
+
+function initAdminLogin() {
+  const overlay = document.getElementById("loginOverlay");
+  const main = document.getElementById("adminMain");
+  const btn = document.getElementById("loginBtn");
+  const pin = document.getElementById("adminPin");
+  const err = document.getElementById("loginError");
+
+  if (localStorage.getItem(ADMIN_FLAG) === "yes") {
+    overlay.style.display = "none";
+    main.style.display = "block";
+  } else {
+    overlay.style.display = "flex";
+  }
+
+  btn.onclick = function () {
+    if (pin.value.trim() === ADMIN_PIN) {
+      localStorage.setItem(ADMIN_FLAG, "yes");
+      overlay.style.display = "none";
+      main.style.display = "block";
+    } else {
+      err.style.display = "block";
+    }
+  };
+}
+
+function adminLogout() {
+  localStorage.removeItem(ADMIN_FLAG);
+  location.reload();
+}
+
+/* ============================
+   SUMMARY PLACEHOLDER
+   (Later we’ll fetch from Sheet)
+============================ */
+function refreshSummary() {
+  const today = new Date();
+  const todayString = today.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric"
+  });
+  document.getElementById("todayLine").textContent = "Today • " + todayString;
+
+  // For now, we leave stats as dashes.
+  // Later we will calculate these from your Orders sheet via Apps Script.
+  document.getElementById("statOrdersToday").textContent = "–";
+  document.getElementById("statRevenueToday").textContent = "₹–";
+  document.getElementById("statPending").textContent = "–";
+  document.getElementById("statDelivered").textContent = "–";
+}
+
+/* ============================
+   INIT
+============================ */
+window.onload = function () {
+  initAdminLogin();
+  refreshSummary();
+};
+</script>
+
+</body>
+</html>

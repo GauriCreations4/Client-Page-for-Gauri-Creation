@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Add Product • Gauri Creations Admin</title>
+
+<style>
+  :root {
+    --bg-grad: linear-gradient(135deg, #86e1ff, #ffd4b8);
+    --glass-bg: rgba(255, 255, 255, 0.20);
+    --glass-border: rgba(255, 255, 255, 0.40);
+    --accent: #007aff;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Poppins", system-ui, sans-serif;
+    background: var(--bg-grad);
+    padding: 18px;
+    color: #0f172a;
+    display: flex;
+    justify-content: center;
+  }
+
+  .shell {
+    width: 100%;
+    max-width: 960px;
+  }
+
+  /* LOGIN OVERLAY */
+  #loginOverlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at top, #ffffffdd, #000000bb);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 40;
+  }
+
+  .login-box {
+    width: 90%;
+    max-width: 320px;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.95);
+    border-radius: 18px;
+    color: #e5e7eb;
+    text-align: center;
+  }
+
+  .login-box h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+  }
+
+  .login-input {
+    width: 100%;
+    margin-top: 10px;
+    padding: 11px 13px;
+    border-radius: 10px;
+    border: 1px solid #4b5563;
+    background: #020617;
+    color: #e5e7eb;
+    font-size: 14px;
+  }
+
+  .btn-primary-small {
+    margin-top: 12px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: none;
+    background: #22c55e;
+    color: #022c22;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .error-msg {
+    font-size: 12px;
+    color: #fecaca;
+    margin-top: 6px;
+    display: none;
+  }
+
+  .small {
+    font-size: 12px;
+    color: #9ca3af;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-radius: 20px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    margin-bottom: 18px;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.25);
+  }
+
+  .top-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    object-fit: cover;
+  }
+
+  .title-main {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    color: #475569;
+  }
+
+  .pill-btn {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    font-size: 13px;
+    text-decoration: none;
+    color: #0f172a;
+    cursor: pointer;
+  }
+
+  .card {
+    margin-top: 12px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(148, 163, 184, 0.45);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.30);
+    padding: 18px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 840px) {
+    .card {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .section-title {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .field-label {
+    font-weight: 500;
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: #475569;
+  }
+
+  .field {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  textarea.field {
+    min-height: 80px;
+    resize: vertical;
+  }
+
+  /* upload boxes */
+  .upload-box {
+    padding: 12px;
+    border: 1px dashed #94a3b8;
+    border-radius: 14px;
+    text-align: center;
+    background: #f8fafc;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .upload-box input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .preview-img {
+    margin-top: 10px;
+    width: 100%;
+    max-height: 200px;
+    border-radius: 12px;
+    object-fit: cover;
+    display: none;
+  }
+
+  .video-name {
+    font-size: 12px;
+    margin-top: 8px;
+    color: #6b7280;
+  }
+
+  .btn-save {
+    padding: 12px 20px;
+    width: 100%;
+    background: #16a34a;
+    color: #fff;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 14px;
+  }
+
+  .status-text {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #475569;
+  }
+
+  .status-text.success {
+    color: #16a34a;
+  }
+
+  .status-text.error {
+    color: #dc2626;
+  }
+</style>
+</head>
+
+<body>
+<div class="shell">
+
+  <!-- LOGIN -->
+  <div id="loginOverlay">
+    <div class="login-box">
+      <h2>Admin Login</h2>
+      <p class="small">Enter your admin PIN to continue</p>
+      <input id="adminPin" type="password" class="login-input" placeholder="Enter PIN">
+      <button id="loginBtn" class="btn-primary-small">Login</button>
+      <div id="loginError" class="error-msg">Incorrect PIN, try again.</div>
+    </div>
+  </div>
+
+  <!-- MAIN AREA -->
+  <div id="adminMain" style="display:none">
+
+    <header class="topbar">
+      <div class="top-left">
+        <img src="logo-gauri.jpeg" class="logo">
+        <div>
+          <div class="title-main">Add New Product</div>
+          <div class="subtitle">Upload images, video & details</div>
+        </div>
+      </div>
+
+      <div class="top-right">
+        <a href="admin.html" class="pill-btn">← Dashboard</a>
+        <button class="pill-btn" onclick="adminLogout()">Logout</button>
+      </div>
+    </header>
+
+    <section class="card">
+
+      <!-- LEFT: MEDIA -->
+      <div>
+        <div class="section-title">Product Images</div>
+
+        <label class="upload-box">
+          Main Image
+          <input type="file" id="img1" accept="image/*">
+          <img id="preview1" class="preview-img">
+        </label>
+
+        <label class="upload-box" style="margin-top:10px;">
+          Image 2
+          <input type="file" id="img2" accept="image/*">
+          <img id="preview2" class="preview-img">
+        </label>
+
+        <label class="upload-box" style="margin-top:10px;">
+          Image 3
+          <input type="file" id="img3" accept="image/*">
+          <img id="preview3" class="preview-img">
+        </label>
+
+        <div class="section-title" style="margin-top:16px;">Product Video</div>
+
+        <label class="upload-box">
+          Upload Video
+          <input type="file" id="video" accept="video/*">
+          <div id="videoName" class="video-name"></div>
+        </label>
+      </div>
+
+      <!-- RIGHT: DETAILS -->
+      <div>
+
+        <div class="section-title">Product Details</div>
+
+        <div class="field-label">Product Name *</div>
+        <input id="name" class="field" placeholder="Example: Decorative Tealight Holder">
+
+        <div class="field-label">Price (₹) *</div>
+        <input id="price" class="field" type="number" placeholder="199">
+
+        <div class="field-label">Dimensions</div>
+        <input id="length" class="field" placeholder="Length (cm)">
+        <input id="width" class="field" placeholder="Width (cm)">
+        <input id="height" class="field" placeholder="Height (cm)">
+        <input id="weight" class="field" placeholder="Weight (g)">
+
+        <div class="field-label">Description</div>
+        <textarea id="description" class="field" placeholder="Write product details..."></textarea>
+
+        <button id="saveBtn" class="btn-save">Save Product</button>
+        <div id="statusText" class="status-text">Fill details to save.</div>
+
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+/* ============================
+   ADMIN AUTH
+============================ */
+const ADMIN_PIN = "1234";
+const ADMIN_FLAG = "gc_admin_auth";
+
+function initAdmin() {
+  const overlay = document.getElementById("loginOverlay");
+  const main = document.getElementById("adminMain");
+  const btn = document.getElementById("loginBtn");
+  const pin = document.getElementById("adminPin");
+  const err = document.getElementById("loginError");
+
+  if (localStorage.getItem(ADMIN_FLAG) === "yes") {
+    overlay.style.display = "none";
+    main.style.display = "block";
+  } else {
+    overlay.style.display = "flex";
+  }
+
+  btn.onclick = function () {
+    if (pin.value.trim() === ADMIN_PIN) {
+      localStorage.setItem(ADMIN_FLAG, "yes");
+      overlay.style.display = "none";
+      main.style.display = "block";
+    } else {
+      err.style.display = "block";
+    }
+  };
+}
+
+function adminLogout() {
+  localStorage.removeItem(ADMIN_FLAG);
+  location.reload();
+}
+
+/* ============================
+   BASE64 CONVERSION
+============================ */
+function convertBase64(file) {
+  return new Promise(resolve => {
+    if (!file) {
+      resolve(null);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ============================
+   UPLOAD TO GOOGLE DRIVE
+============================ */
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbwFJXlwBqYzTeGSKI7Nib-PtuiQxoUdgBcITnYQbMlEOT91NJVtkeAhcIPMn1oaiGb8/exec";
+
+async function uploadFile(file) {
+  if (!file) return "";
+
+  const base64 = await convertBase64(file);
+
+  const response = await fetch(SCRIPT_URL + "?action=uploadMedia", {
+    method: "POST",
+    body: JSON.stringify({
+      fileName: file.name,
+      mimeType: file.type,
+      base64: base64
+    })
+  });
+
+  const data = await response.json();
+  return data.url || "";
+}
+
+/* ============================
+   SAVE PRODUCT
+============================ */
+async function setupForm() {
+  const img1 = document.getElementById("img1");
+  const img2 = document.getElementById("img2");
+  const img3 = document.getElementById("img3");
+  const video = document.getElementById("video");
+
+  const p1 = document.getElementById("preview1");
+  const p2 = document.getElementById("preview2");
+  const p3 = document.getElementById("preview3");
+  const vName = document.getElementById("videoName");
+
+  img1.onchange = () => preview(img1, p1);
+  img2.onchange = () => preview(img2, p2);
+  img3.onchange = () => preview(img3, p3);
+  video.onchange = () => vName.textContent = video.files[0]?.name || "";
+
+  function preview(input, imgEl) {
+    const file = input.files[0];
+    if (!file) {
+      imgEl.style.display = "none";
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      imgEl.src = reader.result;
+      imgEl.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  }
+
+  document.getElementById("saveBtn").onclick = async () => {
+    const status = document.getElementById("statusText");
+    status.textContent = "Uploading files...";
+    status.className = "status-text";
+
+    const name = document.getElementById("name").value.trim();
+    const price = document.getElementById("price").value.trim();
+
+    if (!name || !price) {
+      status.textContent = "Name & Price are required.";
+      status.className = "status-text error";
+      return;
+    }
+
+    try {
+      const img1Url = await uploadFile(img1.files[0]);
+      const img2Url = await uploadFile(img2.files[0]);
+      const img3Url = await uploadFile(img3.files[0]);
+      const videoUrl = await uploadFile(video.files[0]);
+
+      status.textContent = "Saving product...";
+
+      const response = await fetch(SCRIPT_URL + "?action=createProduct", {
+        method: "POST",
+        body: JSON.stringify({
+          name,
+          price,
+          length: document.getElementById("length").value.trim(),
+          width: document.getElementById("width").value.trim(),
+          height: document.getElementById("height").value.trim(),
+          weight: document.getElementById("weight").value.trim(),
+          description: document.getElementById("description").value.trim(),
+          imageUrl1: img1Url,
+          imageUrl2: img2Url,
+          imageUrl3: img3Url,
+          videoUrl: videoUrl
+        })
+      });
+
+      const data = await response.json();
+
+      status.textContent = "Product saved! SKU: " + data.sku;
+      status.className = "status-text success";
+
+    } catch (err) {
+      status.textContent = "Error: " + err.message;
+      status.className = "status-text error";
+    }
+  };
+}
+
+/* ============================
+   INIT
+============================ */
+window.onload = function () {
+  initAdmin();
+  setupForm();
+};
+</script>
+
+</body>
+</html>
