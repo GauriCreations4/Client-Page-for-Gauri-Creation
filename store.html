@@ -3,392 +3,266 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Store • Gauri Creations</title>
+<title>Complete Payment • Gauri Creations</title>
 
 <style>
-    body {
-        margin: 0;
-        font-family: "Poppins", sans-serif;
-        background: #f7f7f7;
-        padding: 15px;
-    }
+:root {
+    --accent-blue: #007aff;
+    --accent-green: #34c759;
+    --text-main: #111827;
+}
 
-    h1 {
-        text-align: center;
-        margin-bottom: 10px;
-        font-size: 26px;
-        font-weight: bold;
-    }
+/* GENERAL */
+body {
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #86e1ff, #ffd4b8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    /* Filter Box */
-    .filters {
-        background: white;
-        padding: 12px;
-        border-radius: 14px;
-        margin-bottom: 15px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
+.card {
+    width: 100%;
+    max-width: 480px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 22px;
+    padding: 22px 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
 
-    .filters input,
-    .filters select {
-        width: 100%;
-        padding: 10px;
-        border-radius: 10px;
-        border: 1px solid #ccc;
-        margin-top: 8px;
-        font-size: 15px;
-    }
+/* TOP LOGO */
+.logo-wrap { text-align: center; }
+.logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 18px;
+    object-fit: cover;
+}
 
-    .filter-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 10px;
-    }
+/* SUMMARY */
+.summary {
+    padding: 14px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #ddd;
+    margin-top: 12px;
+    margin-bottom: 20px;
+}
 
-    /* Product Grid */
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 15px;
-    }
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
 
-    /* Product Card */
-    .product-card {
-        background: white;
-        padding: 12px;
-        border-radius: 14px;
-        box-shadow: 0 5px 14px rgba(0,0,0,0.12);
-        cursor: pointer;
-        perspective: 900px; /* enables 3D */
-    }
+/* QR */
+.qr-wrap { text-align: center; }
+.qr {
+    width: 180px;
+    height: 180px;
+    padding: 10px;
+    background: white;
+    border-radius: 20px;
+}
 
-    /* Inner wrapper for 3D tilt */
-    .product-inner {
-        background: white;
-        border-radius: 14px;
-        transition: transform 0.25s ease; /* smooth 3D */
-    }
+/* PAY BUTTONS */
+.pay-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-    /* Image zoom */
-    .product-img {
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 12px;
-        transition: transform 0.35s ease;
-    }
+.pay-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    background: white;
+    text-decoration: none;
+    color: #000;
+    border: 1px solid #ccc;
+}
 
-    .product-card:hover .product-img {
-        transform: scale(1.15);
-    }
+.pay-pill img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+}
 
-    .product-name {
-        font-size: 15px;
-        font-weight: 600;
-        margin: 8px 0 4px;
-    }
+/* COMPLETED BUTTON */
+.confirm-btn {
+    margin-top: 14px;
+    width: 100%;
+    padding: 12px;
+    background: #007aff;
+    border-radius: 999px;
+    font-weight: 600;
+    color: white;
+    border: none;
+}
 
-    .product-price {
-        font-size: 16px;
-        font-weight: bold;
-        color: #e53935;
-    }
+/* WAITING ANIMATION */
+.slider-shell {
+    margin-top: 18px;
+    display: none;
+    text-align: center;
+}
 
-    /* QUICK VIEW POPUP */
-    .popup-overlay {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0,0,0,0.55);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        animation: fadeIn 0.2s;
-        z-index: 2000;
-    }
+.slider-label { font-size: 13px; margin-bottom: 6px; }
 
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to   { opacity: 1; }
-    }
+.glass-track {
+    width: 24%;
+    height: 46px;
+    margin: 0 auto;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.6);
+    position: relative;
+    overflow: hidden;
+    display: none;
+}
 
-    .popup-box {
-        width: 90%;
-        max-width: 420px;
-        background: white;
-        border-radius: 16px;
-        padding: 16px;
-        animation: slideUp 0.25s ease;
-        position: relative;
-    }
+.glass-track.visible { display: block; }
 
-    @keyframes slideUp {
-        from { transform: translateY(20px); opacity: 0; }
-        to   { transform: translateY(0); opacity: 1; }
-    }
+.glass-thumb {
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    background: white;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: moveThumb 1.7s infinite;
+}
 
-    .popup-close {
-        position: absolute;
-        top: 10px;
-        right: 14px;
-        font-size: 26px;
-        font-weight: bold;
-        cursor: pointer;
-        color: #333;
-    }
+@keyframes moveThumb {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(calc(100% - 46px)); }
+    100% { transform: translateX(0); }
+}
 
-    .popup-main-img {
-        width: 100%;
-        height: 220px;
-        object-fit: cover;
-        border-radius: 12px;
-        margin-bottom: 10px;
-    }
+/* SUCCESS STATE */
+.glass-track.success {
+    background: linear-gradient(90deg,#22c55e,#4ade80);
+}
 
-    .popup-gallery {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 12px;
-    }
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
 
-    .popup-thumb {
-        width: 70px;
-        height: 70px;
-        object-fit: cover;
-        border-radius: 10px;
-        border: 2px solid transparent;
-        cursor: pointer;
-    }
+/* GLITTER */
+.glitter {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: radial-gradient(circle,#fff7c2,#ff9900);
+    animation: glitterAnim .7s ease-out forwards;
+}
 
-    .popup-thumb:hover {
-        border-color: #007aff;
-    }
-
-    .popup-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin-bottom: 6px;
-    }
-
-    .popup-price {
-        font-size: 19px;
-        font-weight: bold;
-        color: #e53935;
-        margin-bottom: 8px;
-    }
-
-    .popup-desc {
-        font-size: 14px;
-        color: #444;
-        margin-bottom: 12px;
-        line-height: 1.4;
-    }
-
-    .popup-specs {
-        background: #f1f1f1;
-        padding: 10px;
-        border-radius: 12px;
-        margin-bottom: 14px;
-        font-size: 14px;
-    }
-
-    .btn-buy-big {
-        display: block;
-        width: 100%;
-        padding: 12px;
-        text-align: center;
-        background: #007aff;
-        color: white;
-        font-weight: 600;
-        border-radius: 14px;
-        text-decoration: none;
-        margin-top: 10px;
-    }
+@keyframes glitterAnim {
+    0% { opacity: 1; transform: scale(0.7); }
+    100% { opacity: 0; transform: scale(0.1) translate(20px,-20px); }
+}
 </style>
 </head>
 
 <body>
 
-<h1>Our Products</h1>
+<div class="card">
 
-<!-- FILTERS -->
-<div class="filters">
-    <input type="text" id="searchBar" placeholder="Search products...">
-
-    <div class="filter-row">
-        <select id="categoryFilter">
-            <option value="">All Categories</option>
-        </select>
-
-        <select id="sortFilter">
-            <option value="">Sort By</option>
-            <option value="low">Price: Low to High</option>
-            <option value="high">Price: High to Low</option>
-        </select>
+    <div class="logo-wrap">
+        <img src="logo-gauri.jpeg" class="logo">
     </div>
 
-    <div class="filter-row">
-        <input type="number" id="minPrice" placeholder="Min Price">
-        <input type="number" id="maxPrice" placeholder="Max Price">
+    <h2 style="text-align:center; margin:8px 0;">Complete Your Payment</h2>
+    <p style="text-align:center; color:#555; margin:0 0 12px;">Secure UPI Payment</p>
+
+    <!-- SUMMARY -->
+    <div class="summary">
+        <div class="summary-row"><span>Product</span><strong id="summaryProduct">-</strong></div>
+        <div class="summary-row"><span>Order ID</span><strong id="summaryOrderId">-</strong></div>
+        <div class="summary-row"><span>Price</span><span id="summaryPrice">₹0</span></div>
+        <div class="summary-row"><span>Qty</span><span id="summaryQty">1</span></div>
+        <div class="summary-row"><span>Delivery</span><span id="summaryShip">₹0</span></div>
+        <div class="summary-row"><strong>Total</strong><strong id="summaryTotal">₹0</strong></div>
     </div>
+
+    <!-- QR -->
+    <div class="qr-wrap">
+        <img src="upi-qr.jpeg" class="qr">
+    </div>
+
+    <p style="text-align:center; margin-bottom:10px;">Scan or use quick buttons</p>
+
+    <!-- PAY BUTTONS -->
+    <div class="pay-buttons">
+        <a id="btnGpay" class="pay-pill"><img src="gpay.PNG">Pay with GPay</a>
+        <a id="btnPhonePe" class="pay-pill"><img src="phonepe.PNG">Pay with PhonePe</a>
+    </div>
+
+    <button id="confirmButton" class="confirm-btn">I completed the payment</button>
+
+    <!-- WAITING ANIMATION -->
+    <div class="slider-shell" id="waitArea">
+        <div class="slider-label" id="sliderLabel">Checking payment…</div>
+        <div class="glass-track" id="glassTrack">
+            <div class="glass-thumb">»</div>
+        </div>
+    </div>
+
 </div>
 
-<!-- PRODUCTS GRID -->
-<div id="productGrid" class="grid"></div>
-
-<!-- QUICK VIEW POPUP -->
-<div id="popup" class="popup-overlay">
-    <div class="popup-box">
-        <div class="popup-close" onclick="closePopup()">×</div>
-
-        <img id="popupMainImg" class="popup-main-img">
-
-        <div id="popupGallery" class="popup-gallery"></div>
-
-        <div class="popup-title" id="popupName"></div>
-        <div class="popup-price" id="popupPrice"></div>
-        <div class="popup-desc" id="popupDesc"></div>
-
-        <div class="popup-specs" id="popupSpecs"></div>
-
-        <a id="popupBuyBtn" class="btn-buy-big">Buy Now</a>
-    </div>
-</div>
+<!-- NEW PAYMENT VERIFY LOGIC -->
+<script src="payment.js"></script>
 
 <script>
-/* Your Apps Script URL */
-const API_URL = "PUT-YOUR-DEPLOYMENT-URL-HERE";
+// Fill Summary Info from URL
+const p = new URLSearchParams(window.location.search);
 
-let PRODUCTS = [];
+const product = p.get("product");
+const orderId = p.get("orderId");
+const price = p.get("price");
+const qty = p.get("qty");
+const delivery = p.get("delivery");
 
-/* LOAD PRODUCTS */
-async function loadProducts() {
-    const res = await fetch(API_URL + "?getProducts=1");
-    const data = await res.json();
-    PRODUCTS = data.products || [];
+document.getElementById("summaryProduct").textContent = product;
+document.getElementById("summaryOrderId").textContent = orderId;
+document.getElementById("summaryPrice").textContent = "₹" + price;
+document.getElementById("summaryQty").textContent = qty;
+document.getElementById("summaryShip").textContent = "₹" + delivery;
 
-    populateCategories();
-    displayProducts(PRODUCTS);
-}
+let total = (parseInt(price) * parseInt(qty)) + parseInt(delivery);
+document.getElementById("summaryTotal").textContent = "₹" + total;
 
-/* CATEGORY DROPDOWN */
-function populateCategories() {
-    const catBox = document.getElementById("categoryFilter");
-    const cats = [...new Set(PRODUCTS.map(p => p.Category).filter(Boolean))];
+// Build UPI Link
+const UPI_ID = "vinayaksasane999-2@oksbi";
+const MERCHANT = "Gauri Creations";
 
-    cats.forEach(cat => {
-        let opt = document.createElement("option");
-        opt.value = cat;
-        opt.textContent = cat;
-        catBox.appendChild(opt);
-    });
-}
+const upiLink =
+`upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT)}&am=${encodeURIComponent(total)}&cu=INR`;
 
-/* DISPLAY PRODUCTS */
-function displayProducts(list) {
-    const grid = document.getElementById("productGrid");
-    grid.innerHTML = "";
-
-    list.forEach(p => {
-        const card = document.createElement("div");
-        card.className = "product-card";
-
-        // Inner wrapper for tilt
-        const inner = document.createElement("div");
-        inner.className = "product-inner";
-
-        inner.innerHTML = `
-            <img src="${p.Image1}" class="product-img">
-            <div class="product-name">${p.Name}</div>
-            <div class="product-price">₹${p.Price}</div>
-        `;
-
-        /* --- 3D Tilt Effect --- */
-        card.addEventListener("mousemove", (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-
-            inner.style.transform = `rotateY(${x/20}deg) rotateX(${-y/20}deg)`;
-        });
-
-        card.addEventListener("mouseleave", () => {
-            inner.style.transform = "rotateY(0deg) rotateX(0deg)";
-        });
-
-        card.appendChild(inner);
-
-        card.onclick = () => openPopup(p);
-
-        grid.appendChild(card);
-    });
-}
-
-/* POPUP */
-function openPopup(p) {
-    document.getElementById("popup").style.display = "flex";
-    document.getElementById("popupMainImg").src = p.Image1;
-
-    const gallery = document.getElementById("popupGallery");
-    gallery.innerHTML = "";
-
-    [p.Image1, p.Image2, p.Image3].forEach(img => {
-        if (!img) return;
-        const thumb = document.createElement("img");
-        thumb.className = "popup-thumb";
-        thumb.src = img;
-        thumb.onclick = () => {
-            document.getElementById("popupMainImg").src = img;
-        };
-        gallery.appendChild(thumb);
-    });
-
-    document.getElementById("popupName").textContent = p.Name;
-    document.getElementById("popupPrice").textContent = "₹" + p.Price;
-    document.getElementById("popupDesc").textContent = p.Description;
-
-    document.getElementById("popupSpecs").innerHTML = `
-        <b>Dimensions:</b> ${p.Length} × ${p.Width} × ${p.Height} cm<br>
-        <b>Weight:</b> ${p.Weight} g
-    `;
-
-    document.getElementById("popupBuyBtn").href =
-        `order.html?product=${encodeURIComponent(p.Name)}&price=${p.Price}&img=${encodeURIComponent(p.Image1)}`;
-}
-
-function closePopup() {
-    document.getElementById("popup").style.display = "none";
-}
-
-/* FILTERS */
-function applyFilters() {
-    let list = [...PRODUCTS];
-
-    const search = document.getElementById("searchBar").value.toLowerCase();
-    const cat = document.getElementById("categoryFilter").value;
-    const sort = document.getElementById("sortFilter").value;
-    const min = Number(document.getElementById("minPrice").value);
-    const max = Number(document.getElementById("maxPrice").value);
-
-    if (search) list = list.filter(p => p.Name.toLowerCase().includes(search));
-    if (cat) list = list.filter(p => p.Category === cat);
-    if (min) list = list.filter(p => Number(p.Price) >= min);
-    if (max) list = list.filter(p => Number(p.Price) <= max);
-
-    if (sort === "low") list.sort((a,b) => Number(a.Price) - Number(b.Price));
-    if (sort === "high") list.sort((a,b) => Number(b.Price) - Number(a.Price));
-
-    displayProducts(list);
-}
-
-document.getElementById("searchBar").addEventListener("input", applyFilters);
-document.getElementById("categoryFilter").addEventListener("change", applyFilters);
-document.getElementById("sortFilter").addEventListener("change", applyFilters);
-document.getElementById("minPrice").addEventListener("input", applyFilters);
-document.getElementById("maxPrice").addEventListener("input", applyFilters);
-
-loadProducts();
+document.getElementById("btnGpay").href = upiLink;
+document.getElementById("btnPhonePe").href = upiLink;
 </script>
+
 </body>
+
 </html>
