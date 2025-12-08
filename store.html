@@ -1,277 +1,394 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gauri Creations Store</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Store • Gauri Creations</title>
 
 <style>
-  body {
-    margin: 0;
-    font-family: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #86e1ff, #ffd4b8);
-    padding: 20px;
-    color: #111827;
-  }
+    body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: #f7f7f7;
+        padding: 15px;
+    }
 
-  .top-bar {
-    max-width: 960px;
-    margin: 0 auto 10px auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+    h1 {
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 26px;
+        font-weight: bold;
+    }
 
-  .top-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+    /* Filter Box */
+    .filters {
+        background: white;
+        padding: 12px;
+        border-radius: 14px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
 
-  .logo {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    object-fit: cover;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-  }
+    .filters input,
+    .filters select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        margin-top: 8px;
+        font-size: 15px;
+    }
 
-  .brand {
-    font-weight: 700;
-    font-size: 18px;
-  }
+    .filter-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+    }
 
-  .track-btn {
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.7);
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(14px);
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    color: #111827;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
-  }
+    /* Product Grid */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 15px;
+    }
 
-  .hero {
-    max-width: 960px;
-    margin: 0 auto 14px auto;
-    color: #111827;
-  }
+    /* Product Card */
+    .product-card {
+        background: white;
+        padding: 12px;
+        border-radius: 14px;
+        box-shadow: 0 5px 14px rgba(0,0,0,0.12);
+        cursor: pointer;
+        perspective: 900px; /* enables 3D */
+    }
 
-  .hero h1 {
-    margin: 4px 0;
-    font-size: 24px;
-  }
+    /* Inner wrapper for 3D tilt */
+    .product-inner {
+        background: white;
+        border-radius: 14px;
+        transition: transform 0.25s ease; /* smooth 3D */
+    }
 
-  .hero p {
-    margin: 0;
-    font-size: 14px;
-    color: #374151;
-  }
+    /* Image zoom */
+    .product-img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 12px;
+        transition: transform 0.35s ease;
+    }
 
-  .controls {
-    max-width: 960px;
-    margin: 0 auto 14px auto;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
+    .product-card:hover .product-img {
+        transform: scale(1.15);
+    }
 
-  .search-input {
-    flex: 1;
-    min-width: 180px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    border: 1px solid #cbd5f5;
-    font-size: 14px;
-  }
+    .product-name {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 8px 0 4px;
+    }
 
-  .sort-select {
-    padding: 10px 12px;
-    border-radius: 12px;
-    border: 1px solid #cbd5f5;
-    font-size: 14px;
-    min-width: 160px;
-  }
+    .product-price {
+        font-size: 16px;
+        font-weight: bold;
+        color: #e53935;
+    }
 
-  .grid {
-    max-width: 960px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: 16px;
-  }
+    /* QUICK VIEW POPUP */
+    .popup-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.55);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s;
+        z-index: 2000;
+    }
 
-  .card {
-    background: rgba(255,255,255,0.85);
-    border-radius: 18px;
-    padding: 10px 10px 14px;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.18);
-    backdrop-filter: blur(12px);
-    text-align: center;
-    position: relative;
-  }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
 
-  .card img {
-    width: 100%;
-    border-radius: 14px;
-    object-fit: cover;
-    max-height: 160px;
-    cursor: pointer;
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-  }
+    .popup-box {
+        width: 90%;
+        max-width: 420px;
+        background: white;
+        border-radius: 16px;
+        padding: 16px;
+        animation: slideUp 0.25s ease;
+        position: relative;
+    }
 
-  .card img:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 10px 22px rgba(0,0,0,0.3);
-  }
+    @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to   { transform: translateY(0); opacity: 1; }
+    }
 
-  .card-title {
-    margin-top: 8px;
-    font-size: 15px;
-    font-weight: 600;
-  }
+    .popup-close {
+        position: absolute;
+        top: 10px;
+        right: 14px;
+        font-size: 26px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #333;
+    }
 
-  .card-price {
-    font-size: 15px;
-    font-weight: 700;
-    color: #c62828;
-    margin: 4px 0 6px;
-  }
+    .popup-main-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 10px;
+    }
 
-  .view-btn {
-    display: inline-block;
-    margin-top: 4px;
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: #007aff;
-    color: #fff;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    box-shadow: 0 4px 16px rgba(0,122,255,0.4);
-  }
+    .popup-gallery {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
 
-  /* Fullscreen image viewer */
-  #fullscreen-viewer {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    backdrop-filter: blur(4px);
-  }
+    .popup-thumb {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 2px solid transparent;
+        cursor: pointer;
+    }
 
-  #fullscreen-viewer img {
-    max-width: 92%;
-    max-height: 92%;
-    border-radius: 12px;
-    box-shadow: 0 0 18px rgba(255,255,255,0.4);
-  }
+    .popup-thumb:hover {
+        border-color: #007aff;
+    }
+
+    .popup-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .popup-price {
+        font-size: 19px;
+        font-weight: bold;
+        color: #e53935;
+        margin-bottom: 8px;
+    }
+
+    .popup-desc {
+        font-size: 14px;
+        color: #444;
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+
+    .popup-specs {
+        background: #f1f1f1;
+        padding: 10px;
+        border-radius: 12px;
+        margin-bottom: 14px;
+        font-size: 14px;
+    }
+
+    .btn-buy-big {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        text-align: center;
+        background: #007aff;
+        color: white;
+        font-weight: 600;
+        border-radius: 14px;
+        text-decoration: none;
+        margin-top: 10px;
+    }
 </style>
 </head>
+
 <body>
 
-<div class="top-bar">
-  <div class="top-left">
-    <img src="logo-gauri.jpeg" class="logo" alt="Gauri Creations">
-    <div class="brand">Gauri Creations</div>
-  </div>
-  <a href="track.html" class="track-btn">Track your order</a>
+<h1>Our Products</h1>
+
+<!-- FILTERS -->
+<div class="filters">
+    <input type="text" id="searchBar" placeholder="Search products...">
+
+    <div class="filter-row">
+        <select id="categoryFilter">
+            <option value="">All Categories</option>
+        </select>
+
+        <select id="sortFilter">
+            <option value="">Sort By</option>
+            <option value="low">Price: Low to High</option>
+            <option value="high">Price: High to Low</option>
+        </select>
+    </div>
+
+    <div class="filter-row">
+        <input type="number" id="minPrice" placeholder="Min Price">
+        <input type="number" id="maxPrice" placeholder="Max Price">
+    </div>
 </div>
 
-<div class="hero">
-  <h1>Festive Home Decor Store</h1>
-  <p>Handcrafted rangolis, tealight holders and auspicious decor pieces.</p>
-</div>
+<!-- PRODUCTS GRID -->
+<div id="productGrid" class="grid"></div>
 
-<div class="controls">
-  <input id="searchBox" class="search-input" placeholder="Search products (e.g. lotus, rangoli, shubh labh)">
-  <select id="sortSelect" class="sort-select">
-    <option value="default">Sort: Default</option>
-    <option value="price-asc">Price: Low to High</option>
-    <option value="price-desc">Price: High to Low</option>
-  </select>
-</div>
+<!-- QUICK VIEW POPUP -->
+<div id="popup" class="popup-overlay">
+    <div class="popup-box">
+        <div class="popup-close" onclick="closePopup()">×</div>
 
-<div class="grid" id="productGrid">
-  <!-- Lotus -->
-  <div class="card" data-name="lotus pom-pom tealight holders" data-price="179">
-    <img src="lotus-tealight.jpeg" alt="Lotus Pom-Pom Tealight Holders" onclick="openImage('lotus-tealight.jpeg')">
-    <div class="card-title">Lotus Pom-Pom Tealight Holders (Set of 2)</div>
-    <div class="card-price">₹179</div>
-    <a href="product-lotus.html" class="view-btn">View Product</a>
-  </div>
+        <img id="popupMainImg" class="popup-main-img">
 
-  <!-- Rangoli -->
-  <div class="card" data-name="mirror pom-pom floral rangoli" data-price="229">
-    <img src="rangoli.jpeg" alt="Mirror & Pom-Pom Floral Rangoli" onclick="openImage('rangoli.jpeg')">
-    <div class="card-title">Mirror & Pom-Pom Floral Rangoli (Set of 2)</div>
-    <div class="card-price">₹229</div>
-    <a href="product-rangoli.html" class="view-btn">View Product</a>
-  </div>
+        <div id="popupGallery" class="popup-gallery"></div>
 
-  <!-- Shubh Labh -->
-  <div class="card" data-name="shubh labh hanging decor" data-price="149">
-    <img src="shubh-labh.jpeg" alt="Shubh Labh Hanging Decor" onclick="openImage('shubh-labh.jpeg')">
-    <div class="card-title">Shubh Labh Hanging Decor</div>
-    <div class="card-price">₹149</div>
-    <a href="product-shubhlabh.html" class="view-btn">View Product</a>
-  </div>
+        <div class="popup-title" id="popupName"></div>
+        <div class="popup-price" id="popupPrice"></div>
+        <div class="popup-desc" id="popupDesc"></div>
 
-  <!-- Golden Nariyal -->
-  <div class="card" data-name="golden auspicious nariyal" data-price="229">
-    <img src="nariyal.jpeg" alt="Golden Auspicious Nariyal" onclick="openImage('nariyal.jpeg')">
-    <div class="card-title">Golden Auspicious Nariyal</div>
-    <div class="card-price">₹229</div>
-    <a href="product-nariyal.html" class="view-btn">View Product</a>
-  </div>
-</div>
+        <div class="popup-specs" id="popupSpecs"></div>
 
-<!-- Fullscreen viewer -->
-<div id="fullscreen-viewer" onclick="closeImage()">
-  <img id="full-img" alt="Full view">
+        <a id="popupBuyBtn" class="btn-buy-big">Buy Now</a>
+    </div>
 </div>
 
 <script>
-const searchBox = document.getElementById("searchBox");
-const sortSelect = document.getElementById("sortSelect");
-const grid = document.getElementById("productGrid");
+/* Your Apps Script URL */
+const API_URL = "PUT-YOUR-DEPLOYMENT-URL-HERE";
 
-searchBox.addEventListener("input", () => {
-  const q = searchBox.value.toLowerCase().trim();
-  [...grid.children].forEach(card => {
-    const name = card.getAttribute("data-name");
-    card.style.display = (!q || name.includes(q)) ? "" : "none";
-  });
-});
+let PRODUCTS = [];
 
-sortSelect.addEventListener("change", () => {
-  const cards = [...grid.children];
-  if (sortSelect.value === "default") {
-    cards.sort((a,b) => 0);
-  } else if (sortSelect.value === "price-asc") {
-    cards.sort((a,b) => a.getAttribute("data-price") - b.getAttribute("data-price"));
-  } else if (sortSelect.value === "price-desc") {
-    cards.sort((a,b) => b.getAttribute("data-price") - a.getAttribute("data-price"));
-  }
-  cards.forEach(c => grid.appendChild(c));
-});
+/* LOAD PRODUCTS */
+async function loadProducts() {
+    const res = await fetch(API_URL + "?getProducts=1");
+    const data = await res.json();
+    PRODUCTS = data.products || [];
 
-function openImage(src) {
-  document.getElementById("full-img").src = src;
-  document.getElementById("fullscreen-viewer").style.display = "flex";
+    populateCategories();
+    displayProducts(PRODUCTS);
 }
-function closeImage() {
-  document.getElementById("fullscreen-viewer").style.display = "none";
+
+/* CATEGORY DROPDOWN */
+function populateCategories() {
+    const catBox = document.getElementById("categoryFilter");
+    const cats = [...new Set(PRODUCTS.map(p => p.Category).filter(Boolean))];
+
+    cats.forEach(cat => {
+        let opt = document.createElement("option");
+        opt.value = cat;
+        opt.textContent = cat;
+        catBox.appendChild(opt);
+    });
 }
+
+/* DISPLAY PRODUCTS */
+function displayProducts(list) {
+    const grid = document.getElementById("productGrid");
+    grid.innerHTML = "";
+
+    list.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+
+        // Inner wrapper for tilt
+        const inner = document.createElement("div");
+        inner.className = "product-inner";
+
+        inner.innerHTML = `
+            <img src="${p.Image1}" class="product-img">
+            <div class="product-name">${p.Name}</div>
+            <div class="product-price">₹${p.Price}</div>
+        `;
+
+        /* --- 3D Tilt Effect --- */
+        card.addEventListener("mousemove", (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+
+            inner.style.transform = `rotateY(${x/20}deg) rotateX(${-y/20}deg)`;
+        });
+
+        card.addEventListener("mouseleave", () => {
+            inner.style.transform = "rotateY(0deg) rotateX(0deg)";
+        });
+
+        card.appendChild(inner);
+
+        card.onclick = () => openPopup(p);
+
+        grid.appendChild(card);
+    });
+}
+
+/* POPUP */
+function openPopup(p) {
+    document.getElementById("popup").style.display = "flex";
+    document.getElementById("popupMainImg").src = p.Image1;
+
+    const gallery = document.getElementById("popupGallery");
+    gallery.innerHTML = "";
+
+    [p.Image1, p.Image2, p.Image3].forEach(img => {
+        if (!img) return;
+        const thumb = document.createElement("img");
+        thumb.className = "popup-thumb";
+        thumb.src = img;
+        thumb.onclick = () => {
+            document.getElementById("popupMainImg").src = img;
+        };
+        gallery.appendChild(thumb);
+    });
+
+    document.getElementById("popupName").textContent = p.Name;
+    document.getElementById("popupPrice").textContent = "₹" + p.Price;
+    document.getElementById("popupDesc").textContent = p.Description;
+
+    document.getElementById("popupSpecs").innerHTML = `
+        <b>Dimensions:</b> ${p.Length} × ${p.Width} × ${p.Height} cm<br>
+        <b>Weight:</b> ${p.Weight} g
+    `;
+
+    document.getElementById("popupBuyBtn").href =
+        `order.html?product=${encodeURIComponent(p.Name)}&price=${p.Price}&img=${encodeURIComponent(p.Image1)}`;
+}
+
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
+
+/* FILTERS */
+function applyFilters() {
+    let list = [...PRODUCTS];
+
+    const search = document.getElementById("searchBar").value.toLowerCase();
+    const cat = document.getElementById("categoryFilter").value;
+    const sort = document.getElementById("sortFilter").value;
+    const min = Number(document.getElementById("minPrice").value);
+    const max = Number(document.getElementById("maxPrice").value);
+
+    if (search) list = list.filter(p => p.Name.toLowerCase().includes(search));
+    if (cat) list = list.filter(p => p.Category === cat);
+    if (min) list = list.filter(p => Number(p.Price) >= min);
+    if (max) list = list.filter(p => Number(p.Price) <= max);
+
+    if (sort === "low") list.sort((a,b) => Number(a.Price) - Number(b.Price));
+    if (sort === "high") list.sort((a,b) => Number(b.Price) - Number(a.Price));
+
+    displayProducts(list);
+}
+
+document.getElementById("searchBar").addEventListener("input", applyFilters);
+document.getElementById("categoryFilter").addEventListener("change", applyFilters);
+document.getElementById("sortFilter").addEventListener("change", applyFilters);
+document.getElementById("minPrice").addEventListener("input", applyFilters);
+document.getElementById("maxPrice").addEventListener("input", applyFilters);
+
+loadProducts();
 </script>
-
 </body>
 </html>
