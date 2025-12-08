@@ -597,7 +597,7 @@ async function saveEdit() {
   const statusEl = document.getElementById("editStatus");
   statusEl.textContent = "Saving…";
 
-  const payload = {
+const payload = {
     sku: currentEditSku,
     name: document.getElementById("editName").value.trim(),
     price: document.getElementById("editPrice").value.trim(),
@@ -605,13 +605,16 @@ async function saveEdit() {
     width: document.getElementById("editWidth").value.trim(),
     height: document.getElementById("editHeight").value.trim(),
     weight: document.getElementById("editWeight").value.trim(),
-    imageUrl1: document.getElementById("editImg1").value.trim(),
-    imageUrl2: document.getElementById("editImg2").value.trim(),
-    imageUrl3: document.getElementById("editImg3").value.trim(),
-    videoUrl: document.getElementById("editVideo").value.trim(),
+
+    // FIXED KEYS BELOW
+    "Image URL 1": document.getElementById("editImg1").value.trim(),
+    "Image URL 2": document.getElementById("editImg2").value.trim(),
+    "Image URL 3": document.getElementById("editImg3").value.trim(),
+    "Video URL": document.getElementById("editVideo").value.trim(),
+
     category: document.getElementById("editCategory").value.trim(),
     description: document.getElementById("editDesc").value.trim()
-  };
+};
 
   try {
     const res = await fetch(SCRIPT_URL + "?action=updateProduct", {
@@ -681,4 +684,5 @@ window.onload = function () {
 
 </body>
 </html>
+
 
