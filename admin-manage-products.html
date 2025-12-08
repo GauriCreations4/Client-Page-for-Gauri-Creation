@@ -359,10 +359,7 @@
       </div>
 
       <div id="statusText" class="status-text">Loading products…</div>
-
-      <div id="grid" class="grid">
-        <!-- product cards injected here -->
-      </div>
+      <div id="grid" class="grid"></div>
     </section>
   </div>
 
@@ -408,6 +405,9 @@
         <div class="field-label">Video URL</div>
         <input id="editVideo" class="field" />
 
+        <div class="field-label">Category</div>
+        <input id="editCategory" class="field" />
+
         <div class="field-label">Description</div>
         <textarea id="editDesc" class="field"></textarea>
       </div>
@@ -427,6 +427,13 @@
 ============================ */
 const ADMIN_PIN = "1234";
 const ADMIN_FLAG = "gc_admin_auth";
+
+/* Your Apps Script URL */
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbxD6kFEU1QkcoX-ZFRz540bEPwaIECaST-Ogxq9UEs9LAnsx7Hq1yDzjkRTpmeaAL_j7A/exec";
+
+let allProducts = [];
+let currentEditSku = null;
 
 function initAdminLogin() {
   const overlay = document.getElementById("loginOverlay");
@@ -461,20 +468,7 @@ function adminLogout() {
 }
 
 /* ============================
-   CONFIG
-============================ */
-const SHEET_ID = "1W0CvU_5nbodRgwxfSNtNZ-eMUNFuVHqSG3vJ1UibJLw";
-const PRODUCTS_SHEET = "Products";
-
-// 🔴 IMPORTANT: put the SAME URL as in admin-add-product.html
-const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxD6kFEU1QkcoX-ZFRz540bEPwaIECaST-Ogxq9UEs9LAnsx7Hq1yDzjkRTpmeaAL_j7A/exec";
-
-let allProducts = [];
-let currentEditSku = null;
-
-/* ============================
-   LOAD & RENDER PRODUCTS
+   LOAD PRODUCTS (from Apps Script)
 ============================ */
 async function reloadProducts() {
   const statusEl = document.getElementById("statusText");
@@ -483,17 +477,20 @@ async function reloadProducts() {
   statusEl.textContent = "Loading products…";
 
   try {
-    const res = await fetch(`https://opensheet.elk.sh/${SHEET_ID}/${PRODUCTS_SHEET}`);
+    const res = await fetch(SCRIPT_URL + "?getProducts=1");
     const data = await res.json();
-    allProducts = data;
+    allProducts = data.products || [];
+
     renderProducts();
-    statusEl.textContent = `Showing ${filteredProducts().length} of ${allProducts.length} products.`;
+    statusEl.textContent =
+      `Showing ${filteredProducts().length} of ${allProducts.length} products.`;
   } catch (err) {
     console.error(err);
     statusEl.textContent = "Error loading products. Please try again.";
   }
 }
 
+/* SEARCH FILTER */
 function filteredProducts() {
   const q = document.getElementById("searchInput").value.trim().toLowerCase();
   return allProducts.filter(row => {
@@ -503,6 +500,7 @@ function filteredProducts() {
   });
 }
 
+/* RENDER GRID */
 function renderProducts() {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
@@ -513,11 +511,12 @@ function renderProducts() {
     card.className = "product-card";
 
     const imageUrl =
-      row["Image URL 1"] || row["ImageURL1"] || row["imageUrl1"] || "";
+      row["imageUrl1"] || row["imageUrl2"] || row["imageUrl3"] || "";
 
     const sku = row["SKU"] || "";
     const name = row["Name"] || "";
     const price = row["Price"] || "";
+    const category = row["Category"] || "";
 
     const thumbDiv = document.createElement("div");
     thumbDiv.className = "thumb";
@@ -536,6 +535,7 @@ function renderProducts() {
     body.innerHTML = `
       <div class="prod-name">${name || "(No name)"}</div>
       <div class="prod-sku">SKU: ${sku}</div>
+      <div class="prod-sku">${category ? ("Category: " + category) : ""}</div>
       <div class="prod-price">₹${price || "0"}</div>
     `;
 
@@ -561,29 +561,24 @@ function renderProducts() {
     grid.appendChild(card);
   });
 }
-
 /* ============================
-   EDIT PRODUCT MODAL
+   EDIT PRODUCT
 ============================ */
 function openEdit(row) {
   currentEditSku = row["SKU"];
 
-  document.getElementById("editSku").value = row["SKU"] || "";
+  document.getElementById("editSku").value = currentEditSku || "";
   document.getElementById("editName").value = row["Name"] || "";
   document.getElementById("editPrice").value = row["Price"] || "";
   document.getElementById("editLength").value = row["Length"] || "";
   document.getElementById("editWidth").value = row["Width"] || "";
   document.getElementById("editHeight").value = row["Height"] || "";
   document.getElementById("editWeight").value = row["Weight"] || "";
-
-  document.getElementById("editImg1").value =
-    row["Image URL 1"] || row["ImageURL1"] || "";
-  document.getElementById("editImg2").value =
-    row["Image URL 2"] || row["ImageURL2"] || "";
-  document.getElementById("editImg3").value =
-    row["Image URL 3"] || row["ImageURL3"] || "";
-  document.getElementById("editVideo").value =
-    row["Video URL"] || row["VideoURL"] || "";
+  document.getElementById("editImg1").value = row["imageUrl1"] || "";
+  document.getElementById("editImg2").value = row["imageUrl2"] || "";
+  document.getElementById("editImg3").value = row["imageUrl3"] || "";
+  document.getElementById("editVideo").value = row["videoUrl"] || "";
+  document.getElementById("editCategory").value = row["Category"] || "";
   document.getElementById("editDesc").value = row["Description"] || "";
 
   document.getElementById("editStatus").textContent = "Make changes and click Save.";
@@ -595,6 +590,7 @@ function closeEdit() {
   currentEditSku = null;
 }
 
+/* SAVE EDIT TO APPS SCRIPT */
 async function saveEdit() {
   if (!currentEditSku) return;
 
@@ -613,6 +609,7 @@ async function saveEdit() {
     imageUrl2: document.getElementById("editImg2").value.trim(),
     imageUrl3: document.getElementById("editImg3").value.trim(),
     videoUrl: document.getElementById("editVideo").value.trim(),
+    category: document.getElementById("editCategory").value.trim(),
     description: document.getElementById("editDesc").value.trim()
   };
 
@@ -627,24 +624,8 @@ async function saveEdit() {
       throw new Error(data.message || "Update failed");
     }
 
-    // Update local array
-    const idx = allProducts.findIndex(p => p["SKU"] === currentEditSku);
-    if (idx > -1) {
-      allProducts[idx]["Name"] = payload.name;
-      allProducts[idx]["Price"] = payload.price;
-      allProducts[idx]["Length"] = payload.length;
-      allProducts[idx]["Width"] = payload.width;
-      allProducts[idx]["Height"] = payload.height;
-      allProducts[idx]["Weight"] = payload.weight;
-      allProducts[idx]["Image URL 1"] = payload.imageUrl1;
-      allProducts[idx]["Image URL 2"] = payload.imageUrl2;
-      allProducts[idx]["Image URL 3"] = payload.imageUrl3;
-      allProducts[idx]["Video URL"] = payload.videoUrl;
-      allProducts[idx]["Description"] = payload.description;
-    }
-
     statusEl.textContent = "Saved!";
-    renderProducts();
+    await reloadProducts();
     setTimeout(closeEdit, 600);
   } catch (err) {
     console.error(err);
@@ -676,8 +657,7 @@ async function deleteProduct(row) {
       throw new Error(data.message || "Delete failed");
     }
 
-    allProducts = allProducts.filter(p => p["SKU"] !== sku);
-    renderProducts();
+    await reloadProducts();
     statusEl.textContent = `Deleted ${sku}.`;
   } catch (err) {
     console.error(err);
@@ -693,13 +673,11 @@ window.onload = function () {
   document.getElementById("searchInput").addEventListener("input", () => {
     renderProducts();
     const statusEl = document.getElementById("statusText");
-    statusEl.textContent = `Showing ${filteredProducts().length} of ${allProducts.length} products.`;
+    statusEl.textContent =
+      `Showing ${filteredProducts().length} of ${allProducts.length} products.`;
   });
 };
 </script>
 
 </body>
 </html>
-
-
-
