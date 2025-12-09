@@ -6,259 +6,671 @@
 <title>Add Product • Gauri Creations</title>
 
 <style>
+  :root {
+    --bg-grad: linear-gradient(135deg, #86e1ff, #ffd4b8);
+    --glass-bg: rgba(255, 255, 255, 0.18);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --shadow-strong: 0 22px 60px rgba(15, 23, 42, 0.40);
+    --accent-blue: #2563eb;
+    --accent-pink: #ec4899;
+    --accent-green: #22c55e;
+    --accent-amber: #f59e0b;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
   body {
-    font-family: "Poppins", sans-serif;
-    background: #f7f7fb;
     margin: 0;
-    padding: 20px;
-  }
-
-  .container {
-    max-width: 700px;
-    margin: auto;
-    background: white;
-    padding: 22px;
-    border-radius: 18px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-  }
-
-  h2 {
-    margin-top: 0;
-    text-align: center;
-  }
-
-  label {
-    font-weight: 600;
-    margin-top: 10px;
-    display: block;
-  }
-
-  input, textarea, select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 6px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-  }
-
-  .images-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .img-box {
-    width: 100%;
-    height: 110px;
-    border-radius: 12px;
-    background: #f1f1f1;
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Poppins", sans-serif;
+    background: var(--bg-grad);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 12px;
-    color: #666;
-    overflow: hidden;
+    padding: 18px;
+    color: #0f172a;
   }
 
-  .img-box img {
+  .shell {
+    width: 100%;
+    max-width: 980px;
+    margin: auto;
+  }
+
+  .card {
+    border-radius: 26px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(22px);
+    padding: 18px 18px 20px;
+    box-shadow: var(--shadow-strong);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .card-title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .card-sub {
+    font-size: 12px;
+    color: #4b5563;
+  }
+
+  .pill-link {
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.7);
+    background: rgba(255,255,255,0.92);
+    padding: 7px 13px;
+    font-size: 12px;
+    text-decoration: none;
+    color: #0f172a;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pill-link span.icon {
+    font-size: 14px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  @media (max-width: 880px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .section-card {
+    border-radius: 20px;
+    background: rgba(255,255,255,0.97);
+    border: 1px solid rgba(226,232,240,0.9);
+    padding: 14px 14px 16px;
+    box-shadow: 0 16px 40px rgba(15,23,42,0.28);
+  }
+
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .section-sub {
+    font-size: 11px;
+    color: #6b7280;
+    margin-bottom: 10px;
+  }
+
+  /* FORM FIELDS */
+  .field-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  @media (max-width: 640px) {
+    .field-row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .field-block {
+    margin-bottom: 10px;
+  }
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .input,
+  .textarea {
+    width: 100%;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    padding: 9px 12px;
+    font-size: 13px;
+    outline: none;
+    background: #f9fafb;
+    transition: border 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+
+  .textarea {
+    border-radius: 16px;
+    resize: vertical;
+    min-height: 70px;
+  }
+
+  .input:focus,
+  .textarea:focus {
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 1px rgba(37,99,235,0.28);
+  }
+
+  /* MEDIA UPLOAD */
+  .drop-zone {
+    border-radius: 18px;
+    border: 1.5px dashed #cbd5e1;
+    background: #f9fafb;
+    padding: 14px;
+    text-align: center;
+    font-size: 12px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  }
+
+  .drop-zone.hover {
+    background: #eff6ff;
+    border-color: #2563eb;
+    transform: translateY(-1px);
+  }
+
+  .drop-zone strong {
+    color: #111827;
+  }
+
+  .preview-grid {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  @media (max-width: 480px) {
+    .preview-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .preview-card {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #e5e7eb;
+    height: 90px;
+    box-shadow: 0 8px 18px rgba(15,23,42,0.20);
+  }
+
+  .preview-card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
 
-  button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 18px;
-    background: #2563eb;
+  .remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    border-radius: 999px;
     border: none;
-    border-radius: 12px;
+    background: rgba(239,68,68,0.9);
     color: white;
-    font-size: 15px;
+    font-size: 11px;
+    padding: 3px 7px;
     cursor: pointer;
   }
 
-  button:disabled {
-    opacity: 0.5;
+  .preview-label {
+    font-size: 11px;
+    position: absolute;
+    left: 6px;
+    bottom: 4px;
+    background: rgba(15,23,42,0.65);
+    color: #f9fafb;
+    padding: 2px 6px;
+    border-radius: 999px;
   }
 
-  .success-box {
-    display: none;
-    background: #22c55e;
-    padding: 12px;
-    text-align: center;
+  .video-chip {
+    margin-top: 6px;
+    font-size: 11px;
+    color: #065f46;
+    background: rgba(16,185,129,0.12);
+    padding: 4px 8px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .note {
+    font-size: 11px;
+    color: #6b7280;
+    margin-top: 4px;
+  }
+
+  /* FOOTER BUTTONS */
+  .footer-row {
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    border-radius: 999px;
+    border: none;
+    padding: 11px 22px;
+    font-size: 14px;
+    font-weight: 600;
     color: white;
-    border-radius: 12px;
-    margin-top: 15px;
+    background-image: linear-gradient(135deg, #2563eb, #ec4899);
+    box-shadow: 0 14px 30px rgba(37,99,235,0.6);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: default;
+    box-shadow: none;
+  }
+
+  .status-text {
+    font-size: 11px;
+    color: #6b7280;
+  }
+
+  .status-text.ok {
+    color: #15803d;
+  }
+
+  .status-text.err {
+    color: #b91c1c;
   }
 </style>
 </head>
-
 <body>
 
-<div class="container">
-  <h2>Add New Product</h2>
+<div class="shell">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Add New Product</div>
+        <div class="card-sub">Upload images/video, set price, stock & description.</div>
+      </div>
+      <a href="admin.html" class="pill-link">
+        <span class="icon">←</span> Back to Dashboard
+      </a>
+    </div>
 
-  <label>Product Name</label>
-  <input id="name" type="text" placeholder="Decorative Supari" />
+    <div class="layout">
+      <!-- LEFT: BASIC DETAILS -->
+      <section class="section-card">
+        <div class="section-title">Basic Details</div>
+        <div class="section-sub">Core information shown in store & product page.</div>
 
-  <label>Price (₹)</label>
-  <input id="price" type="number" />
+        <div class="field-block">
+          <label>Product Name *</label>
+          <input id="name" class="input" type="text" placeholder="Decorative Supari (Set of 5)" />
+        </div>
 
-  <label>Category</label>
-  <input id="category" type="text" placeholder="Supari" />
+        <div class="field-row">
+          <div class="field-block">
+            <label>Price (₹) *</label>
+            <input id="price" class="input" type="number" min="0" step="1" />
+          </div>
+          <div class="field-block">
+            <label>Category *</label>
+            <input id="category" class="input" type="text" placeholder="Supari / Wedding / Pooja" />
+          </div>
+        </div>
 
-  <label>Stock</label>
-  <input id="stock" type="number" />
+        <div class="field-row">
+          <div class="field-block">
+            <label>Stock (Qty) *</label>
+            <input id="stock" class="input" type="number" min="0" step="1" />
+          </div>
+          <div class="field-block">
+            <label>Weight</label>
+            <input id="weight" class="input" type="text" placeholder="e.g. 50g" />
+          </div>
+        </div>
 
-  <label>Length</label>
-  <input id="length" type="number" />
+        <div class="field-row">
+          <div class="field-block">
+            <label>Length</label>
+            <input id="length" class="input" type="number" step="0.1" />
+          </div>
+          <div class="field-block">
+            <label>Width</label>
+            <input id="width" class="input" type="number" step="0.1" />
+          </div>
+        </div>
 
-  <label>Width</label>
-  <input id="width" type="number" />
+        <div class="field-row">
+          <div class="field-block">
+            <label>Height</label>
+            <input id="height" class="input" type="number" step="0.1" />
+          </div>
+          <div class="field-block">
+            <label>Video URL (optional)</label>
+            <input id="videoUrlInput" class="input" type="text" placeholder="If you already have a YouTube/Drive URL" />
+          </div>
+        </div>
 
-  <label>Height</label>
-  <input id="height" type="number" />
+        <div class="field-block">
+          <label>Description</label>
+          <textarea id="description" class="textarea" placeholder="Short description, materials, use case, etc."></textarea>
+        </div>
+      </section>
 
-  <label>Weight</label>
-  <input id="weight" type="text" placeholder="50g" />
+      <!-- RIGHT: MEDIA UPLOAD -->
+      <section class="section-card">
+        <div class="section-title">Media</div>
+        <div class="section-sub">Upload up to 5 images and 1 video. We’ll host them on Drive.</div>
 
-  <label>Description</label>
-  <textarea id="description" rows="3"></textarea>
+        <!-- IMAGE UPLOAD -->
+        <label>Product Images (max 5)</label>
+        <div id="imageDropZone" class="drop-zone">
+          <strong>Drag & drop</strong> images here or <strong>click to select</strong><br />
+          <span style="font-size:11px; color:#9ca3af;">Recommended: square or 4:5 ratio • Good lighting</span>
+        </div>
+        <input id="imageInput" type="file" accept="image/*" multiple style="display:none;" />
+        <div id="imagePreview" class="preview-grid"></div>
 
-  <label>YouTube / Video URL</label>
-  <input id="video" type="text" placeholder="https://youtu.be/xxxxxx" />
+        <!-- VIDEO UPLOAD -->
+        <div style="margin-top:14px;">
+          <label>Product Video (optional)</label>
+          <div id="videoDropZone" class="drop-zone">
+            <strong>Drag & drop</strong> video here or <strong>click to select</strong><br />
+            <span style="font-size:11px; color:#9ca3af;">Short clip or reel-style works best</span>
+          </div>
+          <input id="videoInput" type="file" accept="video/*" style="display:none;" />
+          <div id="videoInfo" class="video-chip" style="display:none;">
+            <span>🎬 Video selected</span>
+            <span id="videoName"></span>
+          </div>
+          <div class="note">
+            If you upload a video file, that will be used. If not, we will use the Video URL (if provided).
+          </div>
+        </div>
 
-  <label>Upload Images (Up to 5)</label>
-  <input id="imagesInput" type="file" accept="image/*" multiple />
+      </section>
+    </div>
 
-  <div class="images-grid" id="previewGrid"></div>
-
-  <button id="saveBtn" onclick="submitProduct()">Save Product</button>
-
-  <div class="success-box" id="successBox">Product Added Successfully 🎉</div>
+    <!-- FOOTER -->
+    <div class="footer-row">
+      <div id="statusText" class="status-text">
+        Fill details and click <strong>Add Product</strong>.
+      </div>
+      <button id="saveBtn" class="btn-primary">
+        <span>➕</span>
+        <span>Add Product</span>
+      </button>
+    </div>
+  </div>
 </div>
-
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC4stQOF3JfCFLrYVmudxE6ZVNWo7LxSVxbFejfIaDsDI016HReHbc2FEj4IELSir1uQ/exec";
 
-let uploadedImages = [];
+let imageFiles = [];
+let videoFile = null;
 
-// --------------------------------------------
-// Preview Images
-// --------------------------------------------
-document.getElementById("imagesInput").addEventListener("change", function(e){
-  const files = e.target.files;
-  const preview = document.getElementById("previewGrid");
-  preview.innerHTML = "";
+/* ==============================
+   DOM HELPERS
+   ============================== */
+const qs = (id) => document.getElementById(id);
 
-  [...files].forEach(file => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const div = document.createElement("div");
-      div.className = "img-box";
-      div.innerHTML = `<img src="${reader.result}">`;
-      preview.appendChild(div);
-    };
-    reader.readAsDataURL(file);
-  });
+const imageDropZone = qs("imageDropZone");
+const imageInput = qs("imageInput");
+const imagePreview = qs("imagePreview");
+
+const videoDropZone = qs("videoDropZone");
+const videoInput = qs("videoInput");
+const videoInfo = qs("videoInfo");
+const videoNameEl = qs("videoName");
+
+const statusText = qs("statusText");
+const saveBtn = qs("saveBtn");
+
+/* ==============================
+   IMAGE HANDLERS
+   ============================== */
+imageDropZone.addEventListener("click", () => imageInput.click());
+
+imageDropZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  imageDropZone.classList.add("hover");
+});
+imageDropZone.addEventListener("dragleave", () => {
+  imageDropZone.classList.remove("hover");
+});
+imageDropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  imageDropZone.classList.remove("hover");
+  handleImageFiles(e.dataTransfer.files);
 });
 
+imageInput.addEventListener("change", (e) => {
+  handleImageFiles(e.target.files);
+});
 
-// --------------------------------------------
-// Upload Single Image → Google Drive
-// --------------------------------------------
-async function uploadImage(file){
+function handleImageFiles(fileList) {
+  const filesArr = Array.from(fileList).filter(f => f.type.startsWith("image/"));
+
+  // Limit to max 5 images
+  const remainingSlots = 5 - imageFiles.length;
+  const toAdd = filesArr.slice(0, remainingSlots);
+
+  imageFiles = imageFiles.concat(toAdd);
+  renderImagePreview();
+
+  if (filesArr.length > remainingSlots) {
+    alert("Max 5 images allowed. Extra files were ignored.");
+  }
+}
+
+function renderImagePreview() {
+  imagePreview.innerHTML = "";
+  imageFiles.forEach((file, idx) => {
+    const card = document.createElement("div");
+    card.className = "preview-card";
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      card.innerHTML = `
+        <img src="${reader.result}" alt="Preview">
+        <div class="preview-label">Img ${idx + 1}</div>
+        <button class="remove-btn" type="button" onclick="removeImage(${idx})">✕</button>
+      `;
+    };
+    reader.readAsDataURL(file);
+
+    imagePreview.appendChild(card);
+  });
+}
+
+window.removeImage = function(index) {
+  imageFiles.splice(index, 1);
+  renderImagePreview();
+};
+
+/* ==============================
+   VIDEO HANDLERS
+   ============================== */
+videoDropZone.addEventListener("click", () => videoInput.click());
+
+videoDropZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  videoDropZone.classList.add("hover");
+});
+videoDropZone.addEventListener("dragleave", () => {
+  videoDropZone.classList.remove("hover");
+});
+videoDropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  videoDropZone.classList.remove("hover");
+  const filesArr = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith("video/"));
+  if (filesArr.length) {
+    videoFile = filesArr[0];
+    videoNameEl.textContent = videoFile.name;
+    videoInfo.style.display = "inline-flex";
+  }
+});
+
+videoInput.addEventListener("change", (e) => {
+  const f = e.target.files[0];
+  if (f && f.type.startsWith("video/")) {
+    videoFile = f;
+    videoNameEl.textContent = videoFile.name;
+    videoInfo.style.display = "inline-flex";
+  }
+});
+
+/* ==============================
+   UPLOAD HELPERS
+   ============================== */
+async function uploadFileToDrive(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = async () => {
-      const base64 = reader.result;
-
-      const res = await fetch(SCRIPT_URL + "?action=uploadMedia", {
-        method: "POST",
-        body: JSON.stringify({
-          base64: base64,
-          fileName: file.name,
-          mimeType: file.type
-        })
-      });
-
-      const data = await res.json();
-      if(data.success) resolve(data.url);
-      else reject("Upload failed");
+      try {
+        const base64 = reader.result;
+        const res = await fetch(SCRIPT_URL + "?action=uploadMedia", {
+          method: "POST",
+          body: JSON.stringify({
+            base64: base64,
+            fileName: file.name,
+            mimeType: file.type
+          })
+        });
+        const data = await res.json();
+        if (data.success && data.url) {
+          resolve(data.url);
+        } else {
+          reject("Upload failed");
+        }
+      } catch (err) {
+        reject(err);
+      }
     };
     reader.readAsDataURL(file);
   });
 }
 
+/* ==============================
+   SUBMIT PRODUCT
+   ============================== */
+saveBtn.addEventListener("click", submitProduct);
 
-// --------------------------------------------
-// Submit Product (Uploads Images → Save Product)
-// --------------------------------------------
-async function submitProduct(){
-  const btn = document.getElementById("saveBtn");
-  btn.disabled = true;
-  btn.textContent = "Saving…";
+async function submitProduct() {
+  const name = qs("name").value.trim();
+  const price = qs("price").value.trim();
+  const category = qs("category").value.trim();
+  const stock = qs("stock").value.trim();
+  const weight = qs("weight").value.trim();
+  const length = qs("length").value.trim();
+  const width = qs("width").value.trim();
+  const height = qs("height").value.trim();
+  const description = qs("description").value.trim();
+  const videoUrlField = qs("videoUrlInput").value.trim();
 
-  const files = document.getElementById("imagesInput").files;
-
-  // Upload images first
-  uploadedImages = [];
-  for(let f of files){
-    const url = await uploadImage(f);
-    uploadedImages.push(url);
+  if (!name || !price || !category || !stock) {
+    statusText.textContent = "Please fill Product Name, Price, Category and Stock.";
+    statusText.className = "status-text err";
+    return;
   }
 
-  // Pad empty images so backend gets complete 5 fields
-  while(uploadedImages.length < 5) uploadedImages.push("");
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = "<span>⏳</span><span>Saving…</span>";
+  statusText.textContent = "Uploading images & video to Drive…";
+  statusText.className = "status-text";
 
-  // Prepare body
-  const body = {
-    name: document.getElementById("name").value,
-    price: document.getElementById("price").value,
-    category: document.getElementById("category").value,
-    stock: document.getElementById("stock").value,
-    length: document.getElementById("length").value,
-    width: document.getElementById("width").value,
-    height: document.getElementById("height").value,
-    weight: document.getElementById("weight").value,
-    description: document.getElementById("description").value,
-    videoUrl: document.getElementById("video").value,
+  let imageUrls = ["", "", "", "", ""];
+  let videoUrl = "";
 
-    imageUrl1: uploadedImages[0],
-    imageUrl2: uploadedImages[1],
-    imageUrl3: uploadedImages[2],
-    imageUrl4: uploadedImages[3],
-    imageUrl5: uploadedImages[4]
-  };
+  try {
+    // Upload images
+    for (let i = 0; i < imageFiles.length; i++) {
+      const url = await uploadFileToDrive(imageFiles[i]);
+      imageUrls[i] = url;
+      statusText.textContent = `Uploading images… (${i + 1}/${imageFiles.length})`;
+    }
 
-  // Send to backend
-  const res = await fetch(SCRIPT_URL + "?action=createProduct", {
-    method: "POST",
-    body: JSON.stringify(body)
-  });
+    // Upload video if file selected
+    if (videoFile) {
+      statusText.textContent = "Uploading video…";
+      videoUrl = await uploadFileToDrive(videoFile);
+    } else if (videoUrlField) {
+      videoUrl = videoUrlField;
+    }
 
-  const result = await res.json();
+    statusText.textContent = "Saving product details to sheet…";
 
-  if(result.success){
-    document.getElementById("successBox").style.display = "block";
-    btn.textContent = "Saved ✔";
+    const body = {
+      name,
+      price,
+      category,
+      stock,
+      length,
+      width,
+      height,
+      weight,
+      description,
+      videoUrl,
+      imageUrl1: imageUrls[0],
+      imageUrl2: imageUrls[1],
+      imageUrl3: imageUrls[2],
+      imageUrl4: imageUrls[3],
+      imageUrl5: imageUrls[4]
+    };
 
+    const res = await fetch(SCRIPT_URL + "?action=createProduct", {
+      method: "POST",
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      throw new Error(data.message || "Create product failed");
+    }
+
+    statusText.textContent = `Saved ✔ SKU: ${data.sku || "(auto)"}`;
+    statusText.className = "status-text ok";
+    saveBtn.innerHTML = "<span>✔</span><span>Saved</span>";
+
+    // Optional: reset after short delay
     setTimeout(() => {
-      window.location.href = "admin-dashboard.html";
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = "<span>➕</span><span>Add Another Product</span>";
+      statusText.textContent = "You can add another product now.";
     }, 1500);
-  } else {
-    alert("Error: " + result.message);
-    btn.disabled = false;
-    btn.textContent = "Save Product";
+
+  } catch (err) {
+    console.error(err);
+    statusText.textContent = "Error: " + err.message;
+    statusText.className = "status-text err";
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = "<span>➕</span><span>Add Product</span>";
   }
 }
 </script>
 
 </body>
 </html>
-
-
