@@ -8,8 +8,14 @@
 <style>
   :root {
     --bg-grad: linear-gradient(135deg, #86e1ff, #ffd4b8);
-    --glass-bg: rgba(255, 255, 255, 0.22);
-    --glass-border: rgba(255, 255, 255, 0.45);
+    --glass-bg: rgba(255, 255, 255, 0.20);
+    --glass-border: rgba(255, 255, 255, 0.55);
+    --shadow-strong: 0 22px 60px rgba(15, 23, 42, 0.40);
+    --accent-blue: #2563eb;
+    --accent-pink: #ec4899;
+    --accent-green: #22c55e;
+    --accent-amber: #f59e0b;
+    --danger-red: #ef4444;
   }
 
   * { box-sizing: border-box; }
@@ -17,7 +23,7 @@
   body {
     margin: 0;
     min-height: 100vh;
-    font-family: "Poppins", system-ui, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Poppins", sans-serif;
     background: var(--bg-grad);
     padding: 18px;
     color: #0f172a;
@@ -25,75 +31,88 @@
     justify-content: center;
   }
 
-  .shell { width: 100%; max-width: 1120px; }
+  .shell {
+    width: 100%;
+    max-width: 1200px;
+  }
 
-  /* LOGIN */
+  /* LOGIN OVERLAY */
   #loginOverlay {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle at top, #ffffffdd, #000000bb);
+    background: radial-gradient(circle at top, #ffffffee, #000000cc);
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 40;
+    z-index: 50;
   }
 
   .login-box {
-    width: 90%;
-    max-width: 320px;
-    padding: 20px;
-    background: rgba(15, 23, 42, 0.95);
-    border-radius: 18px;
+    width: 92%;
+    max-width: 340px;
+    padding: 22px 20px 18px;
+    background: rgba(15, 23, 42, 0.96);
+    border-radius: 22px;
     color: #e5e7eb;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.8);
     text-align: center;
   }
 
-  .login-box h2 { margin: 0 0 8px; font-size: 18px; }
+  .login-box h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+  }
+
+  .login-sub {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 12px;
+  }
 
   .login-input {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 8px;
     padding: 11px 13px;
-    border-radius: 10px;
+    border-radius: 999px;
     border: 1px solid #4b5563;
     background: #020617;
     color: #e5e7eb;
     font-size: 14px;
+    text-align: center;
   }
 
-  .btn-primary-small {
+  .btn-login {
     margin-top: 12px;
-    padding: 10px 16px;
+    padding: 10px 18px;
     border-radius: 999px;
     border: none;
-    background: #22c55e;
+    background: linear-gradient(135deg, #22c55e, #a3e635);
     color: #022c22;
     font-weight: 600;
+    font-size: 14px;
     cursor: pointer;
-    font-size: 13px;
+    width: 100%;
   }
 
-  .error-msg {
+  .login-error {
     font-size: 12px;
     color: #fecaca;
     margin-top: 6px;
     display: none;
   }
 
-  .small { font-size: 12px; color: #9ca3af; }
-
-  /* TOP BAR */
+  /* TOPBAR */
   .topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px 14px;
-    border-radius: 20px;
+    border-radius: 22px;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(18px);
-    margin-bottom: 16px;
-    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.28);
+    box-shadow: var(--shadow-strong);
+    margin-bottom: 14px;
   }
 
   .top-left {
@@ -103,40 +122,62 @@
   }
 
   .logo {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
+    width: 46px;
+    height: 46px;
+    border-radius: 16px;
     object-fit: cover;
+    box-shadow: 0 10px 28px rgba(15,23,42,0.45);
   }
 
-  .title-main { font-size: 18px; font-weight: 700; }
-  .subtitle { font-size: 12px; color: #4b5563; }
+  .title-main {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    color: #4b5563;
+  }
 
   .top-right {
     display: flex;
-    align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .pill-btn {
-    padding: 6px 12px;
     border-radius: 999px;
-    border: 1px solid #cbd5e1;
-    background: #ffffffcc;
+    border: 1px solid rgba(148,163,184,0.8);
+    background: rgba(255,255,255,0.9);
+    padding: 6px 13px;
     font-size: 12px;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     text-decoration: none;
     color: #0f172a;
   }
 
+  .pill-btn.primary {
+    background: linear-gradient(135deg, #2563eb, #ec4899);
+    color: white;
+    border: none;
+  }
+
+  .pill-btn span.icon {
+    font-size: 14px;
+  }
+
   #adminMain { display: none; }
 
-  /* PRODUCT CARD GRID */
+  /* MAIN CARD */
   .card {
     border-radius: 22px;
-    background: rgba(255, 255, 255, 0.96);
-    border: 1px solid rgba(148, 163, 184, 0.55);
-    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+    background: rgba(255,255,255,0.96);
+    border: 1px solid rgba(148,163,184,0.6);
+    box-shadow: var(--shadow-strong);
     padding: 14px;
   }
 
@@ -149,261 +190,720 @@
     margin-bottom: 10px;
   }
 
-  .card-header h2 { margin: 0; font-size: 18px; }
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .card-sub {
+    font-size: 11px;
+    color: #6b7280;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
 
   .search-input {
-    padding: 8px 10px;
+    padding: 8px 12px;
     border-radius: 999px;
     border: 1px solid #cbd5e1;
     font-size: 13px;
     min-width: 200px;
   }
 
-  .status-text {
-    margin-top: 6px;
+  .select-small {
+    padding: 7px 10px;
+    border-radius: 999px;
+    border: 1px solid #cbd5e1;
     font-size: 12px;
+    background: #f9fafb;
+  }
+
+  .status-text {
+    font-size: 11px;
+    color: #6b7280;
+    margin-bottom: 8px;
+  }
+
+  /* HYBRID VIEW WRAPPERS */
+  .desktop-table {
+    display: block;
+  }
+  .mobile-cards {
+    display: none;
+  }
+
+  @media (max-width: 700px) {
+    .desktop-table { display: none; }
+    .mobile-cards { display: grid; }
+  }
+
+  /* TABLE VIEW (DESKTOP) */
+  table.products-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .products-table th,
+  .products-table td {
+    padding: 6px 6px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  .products-table th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: #6b7280;
   }
 
-  .grid {
-    margin-top: 8px;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .thumb-cell {
+    width: 56px;
+  }
+
+  .thumb-img {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    object-fit: cover;
+    background: linear-gradient(135deg,#fee2e2,#e0f2fe);
+  }
+
+  .badge-stock {
+    display: inline-flex;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+  }
+
+  .badge-stock.ok {
+    background: rgba(34,197,94,0.1);
+    color: #166534;
+  }
+
+  .badge-stock.low {
+    background: rgba(245,158,11,0.1);
+    color: #b45309;
+  }
+
+  .badge-stock.out {
+    background: rgba(239,68,68,0.1);
+    color: #b91c1c;
+  }
+
+  .actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  .btn-small {
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  .btn-small.danger {
+    border-color: #fecaca;
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  /* MOBILE CARDS */
+  .mobile-cards {
+    grid-template-columns: minmax(0, 1fr);
     gap: 10px;
   }
 
-  @media (max-width: 1024px) {
-    .grid { grid-template-columns: repeat(3, 1fr); }
-  }
-  @media (max-width: 820px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 540px) {
-    .grid { grid-template-columns: 1fr; }
-  }
-
   .product-card {
-    border-radius: 16px;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    border-radius: 18px;
+    padding: 10px;
+    background: linear-gradient(135deg, #ffffff, #e5f0ff);
+    border: 1px solid rgba(226,232,240,0.9);
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    gap: 8px;
   }
 
-  .thumb {
+  .product-card-thumb {
+    width: 70px;
+    height: 70px;
+    border-radius: 16px;
+    object-fit: cover;
+    background: linear-gradient(135deg,#fee2e2,#e0f2fe);
+  }
+
+  .product-card-main {
+    font-size: 12px;
+  }
+
+  .pc-name {
+    font-weight: 600;
+  }
+
+  .pc-row {
+    margin-top: 2px;
+  }
+
+  .rating-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 11px;
+    background: rgba(234,179,8,0.1);
+    color: #92400e;
+  }
+
+  /* EDIT MODAL */
+  #editOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+  }
+
+  .edit-box {
+    width: 96%;
+    max-width: 780px;
+    max-height: 90vh;
+    overflow: auto;
+    background: rgba(255,255,255,0.98);
+    border-radius: 22px;
+    padding: 14px 16px 16px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+  }
+
+  .edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .edit-header h3 {
+    margin: 0;
+    font-size: 16px;
+  }
+
+  .edit-close {
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .edit-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1.6fr);
+    gap: 14px;
+    margin-top: 6px;
+  }
+
+  @media (max-width: 800px) {
+    .edit-grid {
+      grid-template-columns: minmax(0,1fr);
+    }
+  }
+
+  .field-group {
+    margin-bottom: 6px;
+  }
+
+  .field-label {
+    font-size: 11px;
+    color: #4b5563;
+    margin-bottom: 2px;
+  }
+
+  .field {
     width: 100%;
-    height: 150px;
-    background: linear-gradient(135deg, #fee2e2, #e0f2fe);
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    font-size: 13px;
+  }
+
+  .field[disabled] {
+    background: #f3f4f6;
+    color: #6b7280;
+  }
+
+  textarea.field {
+    min-height: 70px;
+    resize: vertical;
+  }
+
+  .edit-footer {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: center;
+    font-size: 11px;
+    color: #6b7280;
+  }
+
+  .btn-save {
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: none;
+    background: #16a34a;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .btn-cancel {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: none;
+    background: #e5e7eb;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  /* MEDIA UPLOAD WIDGET */
+  .media-block {
+    border-radius: 14px;
+    border: 1px dashed #d1d5db;
+    padding: 8px;
+    margin-bottom: 8px;
+    background: #f9fafb;
+  }
+
+  .media-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+
+  .media-preview-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .media-thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(135deg,#e0f2fe,#f5d0fe);
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 22px;
     color: #9ca3af;
-    font-size: 32px;
   }
 
-  .thumb img {
+  .media-thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  .card-body {
-    padding: 8px 10px 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 13px;
-  }
-
-  .prod-name { font-weight: 600; }
-  .prod-sku { font-size: 11px; color: #6b7280; }
-  .prod-price { font-weight: 700; color: #b91c1c; }
-
-  .card-actions {
-    display: flex;
-    gap: 6px;
-    margin-top: 6px;
-  }
-
-  .btn-small {
+  .media-actions {
     flex: 1;
-    padding: 6px 0;
+  }
+
+  .media-actions input[type="text"] {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 11px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 4px;
+  }
+
+  .media-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .btn-xs {
+    padding: 4px 8px;
     border-radius: 999px;
     border: 1px solid #cbd5e1;
     background: #ffffff;
-    font-size: 12px;
+    font-size: 11px;
     cursor: pointer;
   }
 
-  .btn-small.danger {
-    background: #fee2e2;
-    border-color: #fecaca;
-    color: #b91c1c;
+  .btn-xs.primary {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+  }
+
+  .media-note {
+    font-size: 10px;
+    color: #6b7280;
+    margin-top: 2px;
   }
 </style>
 </head>
 <body>
-
-<div class="shell">
-
-<!-- LOGIN OVERLAY -->
 <div id="loginOverlay">
   <div class="login-box">
     <h2>Admin Login</h2>
-    <p class="small">Enter your admin PIN to manage products.</p>
+    <div class="login-sub">Enter your admin PIN to manage products.</div>
     <input id="adminPin" type="password" class="login-input" placeholder="Admin PIN" />
-    <button id="loginBtn" class="btn-primary-small">Login</button>
-    <div id="loginError" class="error-msg">Incorrect PIN. Try again.</div>
+    <button id="loginBtn" class="btn-login">Unlock Manage Products</button>
+    <div id="loginError" class="login-error">Incorrect PIN. Try again.</div>
   </div>
 </div>
 
-<!-- MAIN -->
-<div id="adminMain">
+<div class="shell" id="adminMain">
 
-<header class="topbar">
-  <div class="top-left">
-    <img src="logo-gauri.jpeg" alt="Logo" class="logo" />
-    <div>
-      <div class="title-main">Manage Products</div>
-      <div class="subtitle">Edit or remove products from your store.</div>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="top-left">
+      <img src="logo-gauri.jpeg" alt="Gauri Creations" class="logo" />
+      <div>
+        <div class="title-main">Manage Products</div>
+        <div class="subtitle">Edit details, images, stock & more.</div>
+      </div>
     </div>
-  </div>
+    <div class="top-right">
+      <a href="admin.html" class="pill-btn">
+        <span class="icon">🏠</span> Dashboard
+      </a>
+      <a href="admin-add-product.html" class="pill-btn primary">
+        <span class="icon">➕</span> Add Product
+      </a>
+      <button class="pill-btn" onclick="adminLogout()">
+        <span class="icon">🔒</span> Logout
+      </button>
+    </div>
+  </header>
 
-  <div class="top-right">
-    <a href="admin.html" class="pill-btn">← Dashboard</a>
-    <button class="pill-btn" onclick="reloadProducts()">Refresh</button>
-    <button class="pill-btn" onclick="adminLogout()">Logout</button>
-  </div>
-</header>
+  <!-- MAIN CARD -->
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Product Catalog</div>
+        <div class="card-sub">Data from your Products sheet.</div>
+      </div>
+      <div class="filters">
+        <input id="searchInput" class="search-input" placeholder="Search by name or SKU" />
+        <select id="filterCategory" class="select-small">
+          <option value="">All Categories</option>
+        </select>
+        <select id="filterStock" class="select-small">
+          <option value="">All Stock</option>
+          <option value="in">In Stock (&gt; 0)</option>
+          <option value="low">Low Stock (≤ 5)</option>
+          <option value="out">Out of Stock</option>
+        </select>
+        <select id="filterSort" class="select-small">
+          <option value="">Sort: Default</option>
+          <option value="name">Name A–Z</option>
+          <option value="priceLow">Price: Low to High</option>
+          <option value="priceHigh">Price: High to Low</option>
+          <option value="stockLow">Stock: Low to High</option>
+          <option value="stockHigh">Stock: High to Low</option>
+        </select>
+      </div>
+    </div>
 
-<section class="card">
-  <div class="card-header">
-    <h2>Product List</h2>
-    <input id="searchInput" class="search-input" placeholder="Search by name or SKU">
-  </div>
+    <div id="statusText" class="status-text">Loading products…</div>
 
-  <div id="statusText" class="status-text">Loading products…</div>
+    <!-- DESKTOP TABLE VIEW -->
+    <div class="desktop-table">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>SKU</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Category</th>
+            <th>Rating</th>
+            <th style="width:120px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productsTableBody">
+          <tr><td colspan="8">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
 
-  <div id="grid" class="grid"></div>
-</section>
-
+    <!-- MOBILE CARD VIEW -->
+    <div id="productsCardList" class="mobile-cards">
+      <!-- cards injected -->
+    </div>
+  </section>
 </div>
+
 <!-- EDIT MODAL -->
-<div id="editOverlay" style="
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.6);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 50;
-">
-  <div class="edit-box" style="
-      width: 90%;
-      max-width: 460px;
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 14px 16px 16px;
-      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.5);
-  ">
-    <div class="edit-header" style="display: flex; justify-content: space-between; align-items: center;">
-      <h3 id="editTitle" style="margin: 0; font-size: 16px;">Edit Product</h3>
-      <button onclick="closeEdit()" style="border: none; background: transparent; font-size: 20px; cursor: pointer;">×</button>
+<div id="editOverlay">
+  <div class="edit-box">
+    <div class="edit-header">
+      <h3 id="editTitle">Edit Product</h3>
+      <button class="edit-close" onclick="closeEdit()">×</button>
     </div>
 
-    <div class="edit-body">
+    <div class="edit-grid">
+      <!-- LEFT: TEXT FIELDS -->
+      <div>
+        <div class="field-group">
+          <div class="field-label">SKU (fixed)</div>
+          <input id="editSku" class="field" disabled />
+        </div>
+        <div class="field-group">
+          <div class="field-label">Name</div>
+          <input id="editName" class="field" />
+        </div>
+        <div class="field-group">
+          <div class="field-label">Price (₹)</div>
+          <input id="editPrice" type="number" class="field" />
+        </div>
+        <div class="field-group">
+          <div class="field-label">Category</div>
+          <input id="editCategory" class="field" />
+        </div>
+        <div class="field-group">
+          <div class="field-label">Stock</div>
+          <input id="editStock" type="number" class="field" />
+        </div>
+        <div class="field-group">
+          <div class="field-label">Dimensions (L × W × H)</div>
+          <div style="display:flex; gap:6px;">
+            <input id="editLength" class="field" style="flex:1;" placeholder="Length" />
+            <input id="editWidth" class="field" style="flex:1;" placeholder="Width" />
+            <input id="editHeight" class="field" style="flex:1;" placeholder="Height" />
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Weight</div>
+          <input id="editWeight" class="field" />
+        </div>
+        <div class="field-group">
+          <div class="field-label">Description</div>
+          <textarea id="editDesc" class="field"></textarea>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Rating (auto from reviews)</div>
+          <input id="editRating" class="field" disabled />
+        </div>
+        <div class="field-group">
+          <div class="field-label">Review Count (auto)</div>
+          <input id="editReviewCount" class="field" disabled />
+        </div>
+      </div>
 
-      <label class="field-label">SKU (non-editable)</label>
-      <input id="editSku" class="field" disabled>
+      <!-- RIGHT: MEDIA -->
+      <div>
+        <!-- IMAGE 1 -->
+        <div class="media-block" data-slot="1">
+          <div class="media-header">
+            <span>Image 1 (main)</span>
+          </div>
+          <div class="media-preview-row">
+            <div class="media-thumb">
+              <img id="previewImg1" alt="" style="display:none;" />
+              <span id="placeholder1">🖼️</span>
+            </div>
+            <div class="media-actions">
+              <input type="text" id="editImg1" placeholder="Image URL 1" />
+              <div class="media-buttons">
+                <label class="btn-xs primary">
+                  Upload
+                  <input type="file" accept="image/*" style="display:none;"
+                         onchange="handleImageUpload(event, 1)" />
+                </label>
+                <button class="btn-xs" type="button" onclick="clearImageField(1)">Clear</button>
+              </div>
+              <div class="media-note">Upload or paste a URL. Preview updates automatically.</div>
+            </div>
+          </div>
+        </div>
 
-      <label class="field-label">Name</label>
-      <input id="editName" class="field">
+        <!-- IMAGE 2 -->
+        <div class="media-block" data-slot="2">
+          <div class="media-header">
+            <span>Image 2</span>
+          </div>
+          <div class="media-preview-row">
+            <div class="media-thumb">
+              <img id="previewImg2" alt="" style="display:none;" />
+              <span id="placeholder2">🖼️</span>
+            </div>
+            <div class="media-actions">
+              <input type="text" id="editImg2" placeholder="Image URL 2" />
+              <div class="media-buttons">
+                <label class="btn-xs primary">
+                  Upload
+                  <input type="file" accept="image/*" style="display:none;"
+                         onchange="handleImageUpload(event, 2)" />
+                </label>
+                <button class="btn-xs" type="button" onclick="clearImageField(2)">Clear</button>
+              </div>
+              <div class="media-note">Optional additional angle or close-up.</div>
+            </div>
+          </div>
+        </div>
 
-      <label class="field-label">Price (₹)</label>
-      <input id="editPrice" type="number" class="field">
+        <!-- IMAGE 3 -->
+        <div class="media-block" data-slot="3">
+          <div class="media-header">
+            <span>Image 3</span>
+          </div>
+          <div class="media-preview-row">
+            <div class="media-thumb">
+              <img id="previewImg3" alt="" style="display:none;" />
+              <span id="placeholder3">🖼️</span>
+            </div>
+            <div class="media-actions">
+              <input type="text" id="editImg3" placeholder="Image URL 3" />
+              <div class="media-buttons">
+                <label class="btn-xs primary">
+                  Upload
+                  <input type="file" accept="image/*" style="display:none;"
+                         onchange="handleImageUpload(event, 3)" />
+                </label>
+                <button class="btn-xs" type="button" onclick="clearImageField(3)">Clear</button>
+              </div>
+              <div class="media-note">Optional reference or detail shot.</div>
+            </div>
+          </div>
+        </div>
 
-      <label class="field-label">Length</label>
-      <input id="editLength" class="field">
+        <!-- IMAGE 4 -->
+        <div class="media-block" data-slot="4">
+          <div class="media-header">
+            <span>Image 4</span>
+          </div>
+          <div class="media-preview-row">
+            <div class="media-thumb">
+              <img id="previewImg4" alt="" style="display:none;" />
+              <span id="placeholder4">🖼️</span>
+            </div>
+            <div class="media-actions">
+              <input type="text" id="editImg4" placeholder="Image URL 4" />
+              <div class="media-buttons">
+                <label class="btn-xs primary">
+                  Upload
+                  <input type="file" accept="image/*" style="display:none;"
+                         onchange="handleImageUpload(event, 4)" />
+                </label>
+                <button class="btn-xs" type="button" onclick="clearImageField(4)">Clear</button>
+              </div>
+              <div class="media-note">Optional styling / lifestyle image.</div>
+            </div>
+          </div>
+        </div>
 
-      <label class="field-label">Width</label>
-      <input id="editWidth" class="field">
+        <!-- IMAGE 5 -->
+        <div class="media-block" data-slot="5">
+          <div class="media-header">
+            <span>Image 5</span>
+          </div>
+          <div class="media-preview-row">
+            <div class="media-thumb">
+              <img id="previewImg5" alt="" style="display:none;" />
+              <span id="placeholder5">🖼️</span>
+            </div>
+            <div class="media-actions">
+              <input type="text" id="editImg5" placeholder="Image URL 5" />
+              <div class="media-buttons">
+                <label class="btn-xs primary">
+                  Upload
+                  <input type="file" accept="image/*" style="display:none;"
+                         onchange="handleImageUpload(event, 5)" />
+                </label>
+                <button class="btn-xs" type="button" onclick="clearImageField(5)">Clear</button>
+              </div>
+              <div class="media-note">Optional extra reference.</div>
+            </div>
+          </div>
+        </div>
 
-      <label class="field-label">Height</label>
-      <input id="editHeight" class="field">
+        <!-- VIDEO -->
+        <div class="media-block">
+          <div class="media-header">
+            <span>Video URL (optional)</span>
+          </div>
+          <div class="media-actions">
+            <input type="text" id="editVideo" placeholder="YouTube / Drive video URL" />
+            <div class="media-note">Paste a video link. (Preview will be used on product page.)</div>
+          </div>
+        </div>
 
-      <label class="field-label">Weight</label>
-      <input id="editWeight" class="field">
-
-      <label class="field-label">Image URL 1</label>
-      <input id="editImg1" class="field">
-
-      <label class="field-label">Image URL 2</label>
-      <input id="editImg2" class="field">
-
-      <label class="field-label">Image URL 3</label>
-      <input id="editImg3" class="field">
-
-      <label class="field-label">Video URL</label>
-      <input id="editVideo" class="field">
-
-      <label class="field-label">Category</label>
-      <input id="editCategory" class="field">
-
-      <label class="field-label">Description</label>
-      <textarea id="editDesc" class="field" style="min-height:70px;"></textarea>
-
+      </div>
     </div>
 
-    <div class="edit-footer" style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
-      <span id="editStatus" style="font-size:12px; color:#6b7280;">Make changes and click Save.</span>
-      <button class="btn-save" onclick="saveEdit()" style="
-          padding: 8px 14px;
-          border-radius: 999px;
-          border: none;
-          background: #16a34a;
-          color: white;
-          cursor: pointer;
-          font-size: 13px;
-          font-weight: 600;
-      ">Save</button>
+    <div class="edit-footer">
+      <span id="editStatus">Edit fields and click Save to update.</span>
+      <div>
+        <button class="btn-cancel" type="button" onclick="closeEdit()">Cancel</button>
+        <button class="btn-save" type="button" onclick="saveEdit()">Save Changes</button>
+      </div>
     </div>
   </div>
 </div>
-
-
 <script>
-/* ======================
-     ADMIN LOGIN  
-====================== */
-const ADMIN_PIN = "1234";
+/* =========================
+   CONFIG
+   ========================= */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC4stQOF3JfCFLrYVmudxE6ZVNWo7LxSVxbFejfIaDsDI016HReHbc2FEj4IELSir1uQ/exec";
+const ADMIN_PIN  = "1234";
 const ADMIN_FLAG = "gc_admin_auth";
 
+let ALL_PRODUCTS = [];
+let CURRENT_EDIT_PRODUCT = null;
+
+/* =========================
+   LOGIN HANDLING
+   ========================= */
 function initAdminLogin() {
   const overlay = document.getElementById("loginOverlay");
-  const main = document.getElementById("adminMain");
-  const btn = document.getElementById("loginBtn");
-  const pin = document.getElementById("adminPin");
-  const err = document.getElementById("loginError");
+  const main    = document.getElementById("adminMain");
+  const pinInput = document.getElementById("adminPin");
+  const loginBtn = document.getElementById("loginBtn");
+  const err      = document.getElementById("loginError");
 
-  if (localStorage.getItem(ADMIN_FLAG) === "yes") {
+  function showMain() {
     overlay.style.display = "none";
     main.style.display = "block";
     reloadProducts();
+  }
+
+  if (localStorage.getItem(ADMIN_FLAG) === "yes") {
+    showMain();
   } else {
     overlay.style.display = "flex";
   }
 
-  btn.onclick = function () {
-    if (pin.value.trim() === ADMIN_PIN) {
+  loginBtn.onclick = function () {
+    if ((pinInput.value || "").trim() === ADMIN_PIN) {
       localStorage.setItem(ADMIN_FLAG, "yes");
-      overlay.style.display = "none";
-      main.style.display = "block";
-      reloadProducts();
+      showMain();
     } else {
       err.style.display = "block";
     }
   };
+
+  pinInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") loginBtn.click();
+  });
 }
 
 function adminLogout() {
@@ -411,290 +911,498 @@ function adminLogout() {
   location.href = "admin.html";
 }
 
-/* ======================
-     CONFIG  
-====================== */
-const SHEET_ID = "1W0CvU_5nbodRgwxfSNtNZ-eMUNFuVHqSG3vJ1UibJLw";
-const PRODUCTS_SHEET = "Products";
-
-const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxD6kFEU1QkcoX-ZFRz540bEPwaIECaST-Ogxq9UEs9LAnsx7Hq1yDzjkRTpmeaAL_j7A/exec";
-
-let allProducts = [];
-let currentEditSku = null;
-
-/* ======================
-     LOAD PRODUCTS  
-====================== */
+/* =========================
+   LOAD & RENDER PRODUCTS
+   ========================= */
 async function reloadProducts() {
   const statusEl = document.getElementById("statusText");
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-  statusEl.textContent = "Loading products…";
+  const tableBody = document.getElementById("productsTableBody");
+  const cards = document.getElementById("productsCardList");
+
+  tableBody.innerHTML = '<tr><td colspan="8">Loading…</td></tr>';
+  cards.innerHTML = "";
+  statusEl.textContent = "Loading products from sheet…";
 
   try {
-    const res = await fetch(`https://opensheet.elk.sh/${SHEET_ID}/${PRODUCTS_SHEET}`);
+    const res = await fetch(SCRIPT_URL + "?action=getProducts");
     const data = await res.json();
 
-    allProducts = data.map(row => ({
-      SKU: row["SKU"],
-      Name: row["Name"],
-      Price: row["Price"],
-      Length: row["Length"],
-      Width: row["Width"],
-      Height: row["Height"],
-      Weight: row["Weight"],
-      imageUrl1: row["Image URL 1"],
-      imageUrl2: row["Image URL 2"],
-      imageUrl3: row["Image URL 3"],
-      videoUrl: row["Video URL"],
-      Description: row["Description"],
-      Category: row["Category"]
-    }));
+    ALL_PRODUCTS = data.products || [];
 
+    populateCategoryFilter();
     renderProducts();
-    statusEl.textContent = `Showing ${allProducts.length} products.`;
+
+    statusEl.textContent = `Showing ${getFilteredProducts().length} of ${ALL_PRODUCTS.length} products.`;
   } catch (err) {
     console.error(err);
-    statusEl.textContent = "Error loading products. Please try again.";
+    statusEl.textContent = "Error loading products. Please refresh.";
+    tableBody.innerHTML = '<tr><td colspan="8">Error loading products.</td></tr>';
   }
 }
 
-/* ======================
-     RENDER PRODUCTS  
-====================== */
-function renderProducts() {
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
+function populateCategoryFilter() {
+  const select = document.getElementById("filterCategory");
+  select.innerHTML = '<option value="">All Categories</option>';
 
-  const q = document.getElementById("searchInput").value.toLowerCase();
+  const cats = [...new Set(ALL_PRODUCTS.map(p => (p["Category"] || "").toString().trim()).filter(Boolean))];
 
-  const rows = allProducts.filter(p =>
-    (p.Name || "").toLowerCase().includes(q) ||
-    (p.SKU || "").toLowerCase().includes(q)
-  );
-
-  rows.forEach(row => {
-    const card = document.createElement("div");
-    card.className = "product-card";
-
-    const imgUrl = row.imageUrl1;
-
-    const thumbDiv = document.createElement("div");
-    thumbDiv.className = "thumb";
-
-    if (imgUrl) {
-      const img = document.createElement("img");
-      img.src = imgUrl;
-      thumbDiv.appendChild(img);
-    } else {
-      thumbDiv.textContent = "🖼️";
-    }
-
-    const body = document.createElement("div");
-    body.className = "card-body";
-
-    body.innerHTML = `
-      <div class="prod-name">${row.Name}</div>
-      <div class="prod-sku">SKU: ${row.SKU}</div>
-      <div class="prod-price">₹${row.Price}</div>
-    `;
-
-    const actions = document.createElement("div");
-    actions.className = "card-actions";
-
-    const btnE = document.createElement("button");
-    btnE.className = "btn-small";
-    btnE.textContent = "Edit";
-    btnE.onclick = () => openEdit(row);
-
-    const btnD = document.createElement("button");
-    btnD.className = "btn-small danger";
-    btnD.textContent = "Delete";
-    btnD.onclick = () => deleteProduct(row);
-
-    actions.appendChild(btnE);
-    actions.appendChild(btnD);
-
-    card.appendChild(thumbDiv);
-    card.appendChild(body);
-    card.appendChild(actions);
-
-    grid.appendChild(card);
+  cats.forEach(cat => {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.textContent = cat;
+    select.appendChild(opt);
   });
 }
 
-/* ======================
-     OPEN EDIT MODAL  
-====================== */
-function openEdit(row) {
-  currentEditSku = row.SKU;
+/* =========================
+   FILTER / SORT
+   ========================= */
+function getFilteredProducts() {
+  const q     = document.getElementById("searchInput").value.toLowerCase();
+  const cat   = document.getElementById("filterCategory").value;
+  const stock = document.getElementById("filterStock").value;
+  const sort  = document.getElementById("filterSort").value;
 
-  document.getElementById("editSku").value = row.SKU;
-  document.getElementById("editName").value = row.Name;
-  document.getElementById("editPrice").value = row.Price;
-  document.getElementById("editLength").value = row.Length;
-  document.getElementById("editWidth").value = row.Width;
-  document.getElementById("editHeight").value = row.Height;
-  document.getElementById("editWeight").value = row.Weight;
+  let list = [...ALL_PRODUCTS];
 
-  document.getElementById("editImg1").value = row.imageUrl1;
-  document.getElementById("editImg2").value = row.imageUrl2;
-  document.getElementById("editImg3").value = row.imageUrl3;
+  if (q) {
+    list = list.filter(p => {
+      const name = (p["Name"] || "").toString().toLowerCase();
+      const sku  = (p["SKU"] || "").toString().toLowerCase();
+      return name.includes(q) || sku.includes(q);
+    });
+  }
 
-  document.getElementById("editVideo").value = row.videoUrl;
-  document.getElementById("editDesc").value = row.Description;
-  document.getElementById("editCategory").value = row.Category;
+  if (cat) {
+    list = list.filter(p => (p["Category"] || "") === cat);
+  }
 
-  document.getElementById("editOverlay").style.display = "flex";
+  if (stock === "in") {
+    list = list.filter(p => Number(p["Stock"] || 0) > 0);
+  } else if (stock === "low") {
+    list = list.filter(p => {
+      const s = Number(p["Stock"] || 0);
+      return s > 0 && s <= 5;
+    });
+  } else if (stock === "out") {
+    list = list.filter(p => Number(p["Stock"] || 0) === 0);
+  }
+
+  if (sort === "name") {
+    list.sort((a,b) => (a["Name"] || "").toString().localeCompare((b["Name"] || "").toString()));
+  } else if (sort === "priceLow") {
+    list.sort((a,b) => Number(a["Price"] || 0) - Number(b["Price"] || 0));
+  } else if (sort === "priceHigh") {
+    list.sort((a,b) => Number(b["Price"] || 0) - Number(a["Price"] || 0));
+  } else if (sort === "stockLow") {
+    list.sort((a,b) => Number(a["Stock"] || 0) - Number(b["Stock"] || 0));
+  } else if (sort === "stockHigh") {
+    list.sort((a,b) => Number(b["Stock"] || 0) - Number(a["Stock"] || 0));
+  }
+
+  return list;
+}
+
+function renderProducts() {
+  const tableBody = document.getElementById("productsTableBody");
+  const cardList  = document.getElementById("productsCardList");
+  const statusEl  = document.getElementById("statusText");
+  const list = getFilteredProducts();
+
+  tableBody.innerHTML = "";
+  cardList.innerHTML  = "";
+
+  if (!list.length) {
+    tableBody.innerHTML = '<tr><td colspan="8">No products found.</td></tr>';
+    statusEl.textContent = "No products match current filters.";
+    return;
+  }
+
+  // Desktop table rows
+  list.forEach(p => {
+    const tr = document.createElement("tr");
+
+    // Image
+    const tdImg = document.createElement("td");
+    tdImg.className = "thumb-cell";
+    const img = document.createElement("img");
+    const imgUrl = p["Image URL 1"] || p["Image URL 2"] || p["Image URL 3"] || p["Image URL 4"] || p["Image URL 5"] || "";
+    img.src = imgUrl || "";
+    img.alt = "";
+    img.className = "thumb-img";
+    tdImg.appendChild(img);
+
+    // SKU
+    const tdSku = document.createElement("td");
+    tdSku.textContent = p["SKU"] || "";
+
+    // Name
+    const tdName = document.createElement("td");
+    tdName.textContent = p["Name"] || "";
+
+    // Price
+    const tdPrice = document.createElement("td");
+    tdPrice.textContent = "₹" + (p["Price"] || "0");
+
+    // Stock
+    const tdStock = document.createElement("td");
+    const stockVal = Number(p["Stock"] || 0);
+    const stockBadge = document.createElement("span");
+    stockBadge.className = "badge-stock";
+    if (stockVal <= 0) {
+      stockBadge.classList.add("out");
+      stockBadge.textContent = "Out (" + stockVal + ")";
+    } else if (stockVal <= 5) {
+      stockBadge.classList.add("low");
+      stockBadge.textContent = "Low (" + stockVal + ")";
+    } else {
+      stockBadge.classList.add("ok");
+      stockBadge.textContent = "In (" + stockVal + ")";
+    }
+    tdStock.appendChild(stockBadge);
+
+    // Category
+    const tdCat = document.createElement("td");
+    tdCat.textContent = p["Category"] || "-";
+
+    // Rating
+    const tdRating = document.createElement("td");
+    const rating = p["Rating"] || "";
+    const rc     = p["Review Count"] || "";
+    tdRating.textContent = rating ? (rating + " ★ (" + rc + ")") : "–";
+
+    // Actions
+    const tdActions = document.createElement("td");
+    const wrap = document.createElement("div");
+    wrap.className = "actions";
+
+    const btnEdit = document.createElement("button");
+    btnEdit.className = "btn-small";
+    btnEdit.textContent = "Edit";
+    btnEdit.onclick = () => openEdit(p);
+
+    const btnDelete = document.createElement("button");
+    btnDelete.className = "btn-small danger";
+    btnDelete.textContent = "Delete";
+    btnDelete.onclick = () => deleteProduct(p);
+
+    wrap.appendChild(btnEdit);
+    wrap.appendChild(btnDelete);
+    tdActions.appendChild(wrap);
+
+    tr.appendChild(tdImg);
+    tr.appendChild(tdSku);
+    tr.appendChild(tdName);
+    tr.appendChild(tdPrice);
+    tr.appendChild(tdStock);
+    tr.appendChild(tdCat);
+    tr.appendChild(tdRating);
+    tr.appendChild(tdActions);
+
+    tableBody.appendChild(tr);
+
+    /* MOBILE CARD VERSION */
+    const card = document.createElement("div");
+    card.className = "product-card";
+
+    const mImg = document.createElement("img");
+    mImg.src = imgUrl || "";
+    mImg.alt = "";
+    mImg.className = "product-card-thumb";
+
+    const main = document.createElement("div");
+    main.className = "product-card-main";
+
+    const nameEl = document.createElement("div");
+    nameEl.className = "pc-name";
+    nameEl.textContent = p["Name"] || "(No name)";
+    const skuEl = document.createElement("div");
+    skuEl.className = "pc-row";
+    skuEl.textContent = "SKU: " + (p["SKU"] || "");
+
+    const priceEl = document.createElement("div");
+    priceEl.className = "pc-row";
+    priceEl.textContent = "₹" + (p["Price"] || "0");
+
+    const stockRow = document.createElement("div");
+    stockRow.className = "pc-row";
+    stockRow.appendChild(stockBadge.cloneNode(true));
+
+    const ratingRow = document.createElement("div");
+    ratingRow.className = "pc-row";
+    if (rating) {
+      const rp = document.createElement("span");
+      rp.className = "rating-pill";
+      rp.textContent = rating + " ★ (" + rc + ")";
+      ratingRow.appendChild(rp);
+    }
+
+    const actionsRow = document.createElement("div");
+    actionsRow.style.marginTop = "4px";
+    const btnEditM = document.createElement("button");
+    btnEditM.className = "btn-small";
+    btnEditM.textContent = "Edit";
+    btnEditM.style.fontSize = "11px";
+    btnEditM.onclick = () => openEdit(p);
+
+    const btnDeleteM = document.createElement("button");
+    btnDeleteM.className = "btn-small danger";
+    btnDeleteM.style.fontSize = "11px";
+    btnDeleteM.textContent = "Delete";
+    btnDeleteM.onclick = () => deleteProduct(p);
+
+    actionsRow.appendChild(btnEditM);
+    actionsRow.appendChild(btnDeleteM);
+
+    main.appendChild(nameEl);
+    main.appendChild(skuEl);
+    main.appendChild(priceEl);
+    main.appendChild(stockRow);
+    if (rating) main.appendChild(ratingRow);
+    main.appendChild(actionsRow);
+
+    card.appendChild(mImg);
+    card.appendChild(main);
+
+    cardList.appendChild(card);
+  });
+
+  statusEl.textContent = `Showing ${list.length} of ${ALL_PRODUCTS.length} products.`;
+}
+
+/* FILTER EVENTS */
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("searchInput").addEventListener("input", () => {
+    renderProducts();
+  });
+  document.getElementById("filterCategory").addEventListener("change", renderProducts);
+  document.getElementById("filterStock").addEventListener("change", renderProducts);
+  document.getElementById("filterSort").addEventListener("change", renderProducts);
+});
+/* =========================
+   EDIT MODAL
+   ========================= */
+function openEdit(product) {
+  CURRENT_EDIT_PRODUCT = product;
+  const overlay = document.getElementById("editOverlay");
+  overlay.style.display = "flex";
+
+  document.getElementById("editTitle").textContent =
+    "Edit: " + (product["Name"] || "") + " (" + (product["SKU"] || "") + ")";
+
+  document.getElementById("editSku").value   = product["SKU"] || "";
+  document.getElementById("editName").value  = product["Name"] || "";
+  document.getElementById("editPrice").value = product["Price"] || "";
+  document.getElementById("editCategory").value = product["Category"] || "";
+  document.getElementById("editStock").value    = product["Stock"] || "";
+
+  document.getElementById("editLength").value = product["Length"] || "";
+  document.getElementById("editWidth").value  = product["Width"] || "";
+  document.getElementById("editHeight").value = product["Height"] || "";
+  document.getElementById("editWeight").value = product["Weight"] || "";
+
+  document.getElementById("editDesc").value  = product["Description"] || "";
+  document.getElementById("editRating").value = product["Rating"] || "";
+  document.getElementById("editReviewCount").value = product["Review Count"] || "";
+
+  document.getElementById("editImg1").value = product["Image URL 1"] || "";
+  document.getElementById("editImg2").value = product["Image URL 2"] || "";
+  document.getElementById("editImg3").value = product["Image URL 3"] || "";
+  document.getElementById("editImg4").value = product["Image URL 4"] || "";
+  document.getElementById("editImg5").value = product["Image URL 5"] || "";
+  document.getElementById("editVideo").value = product["Video URL"] || "";
+
+  // sync previews
+  for (let i = 1; i <= 5; i++) {
+    syncImagePreview(i);
+  }
+
+  document.getElementById("editStatus").textContent = "Edit fields and click Save to update.";
 }
 
 function closeEdit() {
   document.getElementById("editOverlay").style.display = "none";
-  currentEditSku = null;
+  CURRENT_EDIT_PRODUCT = null;
 }
 
-/* ======================
-     SAVE EDIT  
-====================== */
-async function saveEdit() {
-  const payload = {
-    sku: currentEditSku,
-    name: editName.value.trim(),
-    price: editPrice.value.trim(),
-    length: editLength.value.trim(),
-    width: editWidth.value.trim(),
-    height: editHeight.value.trim(),
-    weight: editWeight.value.trim(),
-    imageUrl1: editImg1.value.trim(),
-    imageUrl2: editImg2.value.trim(),
-    imageUrl3: editImg3.value.trim(),
-    videoUrl: editVideo.value.trim(),
-    category: editCategory.value.trim(),
-    description: editDesc.value.trim()
-  };
+/* IMAGE FIELD HELPERS */
+function syncImagePreview(slot) {
+  const urlInput = document.getElementById("editImg" + slot);
+  const url = (urlInput.value || "").trim();
 
-  editStatus.innerText = "Saving…";
+  const imgEl = document.getElementById("previewImg" + slot);
+  const placeholder = document.getElementById("placeholder" + slot);
+
+  if (url) {
+    imgEl.src = url;
+    imgEl.style.display = "block";
+    placeholder.style.display = "none";
+  } else {
+    imgEl.style.display = "none";
+    placeholder.style.display = "block";
+  }
+}
+
+function clearImageField(slot) {
+  document.getElementById("editImg" + slot).value = "";
+  syncImagePreview(slot);
+}
+
+async function handleImageUpload(event, slot) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const statusEl = document.getElementById("editStatus");
+  statusEl.textContent = "Uploading image " + slot + "…";
+
+  try {
+    const base64 = await fileToBase64(file);
+    const payload = {
+      base64: base64,
+      mimeType: file.type || "image/jpeg",
+      fileName: "product_" + (CURRENT_EDIT_PRODUCT?.["SKU"] || "sku") + "_img" + slot
+    };
+
+    const res = await fetch(SCRIPT_URL + "?action=uploadMedia", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if (!data.success || !data.url) {
+      throw new Error(data.message || "Upload failed");
+    }
+
+    const input = document.getElementById("editImg" + slot);
+    input.value = data.url;
+    syncImagePreview(slot);
+
+    statusEl.textContent = "Image " + slot + " uploaded.";
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = "Error uploading image " + slot + ".";
+  } finally {
+    event.target.value = "";
+  }
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = err => reject(err);
+    reader.readAsDataURL(file);
+  });
+}
+
+/* SAVE EDIT */
+async function saveEdit() {
+  if (!CURRENT_EDIT_PRODUCT) return;
+
+  const statusEl = document.getElementById("editStatus");
+  statusEl.textContent = "Saving changes…";
+
+  const payload = {
+    sku: document.getElementById("editSku").value.trim(),
+    name: document.getElementById("editName").value.trim(),
+    price: document.getElementById("editPrice").value.trim(),
+    category: document.getElementById("editCategory").value.trim(),
+    stock: document.getElementById("editStock").value.trim(),
+    length: document.getElementById("editLength").value.trim(),
+    width: document.getElementById("editWidth").value.trim(),
+    height: document.getElementById("editHeight").value.trim(),
+    weight: document.getElementById("editWeight").value.trim(),
+    imageUrl1: document.getElementById("editImg1").value.trim(),
+    imageUrl2: document.getElementById("editImg2").value.trim(),
+    imageUrl3: document.getElementById("editImg3").value.trim(),
+    imageUrl4: document.getElementById("editImg4").value.trim(),
+    imageUrl5: document.getElementById("editImg5").value.trim(),
+    videoUrl: document.getElementById("editVideo").value.trim(),
+    description: document.getElementById("editDesc").value.trim()
+  };
 
   try {
     const res = await fetch(SCRIPT_URL + "?action=updateProduct", {
       method: "POST",
       body: JSON.stringify(payload)
     });
-
     const data = await res.json();
 
-    if (!data.success) throw new Error(data.message);
+    if (!data.success) {
+      throw new Error(data.message || "Update failed");
+    }
 
-    reloadProducts();
-    editStatus.innerText = "Saved!";
-    setTimeout(closeEdit, 600);
+    // Update local product in ALL_PRODUCTS
+    const idx = ALL_PRODUCTS.findIndex(p => (p["SKU"] || "") === payload.sku);
+    if (idx > -1) {
+      const p = ALL_PRODUCTS[idx];
+      p["Name"]        = payload.name;
+      p["Price"]       = payload.price;
+      p["Category"]    = payload.category;
+      p["Stock"]       = payload.stock;
+      p["Length"]      = payload.length;
+      p["Width"]       = payload.width;
+      p["Height"]      = payload.height;
+      p["Weight"]      = payload.weight;
+      p["Image URL 1"] = payload.imageUrl1;
+      p["Image URL 2"] = payload.imageUrl2;
+      p["Image URL 3"] = payload.imageUrl3;
+      p["Image URL 4"] = payload.imageUrl4;
+      p["Image URL 5"] = payload.imageUrl5;
+      p["Video URL"]   = payload.videoUrl;
+      p["Description"] = payload.description;
+    }
 
+    statusEl.textContent = "Saved successfully.";
+    renderProducts();
+    setTimeout(() => closeEdit(), 600);
   } catch (err) {
-    editStatus.innerText = "Error saving!";
     console.error(err);
+    statusEl.textContent = "Error: " + err.message;
   }
 }
 
-/* ======================
-     DELETE PRODUCT  
-====================== */
-async function deleteProduct(row) {
-  if (!confirm(`Delete ${row.Name}?`)) return;
+/* DELETE PRODUCT */
+async function deleteProduct(product) {
+  const sku = product["SKU"];
+  if (!sku) return;
+
+  const ok = confirm("Delete product with SKU " + sku + "? This cannot be undone.");
+  if (!ok) return;
+
+  const statusEl = document.getElementById("statusText");
+  statusEl.textContent = "Deleting " + sku + "…";
 
   try {
-    await fetch(SCRIPT_URL + "?action=deleteProduct", {
+    const res = await fetch(SCRIPT_URL + "?action=deleteProduct", {
       method: "POST",
-      body: JSON.stringify({ sku: row.SKU })
+      body: JSON.stringify({ sku })
     });
+    const data = await res.json();
 
-    reloadProducts();
+    if (!data.success) {
+      throw new Error(data.message || "Delete failed");
+    }
+
+    ALL_PRODUCTS = ALL_PRODUCTS.filter(p => p["SKU"] !== sku);
+    renderProducts();
+    statusEl.textContent = "Deleted " + sku + ".";
   } catch (err) {
-    alert("Delete failed!");
+    console.error(err);
+    statusEl.textContent = "Error deleting product.";
   }
 }
 
-/* ======================
-     INIT  
-====================== */
-window.onload = () => {
+/* INIT */
+window.onload = function () {
   initAdminLogin();
-  document.getElementById("searchInput").addEventListener("input", renderProducts);
+
+  // Live preview when URL typed manually
+  for (let i = 1; i <= 5; i++) {
+    const input = document.getElementById("editImg" + i);
+    input.addEventListener("input", () => syncImagePreview(i));
+  }
 };
 </script>
-<style>
-/* Shared Form Input Style */
-.field {
-    width: 100%;
-    padding: 9px 11px;
-    border-radius: 10px;
-    border: 1px solid #cbd5e1;
-    margin-top: 5px;
-    font-size: 13px;
-}
-
-.field-label {
-    font-size: 12px;
-    margin-top: 10px;
-    color: #475569;
-}
-
-.edit-box textarea {
-    resize: vertical;
-}
-
-/* Product Grid Card fixes */
-.product-card {
-    border-radius: 18px;
-    overflow: hidden;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    padding-bottom: 10px;
-}
-
-.thumb {
-    width: 100%;
-    height: 150px;
-    background: #f1f5f9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.card-body {
-    padding: 10px;
-}
-
-.card-actions {
-    display: flex;
-    gap: 6px;
-    margin-top: 8px;
-}
-
-.btn-small {
-    flex: 1;
-    background: white;
-    border: 1px solid #cbd5e1;
-    padding: 6px 0;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 13px;
-    text-align: center;
-}
-
-.btn-small.danger {
-    background: #fee2e2;
-    color: #b91c1c;
-    border-color: #fecaca;
-}
-</style>
-
 </body>
 </html>
