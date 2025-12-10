@@ -1,163 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Product • Gauri Creations</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Product • Gauri Creations</title>
+<style>
+  :root{ --bg:linear-gradient(135deg,#e3f2ff,#ffe5f3); --glass-strong:rgba(255,255,255,0.98); --glass-border:rgba(148,163,184,0.6); --muted:#6b7280; --accent-grad:linear-gradient(135deg,#2563eb,#ec4899)}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,'Poppins',sans-serif;background:var(--bg);padding:18px;display:flex;justify-content:center}
+  .shell{width:100%;max-width:1100px}
 
-  <style>
-    :root{
-      --bg: linear-gradient(135deg,#e3f2ff,#ffe5f3);
-      --glass: rgba(255,255,255,0.9);
-      --glass-strong: rgba(255,255,255,0.98);
-      --glass-border: rgba(148,163,184,0.6);
-      --accent: linear-gradient(135deg,#2563eb,#ec4899);
-      --muted: #6b7280;
-      --success: #16a34a;
-    }
+  .top-hero{display:flex;gap:14px;margin-bottom:14px;align-items:center}
+  .logo{width:84px;height:84px;border-radius:12px;object-fit:cover;box-shadow:0 12px 28px rgba(15,23,42,0.18)}
+  .store-title{font-weight:800;font-size:20px}
+  .store-sub{font-size:13px;color:var(--muted)}
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;min-height:100vh;font-family:system-ui,-apple-system,'Poppins',sans-serif;background:var(--bg);
-      padding:18px;display:flex;justify-content:center;
-    }
+  .product-grid{display:grid;grid-template-columns:1fr 420px;gap:16px}
+  @media(max-width:980px){.product-grid{grid-template-columns:1fr}}
 
-    .shell{width:100%;max-width:1100px}
+  .images-card{background:var(--glass-strong);border-radius:18px;padding:12px;border:1px solid var(--glass-border);box-shadow:0 18px 45px rgba(15,23,42,0.12)}
+  .main-image-wrap{border-radius:12px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;height:380px}
+  .main-image{max-width:100%;max-height:100%;object-fit:contain;cursor:pointer}
 
-    /* TOP / HERO */
-    .top-hero{display:flex;gap:14px;margin-bottom:14px;align-items:center}
-    .logo{width:84px;height:84px;border-radius:12px;object-fit:cover;box-shadow:0 12px 28px rgba(15,23,42,0.18)}
-    .title-wrap{display:flex;flex-direction:column;gap:6px}
-    .store-title{font-weight:800;font-size:20px}
-    .store-sub{font-size:13px;color:var(--muted)}
+  .thumbs{display:flex;gap:8px;margin-top:10px}
+  .thumb{width:72px;height:72px;border-radius:10px;overflow:hidden;border:1px solid #e6e8ea;cursor:pointer;background:#fff;flex-shrink:0}
+  .thumb img{width:100%;height:100%;object-fit:cover}
 
-    /* LAYOUT */
-    .product-grid{display:grid;grid-template-columns: minmax(0,1fr) minmax(0,420px);gap:16px}
-    @media (max-width:980px){.product-grid{grid-template-columns:1fr;}}
+  .details-card{background:var(--glass-strong);border-radius:18px;padding:14px;border:1px solid var(--glass-border);box-shadow:0 18px 45px rgba(15,23,42,0.12);display:flex;flex-direction:column;gap:10px}
+  .prod-name{font-size:20px;font-weight:800}
+  .prod-sku{font-size:12px;color:var(--muted)}
+  .price{font-weight:800;font-size:20px;color:#e11d48}
+  .rating{font-size:13px;color:var(--muted)}
+  .specs{font-size:13px;color:var(--muted);margin-top:6px}
 
-    /* LEFT: IMAGES */
-    .images-card{background:var(--glass-strong);border-radius:18px;padding:12px;border:1px solid var(--glass-border);box-shadow:0 18px 45px rgba(15,23,42,0.12)}
-    .main-image-wrap{border-radius:12px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;height:420px}
-    .main-image{max-width:100%;max-height:100%;object-fit:contain;cursor:pointer}
+  .actions{display:flex;gap:8px;margin-top:8px}
+  .btn{border-radius:999px;border:none;padding:6px 10px;font-size:13px;cursor:pointer;font-weight:600;line-height:1.1}
+  .btn-outline{background:#fff;border:1px solid #d1d5db;color:#111827}
+  .btn-primary{background:var(--accent-grad);color:#fff}
 
-    .thumbs{display:flex;gap:8px;margin-top:10px}
-    .thumb{width:72px;height:72px;border-radius:10px;overflow:hidden;border:1px solid #e6e8ea;cursor:pointer;background:#fff;flex-shrink:0}
-    .thumb img{width:100%;height:100%;object-fit:cover}
+  /* Lightbox */
+  #lightboxOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:2000;backdrop-filter:blur(4px)}
+  #lightboxImg{max-width:94%;max-height:94%;object-fit:contain;border-radius:12px}
 
-    /* RIGHT: DETAILS */
-    .details-card{background:var(--glass-strong);border-radius:18px;padding:14px;border:1px solid var(--glass-border);box-shadow:0 18px 45px rgba(15,23,42,0.12);display:flex;flex-direction:column;gap:10px}
-    .prod-name{font-size:20px;font-weight:800}
-    .prod-sku{font-size:12px;color:var(--muted)}
-    .price-row{display:flex;align-items:center;gap:10px;justify-content:space-between}
-    .price{font-weight:800;font-size:20px;color:#e11d48}
-    .rating{font-size:13px;color:var(--muted)}
-    .specs{font-size:13px;color:var(--muted);margin-top:6px}
-
-    .actions{display:flex;gap:8px;margin-top:8px}
-    .btn{border-radius:999px;border:none;padding:6px 10px;font-size:13px;cursor:pointer;font-weight:600;line-height:1.1}
-    .btn-outline{background:#fff;border:1px solid #d1d5db;color:#111827}
-    .btn-primary{background:var(--accent);color:#fff}
-
-    .muted{color:var(--muted)}
-
-    /* MODAL */
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:120}
-    .modal{width:92%;max-width:620px;background:var(--glass-strong);border-radius:14px;padding:14px;border:1px solid var(--glass-border);box-shadow:0 30px 80px rgba(2,6,23,0.4)}
-
-  </style>
+  .muted{color:var(--muted)}
+</style>
 </head>
 <body>
-
 <div class="shell">
-
   <div class="top-hero">
-    <img src="logo-gauri.jpeg" class="logo">
-    <div class="title-wrap">
+    <img src="logo-gauri.jpeg" class="logo" alt="Gauri">
+    <div>
       <div class="store-title">Gauri Creations</div>
       <div class="store-sub">Handcrafted decor • Secure UPI checkout</div>
     </div>
   </div>
 
   <div class="product-grid">
-
     <div class="images-card">
-      <div class="main-image-wrap">
-        <img id="mainImage" class="main-image" src="" alt="Product">
-      </div>
+      <div class="main-image-wrap"><img id="mainImage" class="main-image" src="" alt="Product"></div>
       <div id="thumbs" class="thumbs"></div>
     </div>
 
     <div class="details-card">
-      <div>
-        <div id="prodName" class="prod-name">Product name</div>
-        <div id="prodSku" class="prod-sku">SKU: -</div>
-      </div>
-
-      <div class="price-row">
+      <div><div id="prodName" class="prod-name">Product name</div><div id="prodSku" class="prod-sku">SKU: -</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
         <div id="prodPrice" class="price">₹0</div>
         <div id="prodRating" class="rating">★ -</div>
       </div>
-
       <div id="prodDesc" class="specs">Description...</div>
-
       <div class="actions">
         <button id="btnBuyNow" class="btn btn-primary">Buy Now</button>
         <button id="btnWhatsapp" class="btn btn-outline">Order on WhatsApp</button>
       </div>
-
       <div id="deliveryInfo" class="muted">Delivery: Calculated at checkout</div>
     </div>
-
   </div>
 </div>
 
-<!-- Checkout Modal -->
-<div id="checkoutModal" class="modal-overlay">
-  <div class="modal">
-    <h3>Checkout</h3>
-    <div id="checkoutBody"></div>
-
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;">
-      <button onclick="closeCheckout()" class="btn btn-outline">Cancel</button>
-      <button id="confirmCheckoutBtn" class="btn btn-primary">Proceed to Payment</button>
-    </div>
-  </div>
+<!-- lightbox markup -->
+<div id="lightboxOverlay" onclick="if(event.target===this) closeLightbox()">
+  <img id="lightboxImg" src="" alt="Zoomed">
 </div>
 
+<!-- Checkout modal (kept minimal) -->
+<div id="checkoutModal" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;z-index:2500">
+  <!-- you can reuse the checkout UI from store/product earlier -->
+</div>
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxlp4ehND6OHfGY9ruPptTs4euh3U-v3y6IA90EfmwjuiFZD4BnoHDjifKAPG9B1T7/exec";
 
-function toNumber(v){ const n = Number(v); return isNaN(n) ? 0 : n; }
-
+/* single normalize/fix util (consistent) */
 function normalizeMediaUrl(url){
   if(!url) return "";
   url = String(url).trim();
-
-  if(url.includes("googleusercontent")) return url;
+  if(url.includes("googleusercontent.com")) return url;
+  // match drive id or long token
+  const m = url.match(/[-\w]{25,}/);
+  if(m) return `https://lh3.googleusercontent.com/d/${m[0]}=w1000`;
   if(url.startsWith("https://drive.google.com/uc?export=view&id=")) return url;
-
-  let m = url.match(/file\\/d\\/([^\\/]+)/);
-  if(m) return "https://drive.google.com/uc?export=view&id=" + m[1];
-
-  m = url.match(/[?&]id=([^&]+)/);
-  if(m) return "https://drive.google.com/uc?export=view&id=" + m[1];
-
-  m = url.match(/[-\\w]{20,}/);
-  if(m) return "https://drive.google.com/uc?export=view&id=" + m[0];
-
   return url;
 }
-
-function fixImageForDisplay(u){ return normalizeMediaUrl(u); }
+function fixImage(u){ return normalizeMediaUrl(u); }
 
 function getQueryParams(){
-  const q = {};
-  location.search.substring(1).split("&").forEach(pair=>{
-    if(!pair) return;
-    const [k,v] = pair.split("=");
-    q[decodeURIComponent(k)] = decodeURIComponent(v || "");
-  });
+  const q={}; location.search.substring(1).split("&").forEach(pair=>{ if(!pair) return; const [k,v]=pair.split("="); q[decodeURIComponent(k)]=decodeURIComponent(v||""); });
   return q;
 }
 
@@ -166,15 +113,12 @@ let CURRENT_PRODUCT = null;
 async function loadProduct(){
   const sku = getQueryParams().sku || "";
   if(!sku) return;
-
   try{
     const res = await fetch(SCRIPT_URL + "?action=getProduct&sku=" + encodeURIComponent(sku));
     const data = await res.json();
-    if(!data.success) return;
-
+    if(!data.success || !data.product){ console.warn('Product not found'); return; }
     CURRENT_PRODUCT = data.product;
     populateProduct(CURRENT_PRODUCT);
-
   }catch(err){ console.error(err); }
 }
 
@@ -185,199 +129,83 @@ function populateProduct(p){
   document.getElementById("prodDesc").textContent = p.Description || "";
   document.getElementById("prodRating").textContent = p.Rating ? ("★ " + p.Rating) : "New";
 
+  // images
   const imgs = [];
   for(let i=1;i<=5;i++){
-    const u = p["Image URL " + i];
-    if(u) imgs.push(fixImageForDisplay(u));
+    const key = "Image URL " + i;
+    if(p[key]) imgs.push(fixImage(p[key]));
   }
 
   const main = document.getElementById("mainImage");
-  main.src = imgs.length ? imgs[0] : "";
+  main.src = imgs[0] || "";
+  main.alt = p.Name || "Product";
 
-  const thumbs = document.getElementById("thumbs");
-  thumbs.innerHTML = "";
-
-  imgs.forEach((u,i)=>{
-    const div = document.createElement("div");
-    div.className = "thumb";
-    const im = document.createElement("img");
-    im.src = u;
-    im.onclick = ()=> main.src = u;
-    div.appendChild(im);
-    thumbs.appendChild(div);
+  const thumbs = document.getElementById("thumbs"); thumbs.innerHTML = "";
+  imgs.forEach((u, idx) => {
+    const d = document.createElement("div"); d.className = "thumb";
+    const im = document.createElement("img"); im.src = u; im.alt = `Img ${idx+1}`;
+    im.addEventListener("click", (ev) => { ev.stopPropagation(); main.src = u; });
+    d.appendChild(im); thumbs.appendChild(d);
   });
 
-  document.getElementById("btnBuyNow").onclick = () => openCheckoutModal();
+  // lightbox: main image click
+  main.onclick = () => { if(main.src) openLightbox(main.src); };
+
+  // buy & whatsapp button wiring
+  document.getElementById("btnBuyNow").onclick = () => {
+    // reuse your checkout modal logic (simple open)
+    renderCheckoutUI();
+    document.getElementById("checkoutModal").style.display = "flex";
+  };
+
+  document.getElementById("btnWhatsapp").onclick = () => {
+    const phone = "7745092723";
+    const msg = `Hello Gauri Creations, I want to order: Product: ${encodeURIComponent(p.Name||'')}, SKU: ${encodeURIComponent(p.SKU||'')}, Price: ₹${encodeURIComponent(p.Price||'')}`;
+    window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+  };
 }
 
-function openCheckoutModal(){
-  renderCheckoutUI();
-  document.getElementById("checkoutModal").style.display = "flex";
-}
-
-function closeCheckout(){
-  document.getElementById("checkoutModal").style.display = "none";
-}
-
-window.addEventListener("DOMContentLoaded", loadProduct);
-</script>
-
-</body>
-</html>
-<script>
-/* ============================
-      PART 2 — IMAGE LIGHTBOX
-   ============================ */
-
-let lightboxOpen = false;
-
-function buildLightbox(){
-  if(document.getElementById("lightboxOverlay")) return;
-
-  const overlay = document.createElement("div");
-  overlay.id = "lightboxOverlay";
-  overlay.style.cssText = `
-    position:fixed;inset:0;background:rgba(0,0,0,0.85);
-    display:none;align-items:center;justify-content:center;z-index:2000;
-    backdrop-filter:blur(4px);
-  `;
-
-  const wrap = document.createElement("div");
-  wrap.style.cssText = `
-    max-width:94%;max-height:94%;overflow:hidden;border-radius:16px;position:relative;
-  `;
-
-  const img = document.createElement("img");
-  img.id = "lightboxImg";
-  img.style.cssText = `
-    width:100%;height:auto;object-fit:contain;user-select:none;-webkit-user-drag:none;
-  `;
-
-  const closeBtn = document.createElement("div");
-  closeBtn.textContent = "✕";
-  closeBtn.style.cssText = `
-    position:fixed;top:18px;right:18px;background:rgba(255,255,255,0.85);
-    padding:8px 12px;border-radius:999px;cursor:pointer;font-size:20px;z-index:3000;
-  `;
-  closeBtn.onclick = closeLightbox;
-
-  wrap.appendChild(img);
-  overlay.appendChild(wrap);
-  overlay.appendChild(closeBtn);
-  document.body.appendChild(overlay);
-
-  overlay.addEventListener("click", e=>{
-    if(e.target === overlay) closeLightbox();
-  });
-}
-
+/* LIGHTBOX */
 function openLightbox(url){
-  buildLightbox();
+  const ov = document.getElementById("lightboxOverlay");
   document.getElementById("lightboxImg").src = url;
-  document.getElementById("lightboxOverlay").style.display = "flex";
-  lightboxOpen = true;
+  ov.style.display = "flex";
 }
+function closeLightbox(){ document.getElementById("lightboxOverlay").style.display = "none"; }
 
-function closeLightbox(){
-  document.getElementById("lightboxOverlay").style.display = "none";
-  lightboxOpen = false;
-}
-
-document.addEventListener("DOMContentLoaded", ()=>{
-  const m = document.getElementById("mainImage");
-  if(m){
-    m.addEventListener("click", ()=>{
-      if(CURRENT_PRODUCT){
-        const u = normalizeMediaUrl(CURRENT_PRODUCT["Image URL 1"]);
-        if(u) openLightbox(u);
-      }
-    });
-  }
-});
-
-
-/* ============================
-      PART 2 — CHECKOUT UI
-   ============================ */
-
+/* CHECKOUT UI (small) */
 function renderCheckoutUI(){
-  const p = CURRENT_PRODUCT;
-  if(!p) return;
-
-  const price = p.Price || 0;
-
+  const p = CURRENT_PRODUCT; if(!p) return;
+  // simple checkout UI: pincode input + check button + proceed button (proceed will create order & redirect)
   const html = `
-    <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;">
-      <div><strong>Product:</strong> ${p.Name}</div>
-      <div><strong>Price:</strong> ₹${price}</div>
-
-      <div style="margin-top:8px;font-size:13px;color:#6b7280;">
-        Delivery charges depend on pincode.
+    <div style="background:var(--glass-strong);padding:18px;border-radius:12px;border:1px solid var(--glass-border);width:92%;max-width:520px;">
+      <h3 style="margin:0 0 8px 0">${p.Name}</h3>
+      <div style="margin-bottom:8px">Price: ₹${p.Price}</div>
+      <label style="display:block;margin-bottom:6px;color:var(--muted)">Enter Pincode</label>
+      <input id="pinInput" type="text" style="padding:8px;border-radius:8px;border:1px solid #e5e7eb;width:100%;box-sizing:border-box" placeholder="e.g. 411001" />
+      <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+        <button onclick="document.getElementById('checkoutModal').style.display='none'" class="btn btn-outline">Cancel</button>
+        <button id="confirmCheckoutBtn" class="btn btn-primary" style="min-width:140px">Proceed to Payment</button>
       </div>
-
-      <label style="font-size:13px;font-weight:600;">Enter Pincode</label>
-      <input id="pinInput" type="number" placeholder="e.g. 411001"
-        style="padding:8px 10px;border-radius:10px;border:1px solid #d1d5db;font-size:14px;">
-
-      <button onclick="calculateShipping()" class="btn btn-outline" style="width:100%;margin-top:4px;">
-        Check Delivery Charge
-      </button>
-
-      <div id="shippingResult" style="font-size:13px;margin-top:6px;"></div>
     </div>
   `;
-
-  document.getElementById("checkoutBody").innerHTML = html;
+  const modal = document.getElementById("checkoutModal");
+  modal.innerHTML = html;
+  // wire proceed
+  document.getElementById("confirmCheckoutBtn").addEventListener("click", async () => {
+    await proceedToPayment();
+  });
 }
 
-function calculateShipping(){
-  const pin = document.getElementById("pinInput").value.trim();
-  const out = document.getElementById("shippingResult");
-  if(!pin){ out.textContent = "Enter valid pincode"; return; }
-
-  let charge = 79;
-  if(/^4/.test(pin)) charge = 49;
-  if(/^5/.test(pin)) charge = 59;
-  if(/^6/.test(pin)) charge = 69;
-
-  out.textContent = `Delivery Charge: ₹${charge}`;
-}
-
-
-/* ============================
-      PART 2 — WHATSAPP BUTTON
-   ============================ */
-
-document.addEventListener("DOMContentLoaded", ()=>{
-  const w = document.getElementById("btnWhatsapp");
-  if(w){
-    w.onclick = ()=>{
-      if(!CURRENT_PRODUCT) return;
-
-      const msg =
-        `Hello Gauri Creations, I want to order:\n` +
-        `Product: ${CURRENT_PRODUCT.Name}\n` +
-        `SKU: ${CURRENT_PRODUCT.SKU}\n` +
-        `Price: ₹${CURRENT_PRODUCT.Price}`;
-
-      window.open(`https://wa.me/7745092723?text=${encodeURIComponent(msg)}`,"_blank");
-    };
-  }
-});
-</script>
-<script>
+/* PROCEED: create order then redirect (simple) */
 async function proceedToPayment(){
-  if(!CURRENT_PRODUCT) return;
+  if(!CURRENT_PRODUCT) return alert("No product selected");
+  const pin = document.getElementById("pinInput").value.trim();
+  if(!pin) return alert("Enter pincode");
 
-  const pin = document.getElementById("pinInput")?.value?.trim();
-  if(!pin){ alert("Enter pincode"); return; }
-
-  let charge = 79;
-  if(/^4/.test(pin)) charge = 49;
-  if(/^5/.test(pin)) charge = 59;
-  if(/^6/.test(pin)) charge = 69;
-
-  const total = Number(CURRENT_PRODUCT.Price || 0) + charge;
+  // basic shipping calc
+  let charge = 79; if(/^4/.test(pin)) charge=49; if(/^5/.test(pin)) charge=59; if(/^6/.test(pin)) charge=69;
+  const total = Number(CURRENT_PRODUCT.Price||0) + charge;
 
   const payload = {
     productSku: CURRENT_PRODUCT.SKU,
@@ -386,44 +214,35 @@ async function proceedToPayment(){
     price: CURRENT_PRODUCT.Price,
     delivery: charge,
     total: total,
-
-    name: "",
-    phone: "",
-    email: "",
-    address: "",
-    notes: ""
+    name: "", phone: "", email: "", address: "", notes: ""
   };
-
   try{
-    const btn = document.getElementById("confirmCheckoutBtn");
-    btn.disabled = true;
-    btn.textContent = "Creating Order…";
-
-    const res = await fetch(SCRIPT_URL + "?action=createOrder", {
-      method: "POST",
-      body: JSON.stringify(payload)
-    });
-
+    const btn = document.getElementById("confirmCheckoutBtn"); if(btn){btn.disabled=true; btn.textContent="Creating order…";}
+    const res = await fetch(SCRIPT_URL + "?action=createOrder", { method:"POST", body: JSON.stringify(payload) });
     const data = await res.json();
     if(!data.success) throw new Error(data.message || "Order failed");
-
-    const orderId = data.orderId || data.order_id;
-
-    // Redirect to payment page
-    window.location.href =
-      `payment.html?orderId=${encodeURIComponent(orderId)}&amount=${encodeURIComponent(total)}`;
-
-  }catch(err){
-    alert("Error: " + err.message);
-    const btn = document.getElementById("confirmCheckoutBtn");
-    btn.disabled = false;
-    btn.textContent = "Proceed to Payment";
-  }
+    const orderId = data.orderId || "";
+    // redirect to payment page (you said you'll share) — using payment.html placeholder
+    window.location.href = `payment.html?orderId=${encodeURIComponent(orderId)}&amount=${encodeURIComponent(total)}`;
+  }catch(err){ alert("Error: " + (err.message||err)); console.error(err); if(document.getElementById("confirmCheckoutBtn")){document.getElementById("confirmCheckoutBtn").disabled=false;document.getElementById("confirmCheckoutBtn").textContent="Proceed to Payment";} }
 }
 
-document.addEventListener("click", (e)=>{
-  if(e.target.id === "confirmCheckoutBtn"){
-    proceedToPayment();
-  }
-});
+/* INIT */
+document.addEventListener("DOMContentLoaded", ()=>{ loadProduct(); });
+
+async function loadProduct(){ await loadProductInner(); }
+async function loadProductInner(){ // separated so we can call earlier without conflict
+  const q = (function(){ const o={}; location.search.substring(1).split("&").forEach(p=>{ if(!p) return; const [k,v]=p.split("="); o[decodeURIComponent(k)] = decodeURIComponent(v||""); }); return o; })();
+  const sku = q.sku || "";
+  if(!sku) return;
+  try{
+    const res = await fetch(SCRIPT_URL + "?action=getProduct&sku=" + encodeURIComponent(sku));
+    const data = await res.json();
+    if(!data.success || !data.product) { console.warn("Product not found"); return; }
+    CURRENT_PRODUCT = data.product;
+    populateProduct(CURRENT_PRODUCT);
+  }catch(e){ console.error(e); }
+}
 </script>
+</body>
+</html>
