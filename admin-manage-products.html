@@ -42,7 +42,31 @@
   .title-main{ font-size:18px; font-weight:700; }
   .subtitle{ font-size:12px; color:var(--muted); }
 
-  .pill-btn{ padding:6px 12px; border-radius:999px; border:1px solid rgba(148,163,184,0.8); background:#fff; cursor:pointer; text-decoration:none; color:#0f172a; display:inline-flex; gap:6px; align-items:center; }
+  /* pill buttons area — added gap between Add / Home and Logout */
+  .top-right {
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn-group {
+    display:flex;
+    gap:10px; /* gap between Add & Home */
+    align-items:center;
+  }
+
+  .pill-btn{
+    padding:6px 12px;
+    border-radius:999px;
+    border:1px solid rgba(148,163,184,0.8);
+    background:#fff;
+    cursor:pointer;
+    text-decoration:none;
+    color:#0f172a;
+    display:inline-flex;
+    gap:6px;
+    align-items:center;
+    font-size:13px;
+  }
   .pill-btn.primary{ background:linear-gradient(135deg,#2563eb,#ec4899); color:#fff; border:none; }
 
   /* MAIN CARD */
@@ -67,7 +91,7 @@
   .products-table th{ font-size:11px; text-transform:uppercase; color:var(--muted); }
 
   /* Thumbnail cell: fixed square 60x60 and cropped */
-  .thumb-cell{ width:72px; } /* give some breathing room */
+  .thumb-cell{ width:72px; } /* some breathing room */
   .thumb-img{
     width:60px;
     height:60px;
@@ -113,13 +137,21 @@
         <div class="subtitle">Edit images, stock & details</div>
       </div>
     </div>
-    <div>
-      <a href="admin-add-product.html" class="pill-btn primary">➕ Add Product</a>
+
+    <!-- Top-right buttons: Add, Home, Logout (with small gap) -->
+    <div class="top-right">
+      <div class="btn-group">
+        <a href="admin-add-product.html" class="pill-btn primary">➕ Add Product</a>
+        <a href="admin.html" class="pill-btn">🏠 Home</a>
+      </div>
+
+      <!-- gap between Add/Home group and Logout -->
+      <div style="width:12px;"></div>
+
       <button onclick="adminLogout()" class="pill-btn">🔒 Logout</button>
     </div>
   </header>
-
-  <section class="card">
+    <section class="card">
     <div class="card-header">
       <div>
         <div class="card-title">Product Catalog</div>
@@ -163,13 +195,13 @@
     <div id="productsCardList" class="mobile-cards" style="display:none;"></div>
 
   </section>
-  <script>
+
+<script>
 /* CONFIG */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxlp4ehND6OHfGY9ruPptTs4euh3U-v3y6IA90EfmwjuiFZD4BnoHDjifKAPG9B1T7/exec";
 const ADMIN_FLAG = "gc_admin_auth";
 
 let ALL_PRODUCTS = [];   // raw from server
-let DISPLAY_PRODUCTS = []; // deduped & filtered
 let CURRENT_EDIT_PRODUCT = null;
 
 /* UTIL: normalize image (use code.gs normalization expectation) */
@@ -407,9 +439,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
       </div>
 
       <div>
-        <!-- images 1..5 -->
+        <!-- images 1..3 (expandable) -->
         <div style="display:flex;flex-direction:column;gap:8px;">
-          <!-- Image slot template repeated -->
           <div class="media-preview-row">
             <div class="media-thumb" style="width:64px;height:64px;border-radius:10px;overflow:hidden;background:#f3f4f6;display:flex;align-items:center;justify-content:center;">
               <img id="previewImg1" src="" alt="" style="display:none;width:60px;height:60px;object-fit:cover;border-radius:10px;">
@@ -426,7 +457,6 @@ document.addEventListener("DOMContentLoaded", ()=>{
             </div>
           </div>
 
-          <!-- Repeat slots 2..5 (for brevity, show 2 & 3; you can replicate) -->
           <div class="media-preview-row">
             <div class="media-thumb" style="width:64px;height:64px;border-radius:10px;overflow:hidden;background:#f3f4f6;display:flex;align-items:center;justify-content:center;">
               <img id="previewImg2" src="" alt="" style="display:none;width:60px;height:60px;object-fit:cover;border-radius:10px;">
@@ -459,7 +489,6 @@ document.addEventListener("DOMContentLoaded", ()=>{
             </div>
           </div>
 
-          <!-- you can add previewImg4/5 similarly if needed -->
         </div>
       </div>
     </div>
