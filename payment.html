@@ -7,8 +7,8 @@
 
 <style>
 :root {
-    --accent-blue: #007aff;
-    --accent-green: #34c759;
+    --accent-grad: linear-gradient(135deg,#2563eb,#ec4899);
+    --success-grad: linear-gradient(90deg,#22c55e,#4ade80);
     --text-main: #111827;
 }
 
@@ -18,7 +18,7 @@ body {
     padding: 20px;
     min-height: 100vh;
     font-family: "Poppins", sans-serif;
-    background: linear-gradient(135deg, #86e1ff, #ffd4b8);
+    background: linear-gradient(135deg,#86e1ff,#ffd4b8);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,7 +34,7 @@ body {
     box-shadow: 0 12px 30px rgba(0,0,0,0.25);
 }
 
-/* TOP LOGO */
+/* LOGO */
 .logo-wrap { text-align: center; }
 .logo {
     width: 80px;
@@ -52,12 +52,7 @@ body {
     margin-top: 12px;
     margin-bottom: 20px;
 }
-
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    margin: 5px 0;
-}
+.summary-row { display: flex; justify-content: space-between; margin: 5px 0; }
 
 /* QR */
 .qr-wrap { text-align: center; }
@@ -70,12 +65,7 @@ body {
 }
 
 /* PAY BUTTONS */
-.pay-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
+.pay-buttons { display: flex; flex-direction: column; gap: 10px; }
 .pay-pill {
     display: flex;
     align-items: center;
@@ -85,23 +75,18 @@ body {
     border-radius: 999px;
     font-weight: 600;
     background: white;
+    border: 1px solid #ccc;
     text-decoration: none;
     color: #000;
-    border: 1px solid #ccc;
 }
+.pay-pill img { width: 26px; height: 26px; object-fit: contain; }
 
-.pay-pill img {
-    width: 26px;
-    height: 26px;
-    object-fit: contain;
-}
-
-/* COMPLETED BUTTON */
+/* CONFIRM BUTTON */
 .confirm-btn {
     margin-top: 14px;
     width: 100%;
     padding: 12px;
-    background: #007aff;
+    background: var(--accent-grad);
     border-radius: 999px;
     font-weight: 600;
     color: white;
@@ -109,20 +94,15 @@ body {
 }
 
 /* WAITING ANIMATION */
-.slider-shell {
-    margin-top: 18px;
-    display: none;
-    text-align: center;
-}
-
+.slider-shell { margin-top: 18px; display: none; text-align: center; }
 .slider-label { font-size: 13px; margin-bottom: 6px; }
 
 .glass-track {
-    width: 24%;
-    height: 46px;
+    width: 80%;
+    height: 50px;
     margin: 0 auto;
     border-radius: 999px;
-    background: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.55);
     border: 1px solid rgba(255,255,255,0.6);
     position: relative;
     overflow: hidden;
@@ -132,40 +112,30 @@ body {
 .glass-track.visible { display: block; }
 
 .glass-thumb {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     border-radius: 999px;
-    background: white;
+    background: var(--accent-grad);
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
     position: absolute;
-    top: 4px;
-    left: 4px;
+    top: 3px;
+    left: 3px;
     display: flex;
     justify-content: center;
     align-items: center;
     animation: moveThumb 1.7s infinite;
+    box-shadow: 0 0 12px rgba(0,0,0,0.25);
 }
 
 @keyframes moveThumb {
     0% { transform: translateX(0); }
-    50% { transform: translateX(calc(100% - 46px)); }
+    50% { transform: translateX(calc(100% - 48px)); }
     100% { transform: translateX(0); }
 }
 
-/* SUCCESS STATE */
-.glass-track.success {
-    background: linear-gradient(90deg,#22c55e,#4ade80);
-}
-
-.checkmark {
-    width: 20px;
-    height: 20px;
-    border-radius: 999px;
-    border: 2px solid #ffffff;
-    color: #ffffff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
+.glass-track.success { background: var(--success-grad); }
 
 /* GLITTER */
 .glitter {
@@ -188,9 +158,7 @@ body {
 
 <div class="card">
 
-    <div class="logo-wrap">
-        <img src="logo-gauri.jpeg" class="logo">
-    </div>
+    <div class="logo-wrap"><img src="logo-gauri.jpeg" class="logo"></div>
 
     <h2 style="text-align:center; margin:8px 0;">Complete Your Payment</h2>
     <p style="text-align:center; color:#555; margin:0 0 12px;">Secure UPI Payment</p>
@@ -206,9 +174,7 @@ body {
     </div>
 
     <!-- QR -->
-    <div class="qr-wrap">
-        <img src="upi-qr.jpeg" class="qr">
-    </div>
+    <div class="qr-wrap"><img src="upi-qr.jpeg" class="qr"></div>
 
     <p style="text-align:center; margin-bottom:10px;">Scan or use quick buttons</p>
 
@@ -224,19 +190,15 @@ body {
     <div class="slider-shell" id="waitArea">
         <div class="slider-label" id="sliderLabel">Checking payment…</div>
         <div class="glass-track" id="glassTrack">
-            <div class="glass-thumb">»</div>
+            <div class="glass-thumb">›</div>
         </div>
     </div>
 
 </div>
 
-<!-- NEW PAYMENT VERIFY LOGIC -->
-<script src="payment.js"></script>
-
 <script>
-// Fill Summary Info from URL
+/* Fill Summary from URL */
 const p = new URLSearchParams(window.location.search);
-
 const product = p.get("product");
 const orderId = p.get("orderId");
 const price = p.get("price");
@@ -252,17 +214,73 @@ document.getElementById("summaryShip").textContent = "₹" + delivery;
 let total = (parseInt(price) * parseInt(qty)) + parseInt(delivery);
 document.getElementById("summaryTotal").textContent = "₹" + total;
 
-// Build UPI Link
+/* Build UPI Link */
 const UPI_ID = "vinayaksasane999-2@oksbi";
 const MERCHANT = "Gauri Creations";
-
 const upiLink =
 `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT)}&am=${encodeURIComponent(total)}&cu=INR`;
 
 document.getElementById("btnGpay").href = upiLink;
 document.getElementById("btnPhonePe").href = upiLink;
+
+/* PAYMENT VERIFY LOGIC */
+const waitArea = document.getElementById("waitArea");
+const glassTrack = document.getElementById("glassTrack");
+const sliderLabel = document.getElementById("sliderLabel");
+
+document.getElementById("confirmButton").onclick = () => {
+    waitArea.style.display = "block";
+    glassTrack.classList.add("visible");
+    startPolling();
+};
+
+/* Poll backend every 4 seconds */
+let pollInterval = null;
+let fallbackTimeout = null;
+
+function startPolling(){
+    pollInterval = setInterval(checkPayment, 4000);
+
+    /* 2-minute fallback timeout */
+    fallbackTimeout = setTimeout(() => {
+        clearInterval(pollInterval);
+        sliderLabel.textContent = "Still waiting… If paid, contact support.";
+        glassTrack.classList.remove("visible");
+    }, 120000); // 2 min
+}
+
+function checkPayment(){
+    fetch(`https://script.google.com/macros/s/YOUR_VERIFY_SCRIPT/exec?action=checkStatus&orderId=${orderId}`)
+    .then(r=>r.json())
+    .then(d=>{
+        if(d.status === "confirmed"){
+            clearInterval(pollInterval);
+            clearTimeout(fallbackTimeout);
+
+            glassTrack.classList.add("success");
+            sliderLabel.textContent = "Payment Confirmed!";
+
+            /* glitter effect */
+            for(let i=0;i<10;i++){
+                setTimeout(()=>{
+                    const g = document.createElement("div");
+                    g.className="glitter";
+                    g.style.left = (Math.random()*240+20)+"px";
+                    g.style.top = (Math.random()*20+10)+"px";
+                    glassTrack.appendChild(g);
+                    setTimeout(()=>g.remove(),700);
+                }, i*120);
+            }
+
+            /* Redirect after 1.8s */
+            setTimeout(()=>{
+                window.location.href = `confirmation.html?orderId=${orderId}`;
+            },1800);
+        }
+    })
+    .catch(()=>{});
+}
 </script>
 
 </body>
-
 </html>
