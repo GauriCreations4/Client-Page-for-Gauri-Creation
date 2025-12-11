@@ -6,7 +6,7 @@
 <title>Order • Gauri Creations</title>
 <style>
     body { margin: 0; font-family: "Poppins", sans-serif; background: linear-gradient(135deg, #86e1ff, #ffd4b8); padding: 20px; color: #222; }
-    .container { max-width: 470px; margin: auto; background: #ffffffd8; padding: 25px; border-radius: 22px; backdrop-filter: blur(10px); box-shadow: 0 6px 18px rgba(0,0,0,0.18); text-align: center; }
+    .container { max-width: 520px; margin: auto; background: #ffffffd8; padding: 25px; border-radius: 22px; backdrop-filter: blur(10px); box-shadow: 0 6px 18px rgba(0,0,0,0.18); text-align: center; }
     .logo { width: 130px; display: block; margin: 0 auto 20px; border-radius: 12px; }
     h2 { margin-bottom: 10px; font-size: 22px; font-weight: 700; }
     .product-box { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 18px; text-align: left; }
@@ -18,18 +18,24 @@
     .summary { background: #fff; padding: 14px; border-radius: 15px; border: 1px solid #ddd; width: 92%; margin: 18px auto 0; text-align: left; }
     .summary div { font-size: 15px; margin-bottom: 6px; }
     .btn-proceed { width: 92%; padding: 14px; background: #007aff; color: white; border-radius: 14px; font-size: 17px; font-weight: 600; margin: 18px auto 0; border: none; display: block; }
+    .small { font-size:13px;color:#666 }
 </style>
 </head>
+
 <body>
+
 <div class="container">
+
     <img src="logo-gauri.jpeg" class="logo" alt="Gauri">
+
     <h2>Order Details</h2>
 
     <div class="product-box">
-        <img id="prodImg" class="product-img" src="" alt="Product">
+        <img id="prodImg" class="product-img" src="">
         <div style="text-align:left;">
-            <div id="prodName" class="product-title"></div>
+            <div id="prodName" class="product-title">Product</div>
             <div id="prodPrice" style="font-weight:600; color:#c62828;">₹0</div>
+            <div id="prodWeight" class="small">Weight: - g</div>
         </div>
     </div>
 
@@ -41,111 +47,144 @@
 
     <input id="custName" class="input-field" placeholder="Your Full Name">
     <input id="custPhone" class="input-field" placeholder="Phone Number">
+    <input id="custPincode" class="input-field" placeholder="Pincode (6 digits) — enter to calculate delivery" />
     <textarea id="custAddress" class="input-field" rows="3" placeholder="Full Delivery Address"></textarea>
     <textarea id="custNotes" class="input-field" rows="2" placeholder="Notes (optional)"></textarea>
 
     <div class="summary">
         <div><strong>Price:</strong> ₹<span id="sumPrice">0</span></div>
-        <div><strong>Delivery Charges:</strong> ₹<span id="sumDelivery">0</span></div>
+        <div><strong>Delivery Charges:</strong> ₹<span id="sumDelivery">0</span> <span class="small" id="deliveryNote"> (enter pincode to calculate)</span></div>
         <div><strong>Total Amount:</strong> ₹<span id="sumTotal">0</span></div>
         <div><strong>Expected Delivery:</strong> <span id="deliveryDate"></span></div>
     </div>
 
     <button class="btn-proceed" onclick="submitOrder()">Proceed to Payment</button>
+
 </div>
 
 <script>
-/* uses same script endpoint as backend createOrder action */
+/* Backend script (same as your other pages) */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxlp4ehND6OHfGY9ruPptTs4euh3U-v3y6IA90EfmwjuiFZD4BnoHDjifKAPG9B1T7/exec";
 
 let qty = 1;
+let prodName = "";
+let prodPrice = 0;
+let prodImg = "";
+let sku = "";
+let weightPerItem = 0; // grams
 
-/* Read product params from query string — accepts product OR sku + price */
+/* read query params; prefer SKU so we fetch product (price & weight authoritative) */
 const params = new URLSearchParams(window.location.search);
-let prodName = params.get("product") || params.get("name") || "";
-let prodPrice = parseFloat(params.get("price") || params.get("amount") || "0");
-let prodImg = params.get("img") || "";
-const sku = params.get("sku") || "";
-
-function safeDecode(v){ try{ return decodeURIComponent(v||""); }catch(e){ return v||""; } }
-prodName = safeDecode(prodName);
-prodImg = safeDecode(prodImg);
-if(!prodPrice && sku){
-  // Try fetching product detail by sku if price missing
-  fetch(SCRIPT_URL + "?action=getProduct&sku=" + encodeURIComponent(sku))
-    .then(r=>r.json()).then(d=>{
-      if(d && d.success && d.product){
-        const p = d.product;
-        if(!prodName) prodName = p["Name"] || "";
-        if(!prodPrice) prodPrice = Number(p["Price"] || 0);
-        if(!prodImg) prodImg = p["Image URL 1"] || "";
-        fillProduct();
-        updateSummary();
-      }
-    }).catch(()=>{ fillProduct(); updateSummary(); });
-} else {
+sku = params.get("sku") || params.get("productSku") || "";
+// fallback fields: sometimes product/name/price passed
+if(!sku){
+  prodName = params.get("product") || params.get("name") || "";
+  prodPrice = parseFloat(params.get("price") || params.get("amount") || "0") || 0;
+  prodImg = decodeURIComponent(params.get("img") || "") || "";
+  // weight may not be passed; will remain 0
   fillProduct();
   updateSummary();
+} else {
+  // fetch product details by SKU (to get weight, price, image)
+  fetch(SCRIPT_URL + "?action=getProduct&sku=" + encodeURIComponent(sku))
+    .then(r=>r.json())
+    .then(d=>{
+      if(d && d.success && d.product){
+        const p = d.product;
+        prodName = p["Name"] || prodName;
+        prodPrice = Number(p["Price"] || prodPrice || 0);
+        prodImg = p["Image URL 1"] ? normalizeMediaUrl(p["Image URL 1"]) : prodImg;
+        // Expect Weight column in grams — user confirmed weight exists
+        weightPerItem = Number(p["Weight"] || p["Weight (g)"] || p["Weight (grams)"] || 0) || Number(p["Weight_in_grams"] || 0) || 0;
+      }
+    })
+    .catch(err => console.error(err))
+    .finally(()=>{ fillProduct(); updateSummary(); });
+}
+
+function normalizeMediaUrl(url){
+  if(!url) return "";
+  url = String(url).trim();
+  if(url.includes("googleusercontent") || url.includes("lh3.googleusercontent.com")) return url;
+  const m = url.match(/[-A-Za-z0-9_]{20,}/);
+  if(m) return `https://lh3.googleusercontent.com/d/${m[0]}=w800`;
+  if(url.startsWith("https://drive.google.com/uc?export=view&id=")) return url;
+  return url;
 }
 
 function fillProduct(){
   document.getElementById("prodName").textContent = prodName || "(Product)";
-  document.getElementById("prodPrice").textContent = "₹" + (prodPrice || 0);
+  document.getElementById("prodPrice").textContent = "₹" + (prodPrice||0);
   document.getElementById("prodImg").src = prodImg || "logo-gauri.jpeg";
+  document.getElementById("prodWeight").textContent = "Weight: " + (weightPerItem ? weightPerItem + " g" : "— g");
 }
 
-/* shipping rules — same simple rules used elsewhere */
-function calcDelivery(pincode){
-  if(!pincode) return 79;
-  const pc = String(pincode).trim();
-  if(/^4/.test(pc)) return 49;
-  if(/^5/.test(pc)) return 59;
-  if(/^6/.test(pc)) return 69;
-  return 79;
+/* SHIPPING LOGIC: weight-slab based (per your decision)
+   0 - 250 g    -> ₹49
+   251 - 500 g  -> ₹59
+   501 - 1000 g -> ₹79
+   >1000 g      -> ₹79 + ₹30 per extra 500g (rounded up)
+*/
+function shippingByWeight(totalGrams){
+  if(!totalGrams || totalGrams <= 0) return 0;
+  if(totalGrams <= 250) return 49;
+  if(totalGrams <= 500) return 59;
+  if(totalGrams <= 1000) return 79;
+  // extra:
+  const extra = totalGrams - 1000;
+  const chunks = Math.ceil(extra / 500);
+  return 79 + (chunks * 30);
 }
 
-/* update summary */
+/* read pincode and calculate delivery — returns 0 if pincode not present */
+function calcDeliveryForPincode(pincode, totalGrams){
+  const pin = (pincode || "").toString().trim();
+  if(!/^\d{6}$/.test(pin)) return 0; // do not charge until valid 6-digit pincode entered
+  // you had zone rules earlier — but user chose weight slab only; still you could add small zone modifiers.
+  // We'll keep it weight-only for now as requested.
+  return shippingByWeight(totalGrams);
+}
+
 function updateSummary(){
   const subtotal = (prodPrice || 0) * qty;
-  // try to read pincode from address field start (first 6 digits) — if not present, default charge
-  const addr = (document.getElementById("custAddress").value || "").trim();
-  const pinMatch = addr.match(/\b(\d{6})\b/);
-  const pincode = pinMatch ? pinMatch[1] : "";
-  const delivery = calcDelivery(pincode);
+  const pin = document.getElementById("custPincode").value.trim();
+  const totalWeight = (weightPerItem || 0) * qty; // grams
+  const delivery = calcDeliveryForPincode(pin, totalWeight);
   const total = subtotal + delivery;
 
+  document.getElementById("qty").textContent = qty;
   document.getElementById("sumPrice").textContent = subtotal;
   document.getElementById("sumDelivery").textContent = delivery;
   document.getElementById("sumTotal").textContent = total;
 
-  let date = new Date();
-  date.setDate(date.getDate() + 7);
+  document.getElementById("deliveryNote").textContent = pin && delivery ? '' : ' (enter valid 6-digit pincode to calculate)';
+  const date = new Date(); date.setDate(date.getDate() + 7);
   document.getElementById("deliveryDate").textContent = date.toDateString();
 }
+
+/* wire inputs */
+document.getElementById("custPincode").addEventListener("input", updateSummary);
 document.getElementById("custAddress").addEventListener("input", updateSummary);
 
 function updateQty(val){
   qty = Math.max(1, qty + val);
-  document.getElementById("qty").textContent = qty;
   updateSummary();
 }
 
-/* Submit order -> call createOrder (backend) */
+/* submit order (calls your backend createOrder) */
 async function submitOrder(){
   const name = document.getElementById("custName").value.trim();
   const phone = document.getElementById("custPhone").value.trim();
   const address = document.getElementById("custAddress").value.trim();
   const notes = document.getElementById("custNotes").value.trim();
+  const pincode = document.getElementById("custPincode").value.trim();
 
-  if(!name || !phone || !address){
-    alert("Please fill name, phone and address.");
+  if(!name || !phone || !address || !/^\d{6}$/.test(pincode)){
+    alert("Please fill name, phone, address and valid 6-digit pincode.");
     return;
   }
 
-  const pincodeMatch = address.match(/\b(\d{6})\b/);
-  const pincode = pincodeMatch ? pincodeMatch[1] : "";
-
-  const delivery = calcDelivery(pincode);
+  const delivery = calcDeliveryForPincode(pincode, (weightPerItem||0) * qty);
   const subtotal = (prodPrice || 0) * qty;
   const total = subtotal + delivery;
 
@@ -173,20 +212,18 @@ async function submitOrder(){
     });
     const data = await res.json();
     if(!data || !data.success) throw new Error(data && data.message ? data.message : "Order creation failed");
-
     const orderId = data.orderId || data.order_id || "";
 
-    // Redirect to your payment page; pass necessary params
-    const params = new URLSearchParams({
+    const q = new URLSearchParams({
       orderId: orderId,
       product: prodName,
-      price: subtotal.toString(),
+      price: String(subtotal),
       qty: String(qty),
       delivery: String(delivery),
       img: prodImg || ""
     });
-    window.location.href = `payment.html?${params.toString()}`;
 
+    window.location.href = `payment.html?${q.toString()}`;
   }catch(err){
     console.error(err);
     alert("Error creating order: " + (err.message || err));
@@ -194,6 +231,10 @@ async function submitOrder(){
     if(btn){ btn.disabled = false; btn.textContent = "Proceed to Payment"; }
   }
 }
+
+/* ensure summary is correct when page loads */
+document.addEventListener('DOMContentLoaded', function(){ fillProduct(); updateSummary(); });
 </script>
+
 </body>
 </html>
