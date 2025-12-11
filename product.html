@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Product • Gauri Creations</title>
 <style>
   :root{
-    --bg: linear-gradient(135deg,#e3f2ff,#ffe5f3);
-    --glass-strong: rgba(255,255,255,0.98);
-    --glass-border: rgba(148,163,184,0.6);
-    --accent-grad: linear-gradient(135deg,#2563eb,#ec4899);
-    --muted: #6b7280;
+    --bg:linear-gradient(135deg,#e3f2ff,#ffe5f3);
+    --glass-strong:rgba(255,255,255,0.98);
+    --glass-border:rgba(148,163,184,0.6);
+    --accent-grad:linear-gradient(135deg,#2563eb,#ec4899);
+    --muted:#6b7280;
   }
   *{box-sizing:border-box}
   body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,'Poppins',sans-serif;background:var(--bg);padding:18px;display:flex;justify-content:center}
@@ -74,7 +74,7 @@
         <button id="btnWhatsapp" class="btn btn-outline">Order on WhatsApp</button>
       </div>
 
-      <div id="deliveryInfo" class="muted">Delivery: Calculated at order page</div>
+      <div id="deliveryInfo" class="muted">Delivery: calculated on order page</div>
     </div>
   </div>
 </div>
@@ -85,21 +85,21 @@
 </div>
 
 <script>
-/* single script URL used by your backend */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxlp4ehND6OHfGY9ruPptTs4euh3U-v3y6IA90EfmwjuiFZD4BnoHDjifKAPG9B1T7/exec";
 
-/* Robust normalize: catches Drive ids including - _ and alphanums; returns lh3 googleusercontent serving link */
+/* normalize google drive or direct url -> usable image link */
 function normalizeMediaUrl(url){
   if(!url) return "";
   url = String(url).trim();
   if(url.includes("googleusercontent") || url.includes("lh3.googleusercontent.com")) return url;
-  // match longer ids (20+ chars) allowing letters, numbers, - and _
+  // match longer ids (20+ chars) with - _ alphanum
   const m = url.match(/[-A-Za-z0-9_]{20,}/);
   if(m) return `https://lh3.googleusercontent.com/d/${m[0]}=w1000`;
-  // if already uc view
   if(url.startsWith("https://drive.google.com/uc?export=view&id=")) return url;
   return url;
 }
+
+function qs(name){ return document.getElementById(name); }
 
 function getQueryParams(){
   const out = {};
@@ -113,7 +113,6 @@ function getQueryParams(){
 
 let CURRENT_PRODUCT = null;
 
-/* load product by sku */
 async function loadProduct(){
   const qs = getQueryParams();
   const sku = qs.sku || "";
@@ -127,57 +126,48 @@ async function loadProduct(){
   }catch(err){ console.error(err); }
 }
 
-/* render product */
 function populateProduct(p){
-  document.getElementById("prodName").textContent = p["Name"] || "Product";
-  document.getElementById("prodSku").textContent = "SKU: " + (p["SKU"]||"");
-  document.getElementById("prodPrice").textContent = p["Price"] ? ("₹" + p["Price"]) : "₹0";
-  document.getElementById("prodDesc").textContent = p["Description"] || "";
-  document.getElementById("prodRating").textContent = p["Rating"] ? ("★ " + p["Rating"]) : "New";
+  qs('prodName').textContent = p["Name"] || "Product";
+  qs('prodSku').textContent = "SKU: " + (p["SKU"]||"");
+  qs('prodPrice').textContent = p["Price"] ? ("₹" + p["Price"]) : "₹0";
+  qs('prodDesc').textContent = p["Description"] || "";
+  qs('prodRating').textContent = p["Rating"] ? ("★ " + p["Rating"]) : "New";
 
-  const imgs = [];
-  for(let i=1;i<=5;i++){
-    const key = "Image URL " + i;
-    if(p[key]) imgs.push(normalizeMediaUrl(p[key]));
-  }
+  const imgs=[];
+  for(let i=1;i<=5;i++){ const key="Image URL "+i; if(p[key]) imgs.push(normalizeMediaUrl(p[key])); }
 
-  const main = document.getElementById("mainImage");
+  const main = qs('mainImage');
   main.src = imgs[0] || "";
-  main.alt = p["Name"] || "Product";
+  main.alt = p["Name"]||"Product";
 
-  const thumbs = document.getElementById("thumbs");
-  thumbs.innerHTML = "";
-  imgs.forEach((u, idx) => {
-    const d = document.createElement("div"); d.className = "thumb";
-    const im = document.createElement("img"); im.src = u; im.alt = `Img ${idx+1}`;
-    im.addEventListener("click", (ev) => { ev.stopPropagation(); main.src = u; });
+  const thumbs = qs('thumbs'); thumbs.innerHTML='';
+  imgs.forEach((u,idx)=>{
+    const d=document.createElement('div'); d.className='thumb';
+    const im=document.createElement('img'); im.src=u; im.alt='Img '+(idx+1);
+    im.addEventListener('click', (ev)=>{ ev.stopPropagation(); main.src=u; });
     d.appendChild(im); thumbs.appendChild(d);
   });
 
-  main.onclick = () => { if(main.src) openLightbox(main.src); };
+  main.onclick = ()=> { if(main.src) openLightbox(main.src); };
 
-  // Buy now → direct to order.html with params
-  document.getElementById("btnBuyNow").onclick = () => {
-    const name = encodeURIComponent(p["Name"] || "");
-    const price = encodeURIComponent(p["Price"] || "");
-    const img = encodeURIComponent(imgs[0] || "");
-    const sku = encodeURIComponent(p["SKU"] || "");
-    window.location.href = `order.html?product=${name}&price=${price}&img=${img}&sku=${sku}`;
+  qs('btnBuyNow').onclick = ()=> {
+    // Pass only SKU — order page will fetch price/weight itself
+    const skuParam = encodeURIComponent(p["SKU"] || "");
+    window.location.href = `order.html?sku=${skuParam}`;
   };
 
-  // WhatsApp
-  document.getElementById("btnWhatsapp").onclick = () => {
+  qs('btnWhatsapp').onclick = ()=> {
     const phone = "7745092723";
     const msg = `Hello Gauri Creations, I want to order: Product: ${p["Name"]||''} | SKU: ${p["SKU"]||''} | Price: ₹${p["Price"]||''}`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 }
 
-/* lightbox functions */
-function openLightbox(url){ document.getElementById("lightboxImg").src = url; document.getElementById("lightboxOverlay").style.display = 'flex'; }
-function closeLightbox(){ document.getElementById("lightboxOverlay").style.display = 'none'; }
+/* lightbox */
+function openLightbox(url){ qs('lightboxImg').src=url; qs('lightboxOverlay').style.display='flex'; }
+function closeLightbox(){ qs('lightboxOverlay').style.display='none'; }
 
-document.addEventListener("DOMContentLoaded", loadProduct);
+document.addEventListener('DOMContentLoaded', loadProduct);
 </script>
 </body>
 </html>
