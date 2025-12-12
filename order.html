@@ -8,17 +8,23 @@
     body { margin: 0; font-family: "Poppins", sans-serif; background: linear-gradient(135deg, #86e1ff, #ffd4b8); padding: 20px; color: #222; }
     .container { max-width: 520px; margin: auto; background: #ffffffd8; padding: 25px; border-radius: 22px; backdrop-filter: blur(10px); box-shadow: 0 6px 18px rgba(0,0,0,0.18); text-align: center; }
     .logo { width: 130px; display: block; margin: 0 auto 20px; border-radius: 12px; }
-    h2 { margin-bottom: 10px; font-size: 22px; font-weight: 700; }
+    h2 { margin-bottom: 6px; font-size: 22px; font-weight: 700; }
+    .login-info { font-size: 14px; margin-bottom: 10px; color:#333; font-weight:600; }
+
     .product-box { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 18px; text-align: left; }
     .product-img { width: 95px; height: 95px; border-radius: 15px; object-fit: cover; }
-    .product-title { font-size: 18px; font-weight: 600; }
-    .input-field { width: 92%; margin: 12px auto 0; display: block; padding: 13px; border-radius: 12px; border: 1px solid #bbb; font-size: 15px; }
-    .qty-row { width: 92%; margin: 18px auto 14px; display: flex; justify-content: space-between; align-items: center; }
-    .qty-btn { padding: 8px 16px; border-radius: 10px; background: #007aff; color: white; border: none; font-size: 18px; font-weight: 600; }
+
+    .input-field { width: 92%; margin: 12px auto 0; display: block; padding: 13px; border-radius: 12px; border: 1px solid #bbb; font-size: 15px; background:white; }
+
     .summary { background: #fff; padding: 14px; border-radius: 15px; border: 1px solid #ddd; width: 92%; margin: 18px auto 0; text-align: left; }
     .summary div { font-size: 15px; margin-bottom: 6px; }
-    .btn-proceed { width: 92%; padding: 14px; background: #007aff; color: white; border-radius: 14px; font-size: 17px; font-weight: 600; margin: 18px auto 0; border: none; display: block; }
-    .small { font-size:13px;color:#666 }
+
+    .btn-proceed { width: 92%; padding: 14px; background: #007aff; color: white; border-radius: 14px; font-size: 17px; font-weight: 600; margin: 18px auto 0; border: none; display: block; cursor:pointer; }
+
+    .qty-row { width: 92%; margin: 18px auto 14px; display: flex; justify-content: space-between; align-items: center; }
+    .qty-btn { padding: 8px 16px; border-radius: 10px; background: #007aff; color: white; border: none; font-size: 18px; font-weight: 600; cursor:pointer; }
+
+    .logout { margin-top:6px; font-size:13px; color:#007aff; cursor:pointer; text-decoration:underline; }
 </style>
 </head>
 
@@ -26,16 +32,19 @@
 
 <div class="container">
 
-    <img src="logo-gauri.jpeg" class="logo" alt="Gauri">
+    <img src="logo-gauri.jpeg" class="logo">
 
     <h2>Order Details</h2>
 
+    <!-- ⭐ Logged-in user info -->
+    <div class="login-info" id="loginStatus">Checking login…</div>
+
     <div class="product-box">
-        <img id="prodImg" class="product-img" src="">
-        <div style="text-align:left;">
-            <div id="prodName" class="product-title">Product</div>
+        <img id="prodImg" class="product-img">
+        <div>
+            <div id="prodName" style="font-size:18px;font-weight:600;">Product</div>
             <div id="prodPrice" style="font-weight:600; color:#c62828;">₹0</div>
-            <div id="prodWeight" class="small">Weight: - g</div>
+            <div id="prodWeight" style="font-size:13px;color:#666;">Weight: - g</div>
         </div>
     </div>
 
@@ -47,193 +56,182 @@
 
     <input id="custName" class="input-field" placeholder="Your Full Name">
     <input id="custPhone" class="input-field" placeholder="Phone Number">
-    <input id="custPincode" class="input-field" placeholder="Pincode (6 digits) — enter to calculate delivery" />
+    <input id="custPincode" class="input-field" placeholder="Pincode (6 digits)">
     <textarea id="custAddress" class="input-field" rows="3" placeholder="Full Delivery Address"></textarea>
     <textarea id="custNotes" class="input-field" rows="2" placeholder="Notes (optional)"></textarea>
 
     <div class="summary">
         <div><strong>Price:</strong> ₹<span id="sumPrice">0</span></div>
-        <div><strong>Delivery Charges:</strong> ₹<span id="sumDelivery">0</span> <span class="small" id="deliveryNote"> (enter pincode to calculate)</span></div>
+        <div><strong>Delivery Charges:</strong> ₹<span id="sumDelivery">0</span> <span style="font-size:13px;color:#666" id="deliveryNote"> (enter pincode)</span></div>
         <div><strong>Total Amount:</strong> ₹<span id="sumTotal">0</span></div>
         <div><strong>Expected Delivery:</strong> <span id="deliveryDate"></span></div>
     </div>
 
     <button class="btn-proceed" onclick="submitOrder()">Proceed to Payment</button>
+    <div class="logout" onclick="logout()">Logout</div>
 
 </div>
 
+
 <script>
-/* Backend script (same as your other pages) */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxlp4ehND6OHfGY9ruPptTs4euh3U-v3y6IA90EfmwjuiFZD4BnoHDjifKAPG9B1T7/exec";
+/* Backend URL */
+const SCRIPT_URL = "YOUR_SCRIPT_URL_HERE";
+
+/* ⭐ LOGIN CHECK — redirect if not logged in */
+let CUSTOMER = null;
+
+function checkLogin() {
+    const raw = localStorage.getItem("gc_customer");
+    if (!raw) {
+        window.location.href = "login.html?redirect=" + encodeURIComponent(location.href);
+        return;
+    }
+    CUSTOMER = JSON.parse(raw);
+    document.getElementById("loginStatus").textContent = "Logged in as: " + CUSTOMER.name;
+}
+
+/* logout */
+function logout() {
+    localStorage.removeItem("gc_customer");
+    window.location.href = "login.html";
+}
+
+/* ===============================
+      PRODUCT LOADING
+=============================== */
 
 let qty = 1;
 let prodName = "";
 let prodPrice = 0;
 let prodImg = "";
 let sku = "";
-let weightPerItem = 0; // grams
+let weightPerItem = 0;
 
-/* read query params; prefer SKU so we fetch product (price & weight authoritative) */
 const params = new URLSearchParams(window.location.search);
-sku = params.get("sku") || params.get("productSku") || "";
-// fallback fields: sometimes product/name/price passed
-if(!sku){
-  prodName = params.get("product") || params.get("name") || "";
-  prodPrice = parseFloat(params.get("price") || params.get("amount") || "0") || 0;
-  prodImg = decodeURIComponent(params.get("img") || "") || "";
-  // weight may not be passed; will remain 0
-  fillProduct();
-  updateSummary();
-} else {
-  // fetch product details by SKU (to get weight, price, image)
-  fetch(SCRIPT_URL + "?action=getProduct&sku=" + encodeURIComponent(sku))
-    .then(r=>r.json())
-    .then(d=>{
-      if(d && d.success && d.product){
-        const p = d.product;
-        prodName = p["Name"] || prodName;
-        prodPrice = Number(p["Price"] || prodPrice || 0);
-        prodImg = p["Image URL 1"] ? normalizeMediaUrl(p["Image URL 1"]) : prodImg;
-        // Expect Weight column in grams — user confirmed weight exists
-        weightPerItem = Number(p["Weight"] || p["Weight (g)"] || p["Weight (grams)"] || 0) || Number(p["Weight_in_grams"] || 0) || 0;
-      }
-    })
-    .catch(err => console.error(err))
-    .finally(()=>{ fillProduct(); updateSummary(); });
+sku = params.get("sku") || "";
+
+/* Fetch full product details */
+fetch(SCRIPT_URL + "?action=getProduct&sku=" + encodeURIComponent(sku))
+    .then(r => r.json())
+    .then(d => {
+        if (d && d.success && d.product) {
+            const p = d.product;
+            prodName = p["Name"];
+            prodPrice = Number(p["Price"]);
+            prodImg = p["Image URL 1"];
+            weightPerItem = Number(p["Weight"] || 0);
+
+            document.getElementById("prodName").textContent = prodName;
+            document.getElementById("prodPrice").textContent = "₹" + prodPrice;
+            document.getElementById("prodImg").src = prodImg;
+            document.getElementById("prodWeight").textContent = "Weight: " + weightPerItem + " g";
+
+            updateSummary();
+        }
+    });
+
+/* ===============================
+      SUMMARY + SHIPPING
+=============================== */
+
+function shippingByWeight(g) {
+    if (g <= 250) return 49;
+    if (g <= 500) return 59;
+    if (g <= 1000) return 79;
+    return 79 + Math.ceil((g - 1000) / 500) * 30;
 }
 
-function normalizeMediaUrl(url){
-  if(!url) return "";
-  url = String(url).trim();
-  if(url.includes("googleusercontent") || url.includes("lh3.googleusercontent.com")) return url;
-  const m = url.match(/[-A-Za-z0-9_]{20,}/);
-  if(m) return `https://lh3.googleusercontent.com/d/${m[0]}=w800`;
-  if(url.startsWith("https://drive.google.com/uc?export=view&id=")) return url;
-  return url;
+function updateSummary() {
+    const subtotal = prodPrice * qty;
+    const pin = document.getElementById("custPincode").value.trim();
+    const totalWeight = weightPerItem * qty;
+    const delivery = /^\d{6}$/.test(pin) ? shippingByWeight(totalWeight) : 0;
+    const total = subtotal + delivery;
+
+    document.getElementById("qty").textContent = qty;
+    document.getElementById("sumPrice").textContent = subtotal;
+    document.getElementById("sumDelivery").textContent = delivery;
+    document.getElementById("sumTotal").textContent = total;
+
+    const d = new Date();
+    d.setDate(d.getDate() + 7);
+    document.getElementById("deliveryDate").textContent = d.toDateString();
 }
 
-function fillProduct(){
-  document.getElementById("prodName").textContent = prodName || "(Product)";
-  document.getElementById("prodPrice").textContent = "₹" + (prodPrice||0);
-  document.getElementById("prodImg").src = prodImg || "logo-gauri.jpeg";
-  document.getElementById("prodWeight").textContent = "Weight: " + (weightPerItem ? weightPerItem + " g" : "— g");
+function updateQty(v) {
+    qty = Math.max(1, qty + v);
+    updateSummary();
 }
 
-/* SHIPPING LOGIC: weight-slab based (per your decision)
-   0 - 250 g    -> ₹49
-   251 - 500 g  -> ₹59
-   501 - 1000 g -> ₹79
-   >1000 g      -> ₹79 + ₹30 per extra 500g (rounded up)
-*/
-function shippingByWeight(totalGrams){
-  if(!totalGrams || totalGrams <= 0) return 0;
-  if(totalGrams <= 250) return 49;
-  if(totalGrams <= 500) return 59;
-  if(totalGrams <= 1000) return 79;
-  // extra:
-  const extra = totalGrams - 1000;
-  const chunks = Math.ceil(extra / 500);
-  return 79 + (chunks * 30);
-}
-
-/* read pincode and calculate delivery — returns 0 if pincode not present */
-function calcDeliveryForPincode(pincode, totalGrams){
-  const pin = (pincode || "").toString().trim();
-  if(!/^\d{6}$/.test(pin)) return 0; // do not charge until valid 6-digit pincode entered
-  // you had zone rules earlier — but user chose weight slab only; still you could add small zone modifiers.
-  // We'll keep it weight-only for now as requested.
-  return shippingByWeight(totalGrams);
-}
-
-function updateSummary(){
-  const subtotal = (prodPrice || 0) * qty;
-  const pin = document.getElementById("custPincode").value.trim();
-  const totalWeight = (weightPerItem || 0) * qty; // grams
-  const delivery = calcDeliveryForPincode(pin, totalWeight);
-  const total = subtotal + delivery;
-
-  document.getElementById("qty").textContent = qty;
-  document.getElementById("sumPrice").textContent = subtotal;
-  document.getElementById("sumDelivery").textContent = delivery;
-  document.getElementById("sumTotal").textContent = total;
-
-  document.getElementById("deliveryNote").textContent = pin && delivery ? '' : ' (enter valid 6-digit pincode to calculate)';
-  const date = new Date(); date.setDate(date.getDate() + 7);
-  document.getElementById("deliveryDate").textContent = date.toDateString();
-}
-
-/* wire inputs */
 document.getElementById("custPincode").addEventListener("input", updateSummary);
-document.getElementById("custAddress").addEventListener("input", updateSummary);
 
-function updateQty(val){
-  qty = Math.max(1, qty + val);
-  updateSummary();
-}
+/* ===============================
+      SUBMIT ORDER
+=============================== */
 
-/* submit order (calls your backend createOrder) */
-async function submitOrder(){
-  const name = document.getElementById("custName").value.trim();
-  const phone = document.getElementById("custPhone").value.trim();
-  const address = document.getElementById("custAddress").value.trim();
-  const notes = document.getElementById("custNotes").value.trim();
-  const pincode = document.getElementById("custPincode").value.trim();
+async function submitOrder() {
+    if (!CUSTOMER) return alert("Not logged in!");
 
-  if(!name || !phone || !address || !/^\d{6}$/.test(pincode)){
-    alert("Please fill name, phone, address and valid 6-digit pincode.");
-    return;
-  }
+    const name = document.getElementById("custName").value.trim();
+    const phone = document.getElementById("custPhone").value.trim();
+    const address = document.getElementById("custAddress").value.trim();
+    const notes = document.getElementById("custNotes").value.trim();
+    const pin = document.getElementById("custPincode").value.trim();
 
-  const delivery = calcDeliveryForPincode(pincode, (weightPerItem||0) * qty);
-  const subtotal = (prodPrice || 0) * qty;
-  const total = subtotal + delivery;
+    if (!name || !phone || !address || !/^\d{6}$/.test(pin)) {
+        alert("Please fill all required fields.");
+        return;
+    }
 
-  const payload = {
-    productSku: sku || "",
-    productName: prodName || "",
-    qty: qty,
-    price: prodPrice || 0,
-    delivery: delivery,
-    total: total,
-    name: name,
-    phone: phone,
-    email: "",
-    address: address,
-    notes: notes
-  };
+    const subtotal = prodPrice * qty;
+    const delivery = shippingByWeight(weightPerItem * qty);
+    const total = subtotal + delivery;
 
-  try{
-    const btn = document.querySelector(".btn-proceed");
-    if(btn){ btn.disabled = true; btn.textContent = "Creating order…"; }
+    const payload = {
+        customerId: CUSTOMER.id,
+        productSku: sku,
+        productName: prodName,
+        qty,
+        price: prodPrice,
+        delivery,
+        total,
+        name,
+        phone,
+        email: CUSTOMER.email,
+        address,
+        notes
+    };
 
     const res = await fetch(SCRIPT_URL + "?action=createOrder", {
-      method: "POST",
-      body: JSON.stringify(payload)
+        method: "POST",
+        body: JSON.stringify(payload)
     });
+
     const data = await res.json();
-    if(!data || !data.success) throw new Error(data && data.message ? data.message : "Order creation failed");
-    const orderId = data.orderId || data.order_id || "";
 
-    const q = new URLSearchParams({
-      orderId: orderId,
-      product: prodName,
-      price: String(subtotal),
-      qty: String(qty),
-      delivery: String(delivery),
-      img: prodImg || ""
-    });
+    if (!data.success) return alert("Order failed");
 
-    window.location.href = `payment.html?${q.toString()}`;
-  }catch(err){
-    console.error(err);
-    alert("Error creating order: " + (err.message || err));
-    const btn = document.querySelector(".btn-proceed");
-    if(btn){ btn.disabled = false; btn.textContent = "Proceed to Payment"; }
-  }
+    window.location.href =
+        "payment.html?orderId=" + data.orderId +
+        "&product=" + encodeURIComponent(prodName) +
+        "&price=" + subtotal +
+        "&qty=" + qty +
+        "&delivery=" + delivery +
+        "&img=" + encodeURIComponent(prodImg);
 }
 
-/* ensure summary is correct when page loads */
-document.addEventListener('DOMContentLoaded', function(){ fillProduct(); updateSummary(); });
+/* Auto-fill customer details */
+function autofillCustomer() {
+    if (!CUSTOMER) return;
+    document.getElementById("custName").value = CUSTOMER.name;
+    document.getElementById("custPhone").value = CUSTOMER.phone || "";
+    document.getElementById("custAddress").value = CUSTOMER.address || "";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    checkLogin();
+    autofillCustomer();
+});
 </script>
 
 </body>
