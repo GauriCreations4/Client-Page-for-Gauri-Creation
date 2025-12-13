@@ -6,129 +6,114 @@
 <title>Register • Gauri Creations</title>
 
 <style>
-    body {
-        margin: 0;
-        font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg, #e3f2ff, #ffe5f3);
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-    }
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:"Poppins",sans-serif;
+  background:linear-gradient(135deg,#86e1ff,#ffd4b8);
+}
 
-    .card {
-        width: 100%;
-        max-width: 420px;
-        background: rgba(255,255,255,0.88);
-        border-radius: 22px;
-        padding: 28px 22px;
-        text-align: center;
-        box-shadow: 0 10px 35px rgba(0,0,0,0.18);
-        backdrop-filter: blur(10px);
-        animation: fadeIn .6s ease;
-    }
+.card{
+  width:100%;
+  max-width:420px;
+  background:#ffffffee;
+  padding:28px;
+  border-radius:22px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.25);
+  text-align:center;
+}
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
+.logo{
+  width:90px;
+  border-radius:14px;
+  margin-bottom:10px;
+}
 
-    .logo {
-        width: 110px;
-        border-radius: 16px;
-        margin-bottom: 10px;
-    }
+h2{margin:10px 0 5px}
+p{font-size:13px;color:#666;margin-bottom:18px}
 
-    .title {
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 18px;
-    }
+input,textarea{
+  width:100%;
+  padding:14px;
+  margin-bottom:12px;
+  border-radius:12px;
+  border:1px solid #bbb;
+  font-size:15px;
+}
 
-    input {
-        width: 100%;
-        padding: 12px 14px;
-        border-radius: 12px;
-        border: 1px solid #ccc;
-        margin-bottom: 12px;
-        font-size: 15px;
-    }
+textarea{resize:none}
 
-    .btn {
-        width: 100%;
-        padding: 13px;
-        background: linear-gradient(135deg,#2563eb,#ec4899);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        margin-top: 8px;
-    }
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#2563eb,#ec4899);
+  color:white;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+}
 
-    .link {
-        margin-top: 14px;
-        font-size: 14px;
-    }
-
-    .link a {
-        color: #2563eb;
-        font-weight: 600;
-        text-decoration: none;
-    }
+.link{
+  margin-top:14px;
+  font-size:13px;
+}
+.link a{
+  color:#2563eb;
+  text-decoration:none;
+  font-weight:600;
+}
 </style>
 </head>
 
 <body>
 
 <div class="card">
-    <img src="logo-gauri.jpeg" class="logo" />
+  <img src="logo-gauri.jpeg" class="logo">
+  <h2>Create Account</h2>
+  <p>Join Gauri Creations</p>
 
-    <div class="title">Create Account 💕</div>
+  <input id="name" placeholder="Full Name">
+  <input id="email" type="email" placeholder="Email">
+  <input id="phone" placeholder="Phone Number">
+  <textarea id="address" rows="2" placeholder="Delivery Address"></textarea>
+  <input id="password" type="password" placeholder="Password">
 
-    <input id="name" placeholder="Full Name">
-    <input id="email" type="email" placeholder="Email">
-    <input id="phone" placeholder="Phone Number">
-    <input id="password" type="password" placeholder="Password">
+  <button onclick="register()">Register</button>
 
-    <button class="btn" onclick="registerUser()">Register</button>
-
-    <div class="link">
-        Already have an account? <a href="login.html">Login</a>
-    </div>
+  <div class="link">
+    Already registered? <a href="login.html">Login</a>
+  </div>
 </div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbwxlp4ehND6OHfGY9ruPptTs4euh3U-v3y6IA90EfmwjuiFZD4BnoHDjifKAPG9B1T7/exec";
+const SCRIPT_URL="YOUR_SCRIPT_URL";
 
-async function registerUser() {
-    const name  = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const pass  = document.getElementById("password").value.trim();
+async function register(){
+  const body={
+    name: name.value.trim(),
+    email: email.value.trim(),
+    phone: phone.value.trim(),
+    address: address.value.trim(),
+    password: password.value.trim()
+  };
 
-    if(!name || !email || !phone || !pass){
-        alert("Please fill all fields.");
-        return;
-    }
+  if(Object.values(body).some(v=>!v)){alert("Fill all fields");return;}
 
-    const payload = { name, email, phone, password: pass, address: "" };
+  const res=await fetch(SCRIPT_URL+"?action=customerSignup",{
+    method:"POST",
+    body:JSON.stringify(body)
+  });
+  const data=await res.json();
 
-    const res = await fetch(API + "?action=customerSignup", {
-        method: "POST",
-        body: JSON.stringify(payload)
-    });
+  if(!data.success){alert("Signup failed");return;}
 
-    const data = await res.json();
-
-    if(data.success){
-        alert("Account created! Please login.");
-        window.location.href = "login.html";
-    } else {
-        alert("Error: " + data.message);
-    }
+  alert("Account created successfully ❤️");
+  window.location.href="login.html";
 }
 </script>
 
