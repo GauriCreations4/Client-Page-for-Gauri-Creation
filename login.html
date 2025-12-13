@@ -29,7 +29,6 @@ body{
   border-radius:14px;
   margin-bottom:12px;
 }
-h2{margin:6px 0 14px}
 input{
   width:100%;
   padding:13px;
@@ -50,6 +49,11 @@ button{
   font-weight:600;
   cursor:pointer;
 }
+.error{
+  color:#dc2626;
+  font-size:13px;
+  margin-top:10px;
+}
 .small{
   font-size:13px;
   margin-top:14px;
@@ -58,11 +62,6 @@ button{
   color:#2563eb;
   font-weight:600;
   text-decoration:none;
-}
-.error{
-  color:#dc2626;
-  font-size:13px;
-  margin-top:10px;
 }
 </style>
 </head>
@@ -89,8 +88,8 @@ const SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbwxlp4ehND6OHfGY9ruPptTs4euh3U-v3y6IA90EfmwjuiFZD4BnoHDjifKAPG9B1T7/exec";
 
 async function login(){
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
   const errorBox = document.getElementById("error");
   errorBox.textContent = "";
 
@@ -112,16 +111,19 @@ async function login(){
       return;
     }
 
-    // ✅ SAVE SESSION
-    localStorage.setItem("gc_customer", JSON.stringify(data.customer));
+    // ✅ SAVE SESSION (FIXED KEY)
+    localStorage.setItem("gc_user", JSON.stringify(data.customer));
 
-    // ✅ REDIRECT (THIS WAS MISSING EARLIER)
+    // ✅ REDIRECT
     window.location.href = "store.html";
 
-  }catch(err){
+  }catch(e){
     errorBox.textContent = "Network error. Try again.";
   }
 }
+
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 </script>
 
 </body>
