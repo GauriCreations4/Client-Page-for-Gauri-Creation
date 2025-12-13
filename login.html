@@ -6,129 +6,103 @@
 <title>Login • Gauri Creations</title>
 
 <style>
-    body {
-        margin: 0;
-        font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg, #e3f2ff, #ffe5f3);
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-    }
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:"Poppins",sans-serif;
+  background:linear-gradient(135deg,#86e1ff,#ffd4b8);
+}
 
-    .card {
-        width: 100%;
-        max-width: 420px;
-        background: rgba(255,255,255,0.88);
-        border-radius: 22px;
-        padding: 28px 22px;
-        text-align: center;
-        box-shadow: 0 10px 35px rgba(0,0,0,0.18);
-        backdrop-filter: blur(10px);
-        animation: fadeIn .6s ease;
-    }
+.card{
+  width:100%;
+  max-width:380px;
+  background:#ffffffee;
+  padding:28px;
+  border-radius:22px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.25);
+  text-align:center;
+}
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
+.logo{
+  width:90px;
+  border-radius:14px;
+  margin-bottom:10px;
+}
 
-    .logo {
-        width: 110px;
-        border-radius: 16px;
-        margin-bottom: 10px;
-    }
+h2{margin:10px 0 5px}
+p{font-size:13px;color:#666;margin-bottom:18px}
 
-    .title {
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 18px;
-    }
+input{
+  width:100%;
+  padding:14px;
+  margin-bottom:12px;
+  border-radius:12px;
+  border:1px solid #bbb;
+  font-size:15px;
+}
 
-    input {
-        width: 100%;
-        padding: 12px 14px;
-        border-radius: 12px;
-        border: 1px solid #ccc;
-        margin-bottom: 12px;
-        font-size: 15px;
-    }
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#2563eb,#ec4899);
+  color:white;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+}
 
-    .btn {
-        width: 100%;
-        padding: 13px;
-        background: linear-gradient(135deg,#2563eb,#ec4899);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        margin-top: 8px;
-    }
-
-    .link {
-        margin-top: 14px;
-        font-size: 14px;
-    }
-
-    .link a {
-        color: #2563eb;
-        font-weight: 600;
-        text-decoration: none;
-    }
+.link{
+  margin-top:14px;
+  font-size:13px;
+}
+.link a{
+  color:#2563eb;
+  text-decoration:none;
+  font-weight:600;
+}
 </style>
 </head>
 
 <body>
 
 <div class="card">
-    <img src="logo-gauri.jpeg" class="logo" />
+  <img src="logo-gauri.jpeg" class="logo">
+  <h2>Welcome Back</h2>
+  <p>Login to continue shopping</p>
 
-    <div class="title">Welcome Back 💖</div>
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
 
-    <input id="email" type="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
 
-    <button class="btn" onclick="login()">Login</button>
-
-    <div class="link">
-        New here? <a href="register.html">Create an account</a>
-    </div>
+  <div class="link">
+    New here? <a href="register.html">Create account</a>
+  </div>
 </div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbwxlp4ehND6OHfGY9ruPptTs4euh3U-v3y6IA90EfmwjuiFZD4BnoHDjifKAPG9B1T7/exec";
+const SCRIPT_URL="YOUR_SCRIPT_URL";
 
-async function login() {
-    const email = document.getElementById("email").value.trim();
-    const pass  = document.getElementById("password").value.trim();
+async function login(){
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value.trim();
+  if(!email||!password){alert("Please fill all fields");return;}
 
-    if (!email || !pass) {
-        alert("Please enter Email & Password.");
-        return;
-    }
+  const res=await fetch(SCRIPT_URL+"?action=customerLogin",{
+    method:"POST",
+    body:JSON.stringify({email,password})
+  });
+  const data=await res.json();
 
-    const payload = { email, password: pass };
+  if(!data.success){alert(data.message);return;}
 
-    const res = await fetch(API + "?action=customerLogin", {
-        method: "POST",
-        body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-        // store user info
-        localStorage.setItem("customerId", data.customer.id);
-        localStorage.setItem("customerName", data.customer.name);
-        localStorage.setItem("customerEmail", data.customer.email);
-
-        window.location.href = "store.html";
-    } else {
-        alert("Invalid login. Please try again.");
-    }
+  localStorage.setItem("gc_customer",JSON.stringify(data.customer));
+  window.location.href="store.html";
 }
 </script>
 
