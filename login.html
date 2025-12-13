@@ -6,69 +6,74 @@
 <title>Login • Gauri Creations</title>
 
 <style>
-:root{
-  --accent: linear-gradient(135deg,#2563eb,#ec4899);
-}
-*{box-sizing:border-box}
-
 body{
   margin:0;
   min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
   font-family:Poppins,system-ui;
-  background:linear-gradient(135deg,#86e1ff,#ffd4b8);
+  background:linear-gradient(135deg,#8fd3f4,#fbc2eb);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:16px;
 }
 
-/* CARD */
 .card{
   width:100%;
   max-width:380px;
-  background:#ffffffee;
-  padding:26px;
-  border-radius:22px;
-  box-shadow:0 20px 40px rgba(0,0,0,.25);
+  background:#ffffff;
+  border-radius:26px;
+  padding:28px 22px;
   text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
 }
 
-/* LOGO */
 .logo{
   width:90px;
   border-radius:14px;
-  margin-bottom:10px;
+  margin-bottom:12px;
 }
 
-/* INPUTS */
-input{
-  width:100%;
-  padding:14px;
-  margin-top:14px;
-  border-radius:12px;
-  border:1px solid #ccc;
-  font-size:15px;
+h2{margin:8px 0}
+.sub{color:#666;font-size:14px;margin-bottom:20px}
+
+/* ⭐ FIX STARTS HERE */
+.form{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
 }
 
-/* BUTTON */
-button{
+.form input{
   width:100%;
-  margin-top:18px;
+  max-width:320px;
   padding:14px;
-  border:none;
-  border-radius:999px;
-  background:var(--accent);
-  color:#fff;
   font-size:16px;
+  border-radius:14px;
+  border:1px solid #ccc;
+  outline:none;
+  box-sizing:border-box;
+}
+/* ⭐ FIX ENDS HERE */
+
+.btn{
+  width:100%;
+  max-width:320px;
+  padding:14px;
+  border-radius:999px;
+  border:none;
+  font-size:17px;
   font-weight:600;
-  cursor:pointer;
+  background:linear-gradient(135deg,#2563eb,#ec4899);
+  color:#fff;
+  margin-top:8px;
 }
 
-/* LINKS */
-.small{
+.footer{
   margin-top:14px;
-  font-size:13px;
+  font-size:14px;
 }
-a{color:#2563eb;text-decoration:none;font-weight:600}
+.footer a{color:#2563eb;text-decoration:none;font-weight:600}
 </style>
 </head>
 
@@ -76,41 +81,36 @@ a{color:#2563eb;text-decoration:none;font-weight:600}
 
 <div class="card">
   <img src="logo-gauri.jpeg" class="logo">
-
   <h2>Welcome Back</h2>
-  <p style="color:#555;font-size:14px">Login to continue</p>
+  <div class="sub">Login to continue shopping</div>
 
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+  <div class="form">
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button class="btn" onclick="login()">Login</button>
+  </div>
 
-  <button onclick="login()">Login</button>
-
-  <div class="small">
+  <div class="footer">
     New here? <a href="register.html">Create account</a>
   </div>
 </div>
 
 <script>
-const API = "YOUR_SCRIPT_URL";
+const SCRIPT_URL = "YOUR_SCRIPT_URL";
 
 function login(){
-  const email=document.getElementById("email").value.trim();
-  const password=document.getElementById("password").value.trim();
-
-  if(!email || !password){
-    alert("Please fill all fields");
-    return;
-  }
-
-  fetch(API+"?action=customerLogin",{
+  fetch(SCRIPT_URL+"?action=customerLogin",{
     method:"POST",
-    body:JSON.stringify({email,password})
+    body:JSON.stringify({
+      email:email.value,
+      password:password.value
+    })
   })
   .then(r=>r.json())
   .then(d=>{
     if(!d.success) return alert("Invalid login");
     localStorage.setItem("customer",JSON.stringify(d.customer));
-    window.location.href="store.html";
+    location.href="store.html";
   });
 }
 </script>
