@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login • Gauri Creations</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #e3f2ff, #ffe5f3);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 420px;
+        background: rgba(255,255,255,0.88);
+        border-radius: 22px;
+        padding: 28px 22px;
+        text-align: center;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.18);
+        backdrop-filter: blur(10px);
+        animation: fadeIn .6s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+        width: 110px;
+        border-radius: 16px;
+        margin-bottom: 10px;
+    }
+
+    .title {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 18px;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid #ccc;
+        margin-bottom: 12px;
+        font-size: 15px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 13px;
+        background: linear-gradient(135deg,#2563eb,#ec4899);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 8px;
+    }
+
+    .link {
+        margin-top: 14px;
+        font-size: 14px;
+    }
+
+    .link a {
+        color: #2563eb;
+        font-weight: 600;
+        text-decoration: none;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <img src="logo-gauri.jpeg" class="logo" />
+
+    <div class="title">Welcome Back 💖</div>
+
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <button class="btn" onclick="login()">Login</button>
+
+    <div class="link">
+        New here? <a href="register.html">Create an account</a>
+    </div>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbwxlp4ehND6OHfGY9ruPptTs4euh3U-v3y6IA90EfmwjuiFZD4BnoHDjifKAPG9B1T7/exec";
+
+async function login() {
+    const email = document.getElementById("email").value.trim();
+    const pass  = document.getElementById("password").value.trim();
+
+    if (!email || !pass) {
+        alert("Please enter Email & Password.");
+        return;
+    }
+
+    const payload = { email, password: pass };
+
+    const res = await fetch(API + "?action=customerLogin", {
+        method: "POST",
+        body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        // store user info
+        localStorage.setItem("customerId", data.customer.id);
+        localStorage.setItem("customerName", data.customer.name);
+        localStorage.setItem("customerEmail", data.customer.email);
+
+        window.location.href = "store.html";
+    } else {
+        alert("Invalid login. Please try again.");
+    }
+}
+</script>
+
+</body>
+</html>
