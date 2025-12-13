@@ -157,12 +157,11 @@ const SCRIPT_URL =
 async function loadProducts(){
   try{
     const res = await fetch(SCRIPT_URL + "?action=getProducts");
-    const products = await res.json();
+    const data = await res.json();
+    const products = data.products || [];
 
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
-
-    if (!Array.isArray(products)) return;
 
     document.getElementById("summaryTotal").textContent = products.length;
 
@@ -172,7 +171,7 @@ async function loadProducts(){
 
       card.innerHTML = `
         <div class="product-img-wrap">
-          <img src="${p.image}" class="product-img">
+          <img src="${p['Image URL 1']}">
         </div>
         <strong>${p.name}</strong>
         <div>₹${p.price}</div>
