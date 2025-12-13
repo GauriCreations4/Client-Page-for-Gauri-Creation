@@ -133,7 +133,7 @@
 
 <script>
 /* ========== LOGIN CHECK (NEW) ========== */
-const user = JSON.parse(localStorage.getItem("gc_user") || "null");
+const user = JSON.parse(localStorage.getItem("gc_customer") || "null");
 if (!user) {
     window.location.href = "login.html";
 }
