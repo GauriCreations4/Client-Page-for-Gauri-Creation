@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>Register • Gauri Creations</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Create Account • Gauri Creations</title>
 
 <style>
 body{
@@ -12,69 +12,33 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  font-family:Poppins,system-ui;
   background:linear-gradient(135deg,#86e1ff,#ffd4b8);
+  font-family:Poppins,system-ui;
 }
-
 .card{
   width:100%;
-  max-width:420px;
+  max-width:400px;
   background:#ffffffee;
-  padding:26px 22px 30px;
-  border-radius:24px;
+  padding:25px;
+  border-radius:22px;
+  box-shadow:0 20px 40px rgba(0,0,0,.2);
   text-align:center;
-  box-shadow:0 20px 40px rgba(0,0,0,.25);
 }
-
-.logo{
-  width:90px;
-  border-radius:14px;
-  margin-bottom:10px;
-}
-
-h2{margin:10px 0 4px}
-p{margin:0 0 18px;color:#666;font-size:14px}
-
-.form-group{
+input,textarea,button{
   width:100%;
-  display:flex;
-  justify-content:center;
-  margin-bottom:14px;
-}
-
-input, textarea{
-  width:100%;
-  max-width:360px;
   padding:14px;
   border-radius:14px;
-  border:1px solid #bbb;
+  border:1px solid #ccc;
   font-size:15px;
-  outline:none;
+  margin-top:12px;
 }
-
 textarea{resize:none}
-
 button{
-  width:100%;
-  max-width:360px;
-  padding:14px;
-  border:none;
-  border-radius:16px;
-  font-size:17px;
-  font-weight:600;
-  color:#fff;
   background:linear-gradient(135deg,#2563eb,#ec4899);
-  cursor:pointer;
-}
-
-.small{
-  margin-top:14px;
-  font-size:14px;
-}
-.small a{
-  color:#2563eb;
+  color:#fff;
+  border:none;
   font-weight:600;
-  text-decoration:none;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -82,60 +46,55 @@ button{
 <body>
 
 <div class="card">
-  <img src="logo-gauri.jpeg" class="logo">
   <h2>Create Account</h2>
-  <p>Join Gauri Creations</p>
 
-  <div class="form-group"><input id="name" placeholder="Full Name"></div>
-  <div class="form-group"><input id="email" type="email" placeholder="Email"></div>
-  <div class="form-group"><input id="phone" placeholder="Phone Number"></div>
-  <div class="form-group"><textarea id="address" rows="3" placeholder="Delivery Address"></textarea></div>
-  <div class="form-group"><input id="password" type="password" placeholder="Password"></div>
+  <input id="name" placeholder="Full Name">
+  <input id="email" type="email" placeholder="Email">
+  <input id="phone" placeholder="Phone">
+  <textarea id="address" rows="3" placeholder="Address"></textarea>
+  <input id="password" type="password" placeholder="Password">
 
-  <button id="registerBtn" type="button">Register</button>
-
-  <div class="small">
-    Already registered? <a href="login.html">Login</a>
-  </div>
+  <button type="button" onclick="register()">Register</button>
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+const SCRIPT_URL = "PASTE_YOUR_DEPLOYED_CODE_GS_URL_HERE";
 
-document.getElementById("registerBtn").onclick = async () => {
-  const body = {
-    name: name.value.trim(),
-    email: email.value.trim(),
-    phone: phone.value.trim(),
-    address: address.value.trim(),
-    password: password.value.trim()
+async function register(){
+  const payload = {
+    name: document.getElementById("name").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    address: document.getElementById("address").value.trim(),
+    password: document.getElementById("password").value.trim()
   };
 
-  if(!body.name || !body.email || !body.phone || !body.password){
-    alert("Please fill all required fields");
+  if(Object.values(payload).some(v=>!v)){
+    alert("Please fill all fields");
     return;
   }
 
   try{
     const res = await fetch(SCRIPT_URL + "?action=customerSignup",{
       method:"POST",
-      body:JSON.stringify(body)
+      body:JSON.stringify(payload)
     });
 
     const data = await res.json();
 
     if(!data.success){
-      alert(data.message || "Registration failed");
+      alert("Registration failed");
       return;
     }
 
-    alert("Account created successfully ❤️");
+    alert("Account created successfully");
     window.location.href = "login.html";
 
   }catch(err){
-    alert("Registration failed. Try again.");
+    alert("Network error");
+    console.error(err);
   }
-};
+}
 </script>
 
 </body>
