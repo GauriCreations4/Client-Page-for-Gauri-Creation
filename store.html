@@ -22,7 +22,6 @@
     display:flex;justify-content:center;
   }
 
-  /* ⭐ USER MENU (NEW DROPDOWN BUTTON) */
   .menu-wrapper {
       position: fixed;
       top: 15px;
@@ -58,139 +57,174 @@
       font-size: 14px;
       border-bottom: 1px solid #eee;
   }
-  .menu-list a:last-child {
-      border-bottom: none;
-  }
-  .menu-list a:hover {
-      background: #f3f4f6;
-  }
+  .menu-list a:last-child { border-bottom: none; }
+  .menu-list a:hover { background: #f3f4f6; }
 
   .shell{width:100%;max-width:1150px}
   .hero{display:grid;grid-template-columns:3fr 2.2fr;gap:12px;margin-bottom:14px}
   @media(max-width:820px){ .hero{grid-template-columns:1fr} }
-  .hero-main{background:linear-gradient(135deg,rgba(255,255,255,0.96),rgba(239,246,255,0.98));border-radius:22px;padding:16px;border:1px solid var(--glass-border);box-shadow:var(--shadow-strong)}
+
+  .hero-main{
+    background:linear-gradient(135deg,rgba(255,255,255,0.96),rgba(239,246,255,0.98));
+    border-radius:22px;padding:16px;
+    border:1px solid var(--glass-border);
+    box-shadow:var(--shadow-strong)
+  }
   .hero-title{font-size:24px;font-weight:800}
   .hero-sub{font-size:13px;color:var(--muted)}
-  .hero-tags{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
-  .tag-pill{padding:4px 10px;border-radius:999px;font-size:11px;border:1px solid rgba(209,213,219,0.9);background:rgba(255,255,255,0.9)}
-  .hero-side{border-radius:22px;padding:14px;background:radial-gradient(circle at top left,rgba(255,255,255,0.98),rgba(219,234,254,0.98));border:1px solid var(--glass-border);box-shadow:var(--shadow-strong)}
-  .filters{background:var(--glass);border-radius:20px;padding:12px;border:1px solid var(--glass-border);backdrop-filter:blur(18px);box-shadow:var(--shadow-strong);margin-bottom:14px}
-  #searchInput{flex:1 1 180px;padding:9px 11px;border-radius:999px;border:1px solid #d1d5db;font-size:13px}
-  .filters-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-  @media(max-width:720px){ .filters-row{grid-template-columns:repeat(2,minmax(0,1fr))} }
-  @media(max-width:480px){ .filters-row{grid-template-columns:1fr} }
+  .hero-side{
+    border-radius:22px;padding:14px;
+    background:radial-gradient(circle at top left,rgba(255,255,255,0.98),rgba(219,234,254,0.98));
+    border:1px solid var(--glass-border);
+    box-shadow:var(--shadow-strong)
+  }
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
-  .product-card{border-radius:16px;background:var(--glass-strong);border:1px solid rgba(209,213,219,0.7);box-shadow:0 10px 30px rgba(15,23,42,0.12);padding:10px;display:flex;flex-direction:column;gap:8px;transition:transform .16s ease,box-shadow .16s ease}
-  .product-card:hover{ transform:translateY(-6px); box-shadow:0 20px 50px rgba(15,23,42,0.18);}
-  .product-img-wrap{border-radius:12px;overflow:hidden;position:relative;background:linear-gradient(180deg,#fff,#f8fafc);height:140px;display:flex;align-items:center;justify-content:center}
-  .product-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
-  .product-card:hover .product-img{ transform:scale(1.03); }
+  .filters{
+    background:var(--glass);
+    border-radius:20px;
+    padding:12px;
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(18px);
+    box-shadow:var(--shadow-strong);
+    margin-bottom:14px
+  }
 
-  .product-actions{display:flex;gap:8px;margin-top:6px;align-items:center}
-  .btn-primary{background:var(--accent-grad);color:#fff;border-radius:999px;padding:6px 10px;border:none;font-size:12px;font-weight:600}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
+    gap:14px
+  }
+
+  .product-card{
+    border-radius:16px;
+    background:var(--glass-strong);
+    border:1px solid rgba(209,213,219,0.7);
+    box-shadow:0 10px 30px rgba(15,23,42,0.12);
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+    gap:8px
+  }
+
+  .product-img-wrap{
+    border-radius:12px;
+    overflow:hidden;
+    background:#fff;
+    height:140px;
+    display:flex;
+    align-items:center;
+    justify-content:center
+  }
+
+  .product-img{
+    width:100%;
+    height:100%;
+    object-fit:cover
+  }
+
+  .product-actions{
+    display:flex;
+    gap:8px;
+    margin-top:6px
+  }
+
+  .btn-primary{
+    background:var(--accent-grad);
+    color:#fff;
+    border-radius:999px;
+    padding:6px 10px;
+    border:none;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer
+  }
 </style>
 </head>
 
 <body>
 
-<!-- ⭐ NEW — USER MENU DROPDOWN -->
 <div class="menu-wrapper">
-    <div class="menu-button" onclick="toggleMenu()">☰ Menu</div>
-
-    <div id="menuList" class="menu-list">
-        <a href="my-orders.html">📦 My Orders</a>
-        <a href="track.html">🚚 Track Parcel</a>
-        <a href="mailto:gauricreations04@gmail.com">📩 Support (Email)</a>
-        <a href="https://wa.me/917745092723">💬 WhatsApp Support</a>
-        <a href="#" onclick="logoutUser()">🚪 Logout</a>
-    </div>
+  <div class="menu-button" onclick="toggleMenu()">☰ Menu</div>
+  <div id="menuList" class="menu-list">
+    <a href="my-orders.html">📦 My Orders</a>
+    <a href="track.html">🚚 Track Parcel</a>
+    <a href="mailto:gauricreations04@gmail.com">📩 Support (Email)</a>
+    <a href="https://wa.me/917745092723">💬 WhatsApp Support</a>
+    <a href="#" onclick="logoutUser()">🚪 Logout</a>
+  </div>
 </div>
 
 <div class="shell">
-  <!-- ⭐ HERO SECTION -->
   <section class="hero">
     <div class="hero-main">
-      <img src="logo-gauri.jpeg" alt="Gauri" style="width:120px;border-radius:10px;margin-bottom:10px;display:block">
+      <img src="logo-gauri.jpeg" style="width:120px;border-radius:10px;margin-bottom:10px">
       <div class="hero-title" id="welcomeText">Gauri Creations Store</div>
       <div class="hero-sub">Discover exclusive handcrafted designs…</div>
-      <div id="heroBanners" style="margin-top:12px;display:flex;gap:8px;overflow:auto"></div>
     </div>
-
     <aside class="hero-side">
-      <div style="font-weight:600;margin-bottom:8px">Store Snapshot</div>
-      <div><span>Total products</span> <span id="summaryTotal"></span></div>
+      <div><b>Total products</b></div>
+      <div id="summaryTotal">0</div>
     </aside>
   </section>
 
-  <!-- ⭐ FILTERS + PRODUCT GRID (unchanged) -->
   <section class="filters">
-      <input id="searchInput" type="text" placeholder="Search products…">
+    <input id="searchInput" placeholder="Search products…">
   </section>
 
   <section id="grid" class="grid"></section>
 </div>
 
 <script>
-/* ========== LOGIN CHECK (NEW) ========== */
 const user = JSON.parse(localStorage.getItem("gc_customer") || "null");
-if (!user) {
-    window.location.href = "login.html";
-}
+if(!user) window.location.href="login.html";
 document.getElementById("welcomeText").textContent =
   "Welcome, " + (user.name || "Customer");
 
-/* DROPDOWN MENU */
 function toggleMenu(){
-    const m = document.getElementById("menuList");
-    m.style.display = m.style.display === "block" ? "none" : "block";
+  const m=document.getElementById("menuList");
+  m.style.display = m.style.display==="block"?"none":"block";
 }
 function logoutUser(){
-    localStorage.removeItem("gc_customer");
-    window.location.href = "login.html";
+  localStorage.removeItem("gc_customer");
+  window.location.href="login.html";
 }
 
-/* ========== PRODUCT LOADING (ADDED) ========== */
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
+"https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
 
 async function loadProducts(){
-  try{
-    const res = await fetch(SCRIPT_URL + "?action=getProducts");
-    const data = await res.json();
-    const products = data.products || [];
+  const res = await fetch(SCRIPT_URL+"?action=getProducts");
+  const data = await res.json();
+  const products = data.products || [];
 
-    const grid = document.getElementById("grid");
-    grid.innerHTML = "";
+  const grid=document.getElementById("grid");
+  grid.innerHTML="";
+  document.getElementById("summaryTotal").textContent=products.length;
 
-    document.getElementById("summaryTotal").textContent = products.length;
-
-    products.forEach(p => {
-      const card = document.createElement("div");
-      card.className = "product-card";
-
-      card.innerHTML = `
-        <div class="product-img-wrap">
-          <img src="${p['Image URL 1']}" class="product-img">
-        </div>
-        <strong>${p.Name}</strong>
-        <div>₹${p.Price}</div>
-       function goToProduct(sku){
-      window.location.href = "product.html?sku=" + encodeURIcomponent(sku);
-      `}
-
-      grid.appendChild(card);
-    });
-
-  }catch(err){
-    console.error("Product load failed", err);
-  }
+  products.forEach(p=>{
+    const card=document.createElement("div");
+    card.className="product-card";
+    card.innerHTML=`
+      <div class="product-img-wrap">
+        <img src="${p["Image URL 1"]}" class="product-img">
+      </div>
+      <strong>${p.Name}</strong>
+      <div>₹${p.Price}</div>
+      <div class="product-actions">
+        <button class="btn-primary" onclick="goToProduct('${p.SKU}')">
+          Know More
+        </button>
+      </div>`;
+    grid.appendChild(card);
+  });
 }
 
-/* LOAD ON PAGE OPEN */
-loadProducts();
+function goToProduct(sku){
+  window.location.href =
+    "product.html?sku="+encodeURIComponent(sku);
+}
 
-/* — Your existing JS for loading products (unchanged) — */
+loadProducts();
 </script>
 
 </body>
