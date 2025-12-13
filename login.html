@@ -6,6 +6,10 @@
 <title>Login • Gauri Creations</title>
 
 <style>
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   min-height:100vh;
@@ -15,6 +19,7 @@ body{
   font-family:Poppins,system-ui;
   background:linear-gradient(135deg,#86e1ff,#ffd4b8);
 }
+
 .card{
   width:100%;
   max-width:380px;
@@ -24,6 +29,11 @@ body{
   box-shadow:0 20px 40px rgba(0,0,0,.25);
   text-align:center;
 }
+
+h2{
+  margin-bottom:10px;
+}
+
 input{
   width:100%;
   padding:13px;
@@ -33,6 +43,7 @@ input{
   font-size:15px;
   display:block;
 }
+
 button{
   width:100%;
   padding:14px;
@@ -45,7 +56,12 @@ button{
   font-weight:600;
   cursor:pointer;
 }
-.error{color:#dc2626;font-size:13px;margin-top:10px}
+
+.error{
+  color:#dc2626;
+  font-size:13px;
+  margin-top:10px;
+}
 </style>
 </head>
 
@@ -54,43 +70,57 @@ button{
 <div class="card">
   <h2>Customer Login</h2>
 
-  <input id="email" placeholder="Email">
+  <input id="email" type="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
 
-  <button onclick="login()">Login</button>
+  <button id="loginBtn">Login</button>
   <div id="error" class="error"></div>
 </div>
 
 <script>
 const SCRIPT_URL = "YOUR_SCRIPT_URL_HERE";
 
+document.getElementById("loginBtn").addEventListener("click", login);
+
 async function login(){
-  const email = email.value.trim();
-  const password = password.value.trim();
+  const emailEl = document.getElementById("email");
+  const passwordEl = document.getElementById("password");
   const errorBox = document.getElementById("error");
-  errorBox.textContent="";
+
+  const email = emailEl.value.trim();
+  const password = passwordEl.value.trim();
+
+  errorBox.textContent = "";
 
   if(!email || !password){
-    errorBox.textContent="Enter email & password";
+    errorBox.textContent = "Enter email & password";
     return;
   }
 
-  const res = await fetch(SCRIPT_URL+"?action=customerLogin",{
-    method:"POST",
-    body:JSON.stringify({email,password})
-  });
+  try{
+    const res = await fetch(SCRIPT_URL + "?action=customerLogin",{
+      method:"POST",
+      body:JSON.stringify({ email, password })
+    });
 
-  const data = await res.json();
-  if(!data.success){
-    errorBox.textContent="Invalid login";
-    return;
+    const data = await res.json();
+
+    if(!data.success){
+      errorBox.textContent = "Invalid email or password";
+      return;
+    }
+
+    /* ✅ SINGLE SOURCE OF TRUTH */
+    localStorage.setItem("gc_customer", JSON.stringify(data.customer));
+
+    /* ✅ REDIRECT */
+    window.location.href = "store.html";
+
+  }catch(err){
+    errorBox.textContent = "Network error. Try again.";
   }
-
-  // ✅ SINGLE SOURCE OF TRUTH
-  localStorage.setItem("gc_customer", JSON.stringify(data.customer));
-
-  window.location.href = "store.html";
 }
 </script>
+
 </body>
 </html>
