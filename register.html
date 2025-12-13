@@ -9,20 +9,19 @@
 body{
   margin:0;
   min-height:100vh;
-  font-family:Poppins,system-ui;
-  background:linear-gradient(135deg,#8fd3f4,#fbc2eb);
   display:flex;
   justify-content:center;
   align-items:center;
-  padding:16px;
+  font-family:Poppins,system-ui;
+  background:linear-gradient(135deg,#86e1ff,#ffd4b8);
 }
 
 .card{
   width:100%;
-  max-width:400px;
-  background:#ffffff;
-  border-radius:26px;
-  padding:28px 22px;
+  max-width:420px;
+  background:#ffffffee;
+  padding:26px 22px 30px;
+  border-radius:24px;
   text-align:center;
   box-shadow:0 20px 40px rgba(0,0,0,.25);
 }
@@ -30,53 +29,53 @@ body{
 .logo{
   width:90px;
   border-radius:14px;
-  margin-bottom:12px;
+  margin-bottom:10px;
 }
 
-h2{margin:8px 0}
-.sub{color:#666;font-size:14px;margin-bottom:20px}
+h2{margin:10px 0 4px}
+p{margin:0 0 18px;color:#666;font-size:14px}
 
-/* ⭐ FIX */
-.form{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:14px;
-}
-
-.form input,
-.form textarea{
+.form-group{
   width:100%;
-  max-width:320px;
-  padding:14px;
-  font-size:16px;
-  border-radius:14px;
-  border:1px solid #ccc;
-  outline:none;
-  box-sizing:border-box;
+  display:flex;
+  justify-content:center;
+  margin-bottom:14px;
 }
-/* ⭐ FIX */
+
+input, textarea{
+  width:100%;
+  max-width:360px;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #bbb;
+  font-size:15px;
+  outline:none;
+}
 
 textarea{resize:none}
 
-.btn{
+button{
   width:100%;
-  max-width:320px;
+  max-width:360px;
   padding:14px;
-  border-radius:999px;
   border:none;
+  border-radius:16px;
   font-size:17px;
   font-weight:600;
-  background:linear-gradient(135deg,#2563eb,#ec4899);
   color:#fff;
-  margin-top:8px;
+  background:linear-gradient(135deg,#2563eb,#ec4899);
+  cursor:pointer;
 }
 
-.footer{
+.small{
   margin-top:14px;
   font-size:14px;
 }
-.footer a{color:#2563eb;text-decoration:none;font-weight:600}
+.small a{
+  color:#2563eb;
+  font-weight:600;
+  text-decoration:none;
+}
 </style>
 </head>
 
@@ -85,43 +84,58 @@ textarea{resize:none}
 <div class="card">
   <img src="logo-gauri.jpeg" class="logo">
   <h2>Create Account</h2>
-  <div class="sub">Join Gauri Creations</div>
+  <p>Join Gauri Creations</p>
 
-  <div class="form">
-    <input id="name" placeholder="Full Name">
-    <input id="email" placeholder="Email">
-    <input id="phone" placeholder="Phone Number">
-    <textarea id="address" rows="3" placeholder="Delivery Address"></textarea>
-    <input id="password" type="password" placeholder="Password">
-    <button class="btn" onclick="register()">Register</button>
-  </div>
+  <div class="form-group"><input id="name" placeholder="Full Name"></div>
+  <div class="form-group"><input id="email" type="email" placeholder="Email"></div>
+  <div class="form-group"><input id="phone" placeholder="Phone Number"></div>
+  <div class="form-group"><textarea id="address" rows="3" placeholder="Delivery Address"></textarea></div>
+  <div class="form-group"><input id="password" type="password" placeholder="Password"></div>
 
-  <div class="footer">
+  <button id="registerBtn" type="button">Register</button>
+
+  <div class="small">
     Already registered? <a href="login.html">Login</a>
   </div>
 </div>
 
 <script>
-const SCRIPT_URL = "YOUR_SCRIPT_URL";
+const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
 
-function register(){
-  fetch(SCRIPT_URL+"?action=customerSignup",{
-    method:"POST",
-    body:JSON.stringify({
-      name:name.value,
-      email:email.value,
-      phone:phone.value,
-      address:address.value,
-      password:password.value
-    })
-  })
-  .then(r=>r.json())
-  .then(d=>{
-    if(!d.success) return alert("Registration failed");
-    alert("Account created!");
-    location.href="login.html";
-  });
-}
+document.getElementById("registerBtn").onclick = async () => {
+  const body = {
+    name: name.value.trim(),
+    email: email.value.trim(),
+    phone: phone.value.trim(),
+    address: address.value.trim(),
+    password: password.value.trim()
+  };
+
+  if(!body.name || !body.email || !body.phone || !body.password){
+    alert("Please fill all required fields");
+    return;
+  }
+
+  try{
+    const res = await fetch(SCRIPT_URL + "?action=customerSignup",{
+      method:"POST",
+      body:JSON.stringify(body)
+    });
+
+    const data = await res.json();
+
+    if(!data.success){
+      alert(data.message || "Registration failed");
+      return;
+    }
+
+    alert("Account created successfully ❤️");
+    window.location.href = "login.html";
+
+  }catch(err){
+    alert("Registration failed. Try again.");
+  }
+};
 </script>
 
 </body>
