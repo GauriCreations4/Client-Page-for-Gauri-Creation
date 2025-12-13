@@ -171,14 +171,13 @@ async function loadProducts(){
 
       card.innerHTML = `
         <div class="product-img-wrap">
-          <img src="${p['Image URL 1']}">
+          <img src="${p['Image URL 1']}" class="product-img">
         </div>
-        <strong>${p.name}</strong>
-        <div>₹${p.price}</div>
-        <div class="product-actions">
-          <button class="btn-primary">Buy Now</button>
-        </div>
-      `;
+        <strong>${p.Name}</strong>
+        <div>₹${p.Price}</div>
+       function goToProduct(sku){
+      window.location.href = "product.html?sku=" + encodeURIcomponent(sku);
+      `}
 
       grid.appendChild(card);
     });
