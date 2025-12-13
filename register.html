@@ -6,62 +6,65 @@
 <title>Register • Gauri Creations</title>
 
 <style>
-* { box-sizing: border-box; }
-
 body{
   margin:0;
-  height:100vh;
+  min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-family:Poppins, system-ui;
+  font-family:Poppins,system-ui;
   background:linear-gradient(135deg,#86e1ff,#ffd4b8);
 }
-
 .card{
   width:100%;
-  max-width:380px;
+  max-width:400px;
   background:#ffffffee;
   padding:28px;
   border-radius:22px;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
   text-align:center;
-  box-shadow:0 20px 40px rgba(0,0,0,0.2);
 }
-
 .logo{
   width:110px;
   border-radius:14px;
-  margin-bottom:10px;
-}
-
-h2{ margin:10px 0 20px }
-
-input{
-  width:100%;
-  padding:13px;
-  border-radius:12px;
-  border:1px solid #bbb;
-  font-size:15px;
   margin-bottom:12px;
 }
-
+h2{margin:6px 0 14px}
+input,textarea{
+  width:100%;
+  padding:13px;
+  margin-top:12px;
+  border-radius:12px;
+  border:1px solid #ccc;
+  font-size:15px;
+}
+textarea{resize:none}
 button{
   width:100%;
   padding:14px;
+  margin-top:18px;
   border:none;
   border-radius:14px;
-  background:#007aff;
-  color:white;
+  background:linear-gradient(135deg,#2563eb,#ec4899);
+  color:#fff;
   font-size:16px;
   font-weight:600;
   cursor:pointer;
 }
-
-.link{
-  margin-top:14px;
-  font-size:14px;
+.error{
+  color:#dc2626;
+  font-size:13px;
+  margin-top:10px;
 }
-.link a{ color:#007aff; text-decoration:none; font-weight:600; }
+.small{
+  font-size:13px;
+  margin-top:14px;
+}
+.small a{
+  color:#2563eb;
+  font-weight:600;
+  text-decoration:none;
+}
 </style>
 </head>
 
@@ -74,49 +77,61 @@ button{
   <input id="name" placeholder="Full Name">
   <input id="email" placeholder="Email">
   <input id="phone" placeholder="Phone">
+  <textarea id="address" rows="3" placeholder="Address"></textarea>
   <input id="password" type="password" placeholder="Password">
 
   <button onclick="register()">Register</button>
+  <div id="error" class="error"></div>
 
-  <div class="link">
-    Already have account? <a href="login.html">Login</a>
+  <div class="small">
+    Already have an account? <a href="login.html">Login</a>
   </div>
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxlp4ehND6OHfGY9ruPptTs4euh3U-v3y6IA90EfmwjuiFZD4BnoHDjifKAPG9B1T7/exec";
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbwxlp4ehND6OHfGY9ruPptTs4euh3U-v3y6IA90EfmwjuiFZD4BnoHDjifKAPG9B1T7/exec";
 
 async function register(){
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const body = {
+    name: document.getElementById("name").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    address: document.getElementById("address").value.trim(),
+    password: document.getElementById("password").value.trim()
+  };
 
-  if(!name || !email || !phone || !password){
-    alert("Please fill all fields");
+  const errorBox = document.getElementById("error");
+  errorBox.textContent = "";
+
+  if(!body.name || !body.email || !body.phone || !body.password){
+    errorBox.textContent = "Please fill all required fields";
     return;
   }
 
   try{
     const res = await fetch(SCRIPT_URL + "?action=customerSignup",{
       method:"POST",
-      body:JSON.stringify({ name, email, phone, password })
+      body:JSON.stringify(body)
     });
-    const data = await res.json();
 
+    const data = await res.json();
     if(!data.success){
-      alert("Registration failed");
+      errorBox.textContent = "Registration failed";
       return;
     }
 
-    alert("Registered successfully ❤️ Please login");
+    // auto-login after signup
+    localStorage.setItem("gc_customer", JSON.stringify({
+      id:data.customerId,
+      name:body.name,
+      email:body.email
+    }));
 
-    // ✅ redirect
-    window.location.href = "login.html";
+    window.location.href = "store.html";
 
   }catch(err){
-    alert("Registration error");
-    console.error(err);
+    errorBox.textContent = "Network error. Try again.";
   }
 }
 </script>
