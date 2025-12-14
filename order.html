@@ -64,7 +64,8 @@ body { margin: 0; font-family: "Poppins", sans-serif; background: linear-gradien
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
 
 /* DOM */
 const qtyEl = document.getElementById("qty");
@@ -96,9 +97,13 @@ function shippingByWeight(g){
 /* SUMMARY */
 function updateSummary(){
   if(!prodPrice) return;
+
   const subtotal = prodPrice * qty;
   const pin = custPincodeEl.value.trim();
-  const delivery = /^\d{6}$/.test(pin) ? shippingByWeight(weightPerItem * qty) : 0;
+  const delivery = /^\d{6}$/.test(pin)
+    ? shippingByWeight(weightPerItem * qty)
+    : 0;
+
   const total = subtotal + delivery;
 
   qtyEl.textContent = qty;
@@ -132,64 +137,66 @@ fetch(`${SCRIPT_URL}?action=getProduct&sku=${encodeURIComponent(sku)}`)
   prodPrice = Number(p["Price"]);
   weightPerItem = Number(p["Weight"] || 0);
 
-  prodName && (document.getElementById("prodName").textContent = prodName);
+  document.getElementById("prodName").textContent = prodName;
   document.getElementById("prodPrice").textContent = "₹" + prodPrice;
   document.getElementById("prodImg").src = p["Image URL 1"];
-  document.getElementById("prodWeight").textContent = `Weight: ${weightPerItem} g`;
+  document.getElementById("prodWeight").textContent =
+    `Weight: ${weightPerItem} g`;
 
   updateSummary();
 });
 
 custPincodeEl.addEventListener("input", updateSummary);
 
-/* SUBMIT ORDER — CORS-SAFE */
-async function submitOrder() {
-  try {
-    const name = custNameEl.value.trim();
-    const phone = custPhoneEl.value.trim();
-    const address = custAddressEl.value.trim();
-    const pin = custPincodeEl.value.trim();
+/* =========================
+   FORM-BASED ORDER SUBMIT
+   (CORS SAFE)
+   ========================= */
+function submitOrder(){
+  const name = custNameEl.value.trim();
+  const phone = custPhoneEl.value.trim();
+  const address = custAddressEl.value.trim();
+  const pin = custPincodeEl.value.trim();
 
-    if (!name || !phone || !address || !/^\d{6}$/.test(pin)) {
-      alert("Please fill all required fields");
-      return;
-    }
-
-    const subtotal = prodPrice * qty;
-    const delivery = shippingByWeight(weightPerItem * qty);
-    const total = subtotal + delivery;
-
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "createOrder",
-        product: prodName,
-        qty,
-        price: prodPrice,
-        subtotal,
-        delivery,
-        total,
-        name,
-        phone,
-        address,
-        pincode: pin,
-        notes: custNotesEl.value || ""
-      })
-    });
-
-    const data = await res.json();
-
-    if (!data.success || !data.orderId) {
-      alert("Order could not be saved. Please try again.");
-      return;
-    }
-
-    window.location.href = `payment.html?orderId=${data.orderId}`;
-
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong while placing order.");
+  if(!name || !phone || !address || !/^\d{6}$/.test(pin)){
+    alert("Please fill all required fields");
+    return;
   }
+
+  const subtotal = prodPrice * qty;
+  const delivery = shippingByWeight(weightPerItem * qty);
+  const total = subtotal + delivery;
+
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = SCRIPT_URL;
+  form.style.display = "none";
+
+  const fields = {
+    action: "createOrder",
+    product: prodName,
+    qty: qty,
+    price: prodPrice,
+    subtotal: subtotal,
+    delivery: delivery,
+    total: total,
+    name: name,
+    phone: phone,
+    address: address,
+    pincode: pin,
+    notes: custNotesEl.value || ""
+  };
+
+  for(const key in fields){
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = key;
+    input.value = fields[key];
+    form.appendChild(input);
+  }
+
+  document.body.appendChild(form);
+  form.submit(); // 🔥 bypasses CORS completely
 }
 </script>
 
