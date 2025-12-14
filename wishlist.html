@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wishlist • Gauri Creations</title>
+
+<style>
+  :root{
+    --bg-grad: linear-gradient(135deg,#e3f2ff,#ffe5f3);
+    --glass: rgba(255,255,255,0.9);
+    --glass-border: rgba(148,163,184,0.6);
+    --accent-grad: linear-gradient(135deg,#2563eb,#ec4899);
+  }
+
+  *{ box-sizing:border-box }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:Poppins,system-ui;
+    background:var(--bg-grad);
+    padding:20px;
+    display:flex;
+    justify-content:center;
+  }
+
+  .shell{
+    width:100%;
+    max-width:1150px;
+  }
+
+  h2{
+    font-size:24px;
+    font-weight:800;
+    margin-bottom:6px;
+  }
+
+  .sub{
+    font-size:13px;
+    color:#555;
+    margin-bottom:18px;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:16px;
+  }
+
+  .card{
+    background:var(--glass);
+    border-radius:18px;
+    border:1px solid var(--glass-border);
+    box-shadow:0 12px 30px rgba(15,23,42,0.15);
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+
+  .img-wrap{
+    position:relative;
+    border-radius:12px;
+    overflow:hidden;
+    height:150px;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .img-wrap img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  .heart{
+    position:absolute;
+    top:8px;
+    right:8px;
+    font-size:18px;
+    cursor:pointer;
+  }
+
+  .name{
+    font-size:14px;
+    font-weight:600;
+  }
+
+  .price{
+    font-weight:700;
+    color:#c62828;
+    font-size:14px;
+  }
+
+  .actions{
+    display:flex;
+    gap:6px;
+    margin-top:6px;
+  }
+
+  .btn{
+    flex:1;
+    padding:8px;
+    border-radius:999px;
+    font-size:12px;
+    cursor:pointer;
+    border:none;
+    font-weight:600;
+  }
+
+  .btn-primary{
+    background:var(--accent-grad);
+    color:#fff;
+  }
+
+  .btn-outline{
+    background:#fff;
+    border:1px solid #ccc;
+  }
+
+  .empty{
+    text-align:center;
+    padding:60px 20px;
+    color:#555;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="shell">
+  <h2>❤️ My Wishlist</h2>
+  <div class="sub">Your favourite products, saved for later</div>
+
+  <div id="grid" class="grid"></div>
+
+  <div id="emptyState" class="empty" style="display:none">
+    Your wishlist is empty.<br>
+    Browse products and tap ❤️ to save your favourites.
+  </div>
+</div>
+
+<script>
+function getWishlist(){
+  return JSON.parse(localStorage.getItem("gc_wishlist") || "[]");
+}
+
+function saveWishlist(list){
+  localStorage.setItem("gc_wishlist", JSON.stringify(list));
+}
+
+function removeFromWishlist(sku){
+  let list = getWishlist();
+  list = list.filter(p => p.sku !== sku);
+  saveWishlist(list);
+  renderWishlist();
+}
+
+function renderWishlist(){
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("emptyState");
+  const list = getWishlist();
+
+  grid.innerHTML = "";
+
+  if(list.length === 0){
+    empty.style.display = "block";
+    return;
+  }
+
+  empty.style.display = "none";
+
+  list.forEach(p=>{
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="img-wrap">
+        <img src="${p.image}">
+        <div class="heart" onclick="removeFromWishlist('${p.sku}')">❤️</div>
+      </div>
+
+      <div class="name">${p.name}</div>
+      <div class="price">₹${p.price}</div>
+
+      <div class="actions">
+        <button class="btn btn-outline"
+          onclick="location.href='product.html?sku=${encodeURIComponent(p.sku)}'">
+          Know More
+        </button>
+
+        <button class="btn btn-primary"
+          onclick="location.href='order.html?sku=${encodeURIComponent(p.sku)}'">
+          Buy Now
+        </button>
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+renderWishlist();
+</script>
+
+</body>
+</html>
