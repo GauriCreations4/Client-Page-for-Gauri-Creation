@@ -4,155 +4,118 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Complete Payment • Gauri Creations</title>
-<!-- Favicon -->
- <link rel="icon" href="favicon.ico" type="image/x-icon">
- <link rel="apple-touch-icon" href="favicon.ico">   
+
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="favicon.ico">
 
 <style>
 :root {
-    --accent-grad: linear-gradient(135deg,#2563eb,#ec4899);
-    --success-grad: linear-gradient(90deg,#22c55e,#4ade80);
-    --text-main: #111827;
+  --accent-grad: linear-gradient(135deg,#2563eb,#ec4899);
+  --success-grad: linear-gradient(90deg,#22c55e,#4ade80);
 }
 
-/* GENERAL */
 body {
-    margin: 0;
-    padding: 20px;
-    min-height: 100vh;
-    font-family: "Poppins", sans-serif;
-    background: linear-gradient(135deg,#86e1ff,#ffd4b8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg,#86e1ff,#ffd4b8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card {
-    width: 100%;
-    max-width: 480px;
-    background: rgba(255,255,255,0.85);
-    border-radius: 22px;
-    padding: 22px 20px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  width: 100%;
+  max-width: 480px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 22px;
+  padding: 22px 20px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
 }
 
-/* LOGO */
-.logo-wrap { text-align: center; }
-.logo {
-    width: 80px;
-    height: 80px;
-    border-radius: 18px;
-    object-fit: cover;
-}
+.logo-wrap { text-align:center; }
+.logo { width:80px; height:80px; border-radius:18px; }
 
-/* SUMMARY */
 .summary {
-    padding: 14px;
-    border-radius: 16px;
-    background: #fff;
-    border: 1px solid #ddd;
-    margin-top: 12px;
-    margin-bottom: 20px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #ddd;
+  margin: 12px 0 20px;
 }
-.summary-row { display: flex; justify-content: space-between; margin: 5px 0; }
+.summary-row { display:flex; justify-content:space-between; margin:5px 0; }
 
-/* QR */
-.qr-wrap { text-align: center; }
-.qr {
-    width: 180px;
-    height: 180px;
-    padding: 10px;
-    background: white;
-    border-radius: 20px;
-}
+.qr-wrap { text-align:center; }
+.qr { width:180px; height:180px; padding:10px; background:#fff; border-radius:20px; }
 
-/* PAY BUTTONS */
-.pay-buttons { display: flex; flex-direction: column; gap: 10px; }
+.pay-buttons { display:flex; flex-direction:column; gap:10px; }
 .pay-pill {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 11px 16px;
-    border-radius: 999px;
-    font-weight: 600;
-    background: white;
-    border: 1px solid #ccc;
-    text-decoration: none;
-    color: #000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding:11px 16px;
+  border-radius:999px;
+  font-weight:600;
+  background:#fff;
+  border:1px solid #ccc;
+  text-decoration:none;
+  color:#000;
 }
-.pay-pill img { width: 26px; height: 26px; object-fit: contain; }
+.pay-pill img { width:26px; height:26px; }
 
-/* CONFIRM BUTTON */
 .confirm-btn {
-    margin-top: 14px;
-    width: 100%;
-    padding: 12px;
-    background: var(--accent-grad);
-    border-radius: 999px;
-    font-weight: 600;
-    color: white;
-    border: none;
+  margin-top:14px;
+  width:100%;
+  padding:12px;
+  background:var(--accent-grad);
+  border-radius:999px;
+  font-weight:600;
+  color:#fff;
+  border:none;
+  cursor:pointer;
 }
 
-/* WAITING ANIMATION */
-.slider-shell { margin-top: 18px; display: none; text-align: center; }
-.slider-label { font-size: 13px; margin-bottom: 6px; }
+/* Waiting animation */
+.slider-shell { margin-top:18px; display:none; text-align:center; }
+.slider-label { font-size:13px; margin-bottom:6px; }
 
 .glass-track {
-    width: 80%;
-    height: 50px;
-    margin: 0 auto;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.55);
-    border: 1px solid rgba(255,255,255,0.6);
-    position: relative;
-    overflow: hidden;
-    display: none;
+  width:80%;
+  height:50px;
+  margin:0 auto;
+  border-radius:999px;
+  background:rgba(255,255,255,0.55);
+  border:1px solid rgba(255,255,255,0.6);
+  position:relative;
+  overflow:hidden;
+  display:none;
 }
-
-.glass-track.visible { display: block; }
+.glass-track.visible { display:block; }
+.glass-track.success { background:var(--success-grad); }
 
 .glass-thumb {
-    width: 44px;
-    height: 44px;
-    border-radius: 999px;
-    background: var(--accent-grad);
-    color: #fff;
-    font-size: 22px;
-    font-weight: bold;
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    animation: moveThumb 1.7s infinite;
-    box-shadow: 0 0 12px rgba(0,0,0,0.25);
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  background:var(--accent-grad);
+  color:#fff;
+  font-size:22px;
+  font-weight:bold;
+  position:absolute;
+  top:3px;
+  left:3px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  animation:moveThumb 1.7s infinite;
 }
 
 @keyframes moveThumb {
-    0% { transform: translateX(0); }
-    50% { transform: translateX(calc(100% - 48px)); }
-    100% { transform: translateX(0); }
-}
-
-.glass-track.success { background: var(--success-grad); }
-
-/* GLITTER */
-.glitter {
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    border-radius: 999px;
-    background: radial-gradient(circle,#fff7c2,#ff9900);
-    animation: glitterAnim .7s ease-out forwards;
-}
-
-@keyframes glitterAnim {
-    0% { opacity: 1; transform: scale(0.7); }
-    100% { opacity: 0; transform: scale(0.1) translate(20px,-20px); }
+  0% { transform:translateX(0); }
+  50% { transform:translateX(calc(100% - 48px)); }
+  100% { transform:translateX(0); }
 }
 </style>
 </head>
@@ -161,41 +124,43 @@ body {
 
 <div class="card">
 
-    <div class="logo-wrap"><img src="logo-gauri.jpeg" class="logo"></div>
+<div class="logo-wrap">
+  <img src="logo-gauri.jpeg" class="logo">
+</div>
 
-    <h2 style="text-align:center; margin:8px 0;">Complete Your Payment</h2>
-    <p style="text-align:center; color:#555; margin:0 0 12px;">Secure UPI Payment</p>
+<h2 style="text-align:center;margin:8px 0;">Complete Your Payment</h2>
+<p style="text-align:center;color:#555;margin:0 0 12px;">Secure UPI Payment</p>
 
-    <!-- SUMMARY -->
-    <div class="summary">
-        <div class="summary-row"><span>Product</span><strong id="summaryProduct">-</strong></div>
-        <div class="summary-row"><span>Order ID</span><strong id="summaryOrderId">-</strong></div>
-        <div class="summary-row"><span>Price</span><span id="summaryPrice">₹0</span></div>
-        <div class="summary-row"><span>Qty</span><span id="summaryQty">1</span></div>
-        <div class="summary-row"><span>Delivery</span><span id="summaryShip">₹0</span></div>
-        <div class="summary-row"><strong>Total</strong><strong id="summaryTotal">₹0</strong></div>
-    </div>
+<div class="summary">
+  <div class="summary-row"><span>Product</span><strong id="summaryProduct">-</strong></div>
+  <div class="summary-row"><span>Order ID</span><strong id="summaryOrderId">-</strong></div>
+  <div class="summary-row"><span>Price</span><span id="summaryPrice">₹0</span></div>
+  <div class="summary-row"><span>Qty</span><span id="summaryQty">0</span></div>
+  <div class="summary-row"><span>Delivery</span><span id="summaryShip">₹0</span></div>
+  <div class="summary-row"><strong>Total</strong><strong id="summaryTotal">₹0</strong></div>
+</div>
 
-    <!-- QR -->
-    <div class="qr-wrap"><img src="upi-qr.jpeg" class="qr"></div>
+<div class="qr-wrap">
+  <img src="upi-qr.jpeg" class="qr">
+</div>
 
-    <p style="text-align:center; margin-bottom:10px;">Scan or use quick buttons</p>
+<p style="text-align:center;margin-bottom:10px;">Scan or use quick buttons</p>
 
-    <!-- PAY BUTTONS -->
-    <div class="pay-buttons">
-        <a id="btnGpay" class="pay-pill"><img src="gpay.PNG">Pay with GPay</a>
-        <a id="btnPhonePe" class="pay-pill"><img src="phonepe.PNG">Pay with PhonePe</a>
-    </div>
+<div class="pay-buttons">
+  <a id="btnGpay" class="pay-pill"><img src="gpay.PNG">Pay with GPay</a>
+  <a id="btnPhonePe" class="pay-pill"><img src="phonepe.PNG">Pay with PhonePe</a>
+</div>
 
-    <button id="confirmButton" class="confirm-btn">I completed the payment</button>
+<button id="confirmButton" class="confirm-btn">
+  I completed the payment
+</button>
 
-    <!-- WAITING ANIMATION -->
-    <div class="slider-shell" id="waitArea">
-        <div class="slider-label" id="sliderLabel">Checking payment…</div>
-        <div class="glass-track" id="glassTrack">
-            <div class="glass-thumb">›</div>
-        </div>
-    </div>
+<div class="slider-shell" id="waitArea">
+  <div class="slider-label" id="sliderLabel">Checking payment…</div>
+  <div class="glass-track" id="glassTrack">
+    <div class="glass-thumb">›</div>
+  </div>
+</div>
 
 </div>
 
@@ -205,42 +170,69 @@ const SCRIPT_URL =
 
 const orderId = new URLSearchParams(window.location.search).get("orderId");
 
-function checkPayment() {
-  if (!orderId) return;
+let pollInterval = null;
+let fallbackTimeout = null;
 
-  fetch(`${SCRIPT_URL}?action=checkPayment&orderId=${orderId}`)
-    .then(r => r.json())
-    .then(d => {
-      if (d.success && d.paymentStatus === "Paid") {
+/* Load order details */
+fetch(`${SCRIPT_URL}?action=getOrders`)
+.then(r=>r.json())
+.then(d=>{
+  const order = d.orders.find(o => o["Order ID"] === orderId);
+  if(!order) return;
 
-        clearInterval(pollInterval);
-        clearTimeout(fallbackTimeout);
+  document.getElementById("summaryOrderId").textContent = orderId;
+  document.getElementById("summaryProduct").textContent = order["Product Name"];
+  document.getElementById("summaryPrice").textContent = "₹"+order["Price"];
+  document.getElementById("summaryQty").textContent = order["Qty"];
+  document.getElementById("summaryShip").textContent = "₹"+order["Delivery"];
+  document.getElementById("summaryTotal").textContent = "₹"+order["Total"];
 
-        document.getElementById("glassTrack").classList.add("success");
-        document.getElementById("sliderLabel").textContent =
-          "Payment Confirmed!";
+  const upi =
+    `upi://pay?pa=vinayaksasane999-2@oksbi&pn=Gauri Creations&am=${order["Total"]}&cu=INR`;
 
-        setTimeout(() => {
-          window.location.href =
-            `confirmation.html?orderId=${orderId}`;
-        }, 1200);
-      }
-    })
-    .catch(() => {});
+  document.getElementById("btnGpay").href = upi;
+  document.getElementById("btnPhonePe").href = upi;
+});
+
+/* Start waiting + polling */
+function startPaymentCheck(){
+  document.getElementById("waitArea").style.display="block";
+  document.getElementById("glassTrack").classList.add("visible");
+
+  pollInterval = setInterval(checkPayment, 4000);
+
+  fallbackTimeout = setTimeout(()=>{
+    clearInterval(pollInterval);
+    document.getElementById("sliderLabel").textContent =
+      "Still waiting… If paid, contact support.";
+  },120000);
 }
-</script>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("confirmButton");
-  if (!btn) {
-    console.error("confirmButton not found");
-    return;
-  }
+function checkPayment(){
+  fetch(`${SCRIPT_URL}?action=checkPayment&orderId=${orderId}`)
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.success && d.paymentStatus === "Paid"){
+      clearInterval(pollInterval);
+      clearTimeout(fallbackTimeout);
 
-  btn.addEventListener("click", () => {
-    startPaymentCheck();
-  });
+      document.getElementById("glassTrack").classList.add("success");
+      document.getElementById("sliderLabel").textContent =
+        "Payment Confirmed!";
+
+      setTimeout(()=>{
+        window.location.href =
+          `confirmation.html?orderId=${orderId}`;
+      },1200);
+    }
+  })
+  .catch(()=>{});
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  document
+    .getElementById("confirmButton")
+    .addEventListener("click", startPaymentCheck);
 });
 </script>
 
