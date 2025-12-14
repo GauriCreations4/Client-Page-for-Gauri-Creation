@@ -133,7 +133,7 @@ async function loadOrders(){
         </span><br>
         <select onchange="updatePayment('${o["Order ID"]}',this.value)">
           <option value="Pending" ${o["Payment Status"]==="Pending"?"selected":""}>Pending</option>
-          <option value="PAID" ${o["Payment Status"]==="PAID"?"selected":""}>PAID</option>
+          <option value="Paid" ${o["Payment Status"]==="Paid"?"selected":""}>Paid</option>
         </select>
       </td>
 
