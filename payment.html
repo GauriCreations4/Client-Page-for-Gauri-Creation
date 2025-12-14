@@ -200,89 +200,48 @@ body {
 </div>
 
 <script>
-/* Fill Summary from URL */
-const p = new URLSearchParams(window.location.search);
-const product = p.get("product");
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
+
+const p = new URLSearchParams(location.search);
 const orderId = p.get("orderId");
-const price = p.get("price");
-const qty = p.get("qty");
-const delivery = p.get("delivery");
+const product = p.get("product");
+const price = parseInt(p.get("price"));
+const qty = parseInt(p.get("qty"));
+const delivery = parseInt(p.get("delivery"));
+const total = price + delivery;
 
-document.getElementById("summaryProduct").textContent = product;
-document.getElementById("summaryOrderId").textContent = orderId;
-document.getElementById("summaryPrice").textContent = "₹" + price;
-document.getElementById("summaryQty").textContent = qty;
-document.getElementById("summaryShip").textContent = "₹" + delivery;
+/* SUMMARY */
+summaryProduct.textContent = product;
+summaryOrderId.textContent = orderId;
+summaryPrice.textContent = "₹" + price;
+summaryQty.textContent = qty;
+summaryShip.textContent = "₹" + delivery;
+summaryTotal.textContent = "₹" + total;
 
-let total = (parseInt(price) * parseInt(qty)) + parseInt(delivery);
-document.getElementById("summaryTotal").textContent = "₹" + total;
-
-/* Build UPI Link */
+/* UPI */
 const UPI_ID = "vinayaksasane999-2@oksbi";
 const MERCHANT = "Gauri Creations";
-const upiLink =
-`upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT)}&am=${encodeURIComponent(total)}&cu=INR`;
+const upiLink = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(MERCHANT)}&am=${total}&cu=INR`;
 
-document.getElementById("btnGpay").href = upiLink;
-document.getElementById("btnPhonePe").href = upiLink;
+btnGpay.href = upiLink;
+btnPhonePe.href = upiLink;
 
-/* PAYMENT VERIFY LOGIC */
-const waitArea = document.getElementById("waitArea");
-const glassTrack = document.getElementById("glassTrack");
-const sliderLabel = document.getElementById("sliderLabel");
+/* CONFIRM PAYMENT (MANUAL) */
+confirmButton.onclick = () => {
+  waitArea.style.display = "block";
+  glassTrack.classList.add("visible");
 
-document.getElementById("confirmButton").onclick = () => {
-    waitArea.style.display = "block";
-    glassTrack.classList.add("visible");
-    startPolling();
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "markPaid", orderId })
+  })
+  .then(() => {
+    glassTrack.classList.add("success");
+    sliderLabel.textContent = "Payment Recorded!";
+    setTimeout(() => location.href = `confirmation.html?orderId=${orderId}`, 1500);
+  });
 };
-
-/* Poll backend every 4 seconds */
-let pollInterval = null;
-let fallbackTimeout = null;
-
-function startPolling(){
-    pollInterval = setInterval(checkPayment, 4000);
-
-    /* 2-minute fallback timeout */
-    fallbackTimeout = setTimeout(() => {
-        clearInterval(pollInterval);
-        sliderLabel.textContent = "Still waiting… If paid, contact support.";
-        glassTrack.classList.remove("visible");
-    }, 120000); // 2 min
-}
-
-function checkPayment(){
-    fetch(`https://script.google.com/macros/s/YOUR_VERIFY_SCRIPT/exec?action=checkStatus&orderId=${orderId}`)
-    .then(r=>r.json())
-    .then(d=>{
-        if(d.status === "confirmed"){
-            clearInterval(pollInterval);
-            clearTimeout(fallbackTimeout);
-
-            glassTrack.classList.add("success");
-            sliderLabel.textContent = "Payment Confirmed!";
-
-            /* glitter effect */
-            for(let i=0;i<10;i++){
-                setTimeout(()=>{
-                    const g = document.createElement("div");
-                    g.className="glitter";
-                    g.style.left = (Math.random()*240+20)+"px";
-                    g.style.top = (Math.random()*20+10)+"px";
-                    glassTrack.appendChild(g);
-                    setTimeout(()=>g.remove(),700);
-                }, i*120);
-            }
-
-            /* Redirect after 1.8s */
-            setTimeout(()=>{
-                window.location.href = `confirmation.html?orderId=${orderId}`;
-            },1800);
-        }
-    })
-    .catch(()=>{});
-}
 </script>
 
 </body>
