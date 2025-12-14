@@ -51,6 +51,12 @@ button{
   font-weight:600;
   cursor:pointer;
 }
+.guest-btn{
+  background:#fff;
+  color:#333;
+  border:1px solid #ccc;
+  margin-top:10px;
+}
 .error{
   color:#dc2626;
   font-size:13px;
@@ -81,6 +87,10 @@ button{
   <input id="password" type="password" placeholder="Password">
 
   <button onclick="register()">Register</button>
+
+  <!-- ✅ Guest Mode -->
+  <button class="guest-btn" onclick="continueAsGuest()">Continue as Guest</button>
+
   <div id="error" class="error"></div>
 
   <div class="small">
@@ -91,6 +101,10 @@ button{
 <script>
 const SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
+
+function continueAsGuest(){
+  window.location.href = "store.html";
+}
 
 async function register(){
   const body = {
