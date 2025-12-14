@@ -4,234 +4,94 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order • Gauri Creations</title>
+
 <style>
-    body { margin: 0; font-family: "Poppins", sans-serif; background: linear-gradient(135deg, #86e1ff, #ffd4b8); padding: 20px; color: #222; }
-    .container { max-width: 520px; margin: auto; background: #ffffffd8; padding: 25px; border-radius: 22px; backdrop-filter: blur(10px); box-shadow: 0 6px 18px rgba(0,0,0,0.18); text-align: center; }
-    .logo { width: 130px; display: block; margin: 0 auto 20px; border-radius: 12px; }
-    h2 { margin-bottom: 6px; font-size: 22px; font-weight: 700; }
-    .login-info { font-size: 14px; margin-bottom: 10px; color:#333; font-weight:600; }
-
-    .product-box { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 18px; text-align: left; }
-    .product-img { width: 95px; height: 95px; border-radius: 15px; object-fit: cover; }
-
-    .input-field { width: 92%; margin: 12px auto 0; display: block; padding: 13px; border-radius: 12px; border: 1px solid #bbb; font-size: 15px; background:white; }
-
-    .summary { background: #fff; padding: 14px; border-radius: 15px; border: 1px solid #ddd; width: 92%; margin: 18px auto 0; text-align: left; }
-    .summary div { font-size: 15px; margin-bottom: 6px; }
-
-    .btn-proceed { width: 92%; padding: 14px; background: #007aff; color: white; border-radius: 14px; font-size: 17px; font-weight: 600; margin: 18px auto 0; border: none; display: block; cursor:pointer; }
-
-    .qty-row { width: 92%; margin: 18px auto 14px; display: flex; justify-content: space-between; align-items: center; }
-    .qty-btn { padding: 8px 16px; border-radius: 10px; background: #007aff; color: white; border: none; font-size: 18px; font-weight: 600; cursor:pointer; }
-
-    .logout { margin-top:6px; font-size:13px; color:#007aff; cursor:pointer; text-decoration:underline; }
+body{
+  margin:0;font-family:Poppins,sans-serif;
+  background:linear-gradient(135deg,#86e1ff,#ffd4b8);
+  padding:20px;color:#222
+}
+.container{
+  max-width:520px;margin:auto;background:#ffffffd8;
+  padding:25px;border-radius:22px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.18);text-align:center
+}
+.logo{width:130px;margin-bottom:20px;border-radius:12px}
+.product-box{display:flex;gap:12px;justify-content:center;text-align:left}
+.product-img{width:95px;height:95px;border-radius:15px;object-fit:cover}
+.input-field{width:92%;padding:13px;margin-top:12px;border-radius:12px;border:1px solid #bbb}
+.summary{background:#fff;padding:14px;border-radius:15px;border:1px solid #ddd;margin-top:18px;text-align:left}
+.btn-proceed{width:92%;padding:14px;background:#007aff;color:#fff;border-radius:14px;font-size:17px;font-weight:600;border:none;margin-top:18px;cursor:pointer}
+.qty-row{display:flex;justify-content:space-between;width:92%;margin:18px auto}
+.qty-btn{padding:8px 16px;border-radius:10px;background:#007aff;color:#fff;border:none;font-size:18px;font-weight:600;cursor:pointer}
 </style>
 </head>
 
 <body>
 
 <div class="container">
+  <img src="logo-gauri.jpeg" class="logo">
+  <h2>Order Details</h2>
 
-    <img src="logo-gauri.jpeg" class="logo">
-
-    <h2>Order Details</h2>
-
-    <!-- ⭐ Logged-in user info -->
-    <div class="login-info" id="loginStatus">Checking login…</div>
-
-    <div class="product-box">
-        <img id="prodImg" class="product-img">
-        <div>
-            <div id="prodName" style="font-size:18px;font-weight:600;">Product</div>
-            <div id="prodPrice" style="font-weight:600; color:#c62828;">₹0</div>
-            <div id="prodWeight" style="font-size:13px;color:#666;">Weight: - g</div>
-        </div>
+  <div class="product-box">
+    <img id="prodImg" class="product-img">
+    <div>
+      <div id="prodName"></div>
+      <div id="prodPrice"></div>
     </div>
+  </div>
 
-    <div class="qty-row">
-        <button class="qty-btn" onclick="updateQty(-1)">−</button>
-        <div><strong>Quantity:</strong> <span id="qty">1</span></div>
-        <button class="qty-btn" onclick="updateQty(1)">+</button>
-    </div>
+  <div class="qty-row">
+    <button class="qty-btn" onclick="updateQty(-1)">−</button>
+    <div>Qty: <span id="qty">1</span></div>
+    <button class="qty-btn" onclick="updateQty(1)">+</button>
+  </div>
 
-    <input id="custName" class="input-field" placeholder="Your Full Name">
-    <input id="custPhone" class="input-field" placeholder="Phone Number">
-    <input id="custPincode" class="input-field" placeholder="Pincode (6 digits)">
-    <textarea id="custAddress" class="input-field" rows="3" placeholder="Full Delivery Address"></textarea>
-    <textarea id="custNotes" class="input-field" rows="2" placeholder="Notes (optional)"></textarea>
+  <input id="custName" class="input-field" placeholder="Full Name">
+  <input id="custPhone" class="input-field" placeholder="Phone">
+  <input id="custPincode" class="input-field" placeholder="Pincode">
+  <textarea id="custAddress" class="input-field" placeholder="Address"></textarea>
 
-    <div class="summary">
-        <div><strong>Price:</strong> ₹<span id="sumPrice">0</span></div>
-        <div><strong>Delivery Charges:</strong> ₹<span id="sumDelivery">0</span> <span style="font-size:13px;color:#666" id="deliveryNote"> (enter pincode)</span></div>
-        <div><strong>Total Amount:</strong> ₹<span id="sumTotal">0</span></div>
-        <div><strong>Expected Delivery:</strong> <span id="deliveryDate"></span></div>
-    </div>
+  <div class="summary">
+    <div>Total: ₹<span id="sumTotal">0</span></div>
+  </div>
 
-    <button class="btn-proceed" onclick="submitOrder()">Proceed to Payment</button>
-    <div class="logout" onclick="logout()">Logout</div>
-
+  <button class="btn-proceed" onclick="submitOrder()">Proceed to Payment</button>
 </div>
 
-
 <script>
-/* Backend URL */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
 
-/* ⭐ LOGIN CHECK — redirect if not logged in */
-let CUSTOMER = null;
+let qty=1, price=0, sku="";
 
-function checkLogin() {
-    const raw = localStorage.getItem("gc_customer");
-    if (!raw) {
-        window.location.href = "login.html?redirect=" + encodeURIComponent(location.href);
-        return;
-    }
-    CUSTOMER = JSON.parse(raw);
-    document.getElementById("loginStatus").textContent = "Logged in as: " + CUSTOMER.name;
-}
+const params=new URLSearchParams(location.search);
+sku=params.get("sku")||"";
 
-/* logout */
-function logout() {
-    localStorage.removeItem("gc_customer");
-    window.location.href = "login.html";
-}
-
-/* ===============================
-      PRODUCT LOADING
-=============================== */
-
-let qty = 1;
-let prodName = "";
-let prodPrice = 0;
-let prodImg = "";
-let sku = "";
-let weightPerItem = 0;
-
-const params = new URLSearchParams(window.location.search);
-sku = params.get("sku") || "";
-
-/* Fetch full product details */
-fetch(SCRIPT_URL + "?action=getProduct&sku=" + encodeURIComponent(sku))
-    .then(r => r.json())
-    .then(d => {
-        if (d && d.success && d.product) {
-            const p = d.product;
-            prodName = p["Name"];
-            prodPrice = Number(p["Price"]);
-            prodImg = p["Image URL 1"];
-            weightPerItem = Number(p["Weight"] || 0);
-
-            document.getElementById("prodName").textContent = prodName;
-            document.getElementById("prodPrice").textContent = "₹" + prodPrice;
-            document.getElementById("prodImg").src = prodImg;
-            document.getElementById("prodWeight").textContent = "Weight: " + weightPerItem + " g";
-
-            updateSummary();
-        }
-    });
-
-/* ===============================
-      SUMMARY + SHIPPING
-=============================== */
-
-function shippingByWeight(g) {
-    if (g <= 250) return 49;
-    if (g <= 500) return 59;
-    if (g <= 1000) return 79;
-    return 79 + Math.ceil((g - 1000) / 500) * 30;
-}
-
-function updateSummary() {
-    const subtotal = prodPrice * qty;
-    const pin = document.getElementById("custPincode").value.trim();
-    const totalWeight = weightPerItem * qty;
-    const delivery = /^\d{6}$/.test(pin) ? shippingByWeight(totalWeight) : 0;
-    const total = subtotal + delivery;
-
-    document.getElementById("qty").textContent = qty;
-    document.getElementById("sumPrice").textContent = subtotal;
-    document.getElementById("sumDelivery").textContent = delivery;
-    document.getElementById("sumTotal").textContent = total;
-
-    const d = new Date();
-    d.setDate(d.getDate() + 7);
-    document.getElementById("deliveryDate").textContent = d.toDateString();
-}
-
-function updateQty(v) {
-    qty = Math.max(1, qty + v);
-    updateSummary();
-}
-
-document.getElementById("custPincode").addEventListener("input", updateSummary);
-
-/* ===============================
-      SUBMIT ORDER
-=============================== */
-
-async function submitOrder() {
-    if (!CUSTOMER) return alert("Not logged in!");
-
-    const name = document.getElementById("custName").value.trim();
-    const phone = document.getElementById("custPhone").value.trim();
-    const address = document.getElementById("custAddress").value.trim();
-    const notes = document.getElementById("custNotes").value.trim();
-    const pin = document.getElementById("custPincode").value.trim();
-
-    if (!name || !phone || !address || !/^\d{6}$/.test(pin)) {
-        alert("Please fill all required fields.");
-        return;
-    }
-
-    const subtotal = prodPrice * qty;
-    const delivery = shippingByWeight(weightPerItem * qty);
-    const total = subtotal + delivery;
-
-    const payload = {
-        customerId: CUSTOMER.id,
-        productSku: sku,
-        productName: prodName,
-        qty,
-        price: prodPrice,
-        delivery,
-        total,
-        name,
-        phone,
-        email: CUSTOMER.email,
-        address,
-        notes
-    };
-
-    const res = await fetch(SCRIPT_URL + "?action=createOrder", {
-        method: "POST",
-        body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (!data.success) return alert("Order failed");
-
-    window.location.href =
-        "payment.html?orderId=" + data.orderId +
-        "&product=" + encodeURIComponent(prodName) +
-        "&price=" + subtotal +
-        "&qty=" + qty +
-        "&delivery=" + delivery +
-        "&img=" + encodeURIComponent(prodImg);
-}
-
-/* Auto-fill customer details */
-function autofillCustomer() {
-    if (!CUSTOMER) return;
-    document.getElementById("custName").value = CUSTOMER.name;
-    document.getElementById("custPhone").value = CUSTOMER.phone || "";
-    document.getElementById("custAddress").value = CUSTOMER.address || "";
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    checkLogin();
-    autofillCustomer();
+fetch(`${SCRIPT_URL}?action=getProduct&sku=${sku}`)
+.then(r=>r.json()).then(d=>{
+  if(!d.success) return;
+  const p=d.product;
+  price=p.Price;
+  document.getElementById("prodName").textContent=p.Name;
+  document.getElementById("prodPrice").textContent="₹"+price;
+  document.getElementById("prodImg").src=p["Image URL 1"];
+  updateSummary();
 });
+
+function updateQty(v){
+  qty=Math.max(1,qty+v);
+  document.getElementById("qty").textContent=qty;
+  updateSummary();
+}
+
+function updateSummary(){
+  document.getElementById("sumTotal").textContent=price*qty;
+}
+
+function submitOrder(){
+  alert("Order submitted (payment step next)");
+}
 </script>
 
 </body>
