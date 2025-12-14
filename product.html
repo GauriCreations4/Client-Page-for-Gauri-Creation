@@ -25,7 +25,6 @@
   }
   .shell{width:100%;max-width:1100px}
 
-  /* ⭐ FLOATING MENU BUTTON */
   .menu-btn{
     position:fixed;
     top:15px;
@@ -62,58 +61,77 @@
   .menu-item:last-child{border-bottom:none;}
   .menu-item:hover{background:#f3f4f6;}
 
-  /* MAIN PRODUCT LAYOUT */
   .top-hero{display:flex;gap:14px;margin-bottom:14px;align-items:center}
-  .logo{width:84px;height:84px;border-radius:12px;object-fit:cover;box-shadow:0 12px 28px rgba(15,23,42,0.18)}
+  .logo{width:84px;height:84px;border-radius:12px;object-fit:cover}
   .store-title{font-weight:800;font-size:20px}
   .store-sub{font-size:13px;color:var(--muted)}
+
   .product-grid{display:grid;grid-template-columns:1fr 420px;gap:16px}
   @media(max-width:980px){.product-grid{grid-template-columns:1fr}}
 
   .images-card{
-    background:var(--glass-strong);border-radius:18px;padding:12px;
-    border:1px solid var(--glass-border);box-shadow:0 18px 45px rgba(15,23,42,0.12)
+    background:var(--glass-strong);
+    border-radius:18px;
+    padding:12px;
+    border:1px solid var(--glass-border);
   }
-  .main-image-wrap{border-radius:12px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;height:380px}
-  .main-image{max-width:100%;max-height:100%;object-fit:contain;cursor:pointer}
+  .main-image-wrap{
+    border-radius:12px;
+    overflow:hidden;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:380px
+  }
+  .main-image{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    cursor:pointer
+  }
   .thumbs{display:flex;gap:8px;margin-top:10px}
-  .thumb{width:72px;height:72px;border-radius:10px;overflow:hidden;border:1px solid #e6e8ea;cursor:pointer;background:#fff;flex-shrink:0}
+  .thumb{
+    width:72px;height:72px;border-radius:10px;
+    overflow:hidden;border:1px solid #e6e8ea;
+    cursor:pointer;background:#fff
+  }
   .thumb img{width:100%;height:100%;object-fit:cover}
 
   .details-card{
-    background:var(--glass-strong);border-radius:18px;padding:14px;
-    border:1px solid var(--glass-border);box-shadow:0 18px 45px rgba(15,23,42,0.12);
+    background:var(--glass-strong);
+    border-radius:18px;
+    padding:14px;
+    border:1px solid var(--glass-border);
     display:flex;flex-direction:column;gap:10px
   }
 
   .prod-name{font-size:20px;font-weight:800}
   .prod-sku{font-size:12px;color:var(--muted)}
   .price{font-weight:800;font-size:20px;color:#e11d48}
-  .rating{font-size:13px;color:var(--muted)}
-  .specs{font-size:13px;color:var(--muted);margin-top:6px}
+  .specs{font-size:13px;color:var(--muted)}
 
   .actions{display:flex;gap:8px;margin-top:8px}
   .btn{border-radius:999px;border:none;padding:10px 14px;font-size:14px;cursor:pointer;font-weight:600}
   .btn-primary{background:var(--accent-grad);color:#fff}
   .btn-outline{background:#fff;border:1px solid #d1d5db}
 
-  #lightboxOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;
-    align-items:center;justify-content:center;z-index:3000}
+  #lightboxOverlay{
+    position:fixed;inset:0;background:rgba(0,0,0,0.85);
+    display:none;align-items:center;justify-content:center;z-index:3000
+  }
   #lightboxImg{max-width:94%;max-height:94%;border-radius:12px}
 </style>
 </head>
 
 <body>
 
-<!-- ⭐ FLOATING MENU -->
 <div class="menu-btn" onclick="toggleMenu()">☰ Menu</div>
 
 <div id="menuBox" class="menu-box">
-  <div class="menu-item" onclick="goTrack()">📦 Track Order</div>
-  <div class="menu-item" onclick="goMyOrders()">🧾 My Orders</div>
-  <div class="menu-item" onclick="goSupport()">💬 Support</div>
-  <div id="loginItem" class="menu-item" onclick="goLogin()">🔐 Login</div>
-  <div id="logoutItem" class="menu-item" style="display:none" onclick="logout()">🚪 Logout</div>
+  <div class="menu-item" onclick="location.href='track.html'">📦 Track Order</div>
+  <div class="menu-item" onclick="location.href='my-orders.html'">🧾 My Orders</div>
+  <div class="menu-item" onclick="window.open('https://wa.me/7745092723')">💬 Support</div>
 </div>
 
 <div class="shell">
@@ -121,89 +139,54 @@
     <img src="logo-gauri.jpeg" class="logo">
     <div>
       <div class="store-title">Gauri Creations</div>
-      <div class="store-sub">Handcrafted decor • Secure UPI checkout</div>
+      <div class="store-sub">Handcrafted decor • Secure checkout</div>
     </div>
   </div>
 
   <div class="product-grid">
     <div class="images-card">
-      <div class="main-image-wrap"><img id="mainImage" class="main-image"></div>
+      <div class="main-image-wrap">
+        <img id="mainImage" class="main-image">
+      </div>
       <div id="thumbs" class="thumbs"></div>
     </div>
 
     <div class="details-card">
       <div>
-        <div id="prodName" class="prod-name">Product</div>
-        <div id="prodSku" class="prod-sku">SKU: -</div>
+        <div id="prodName" class="prod-name"></div>
+        <div id="prodSku" class="prod-sku"></div>
       </div>
 
-      <div style="display:flex;justify-content:space-between">
-        <div id="prodPrice" class="price">₹0</div>
-        <div id="prodRating" class="rating">★ -</div>
-      </div>
-
+      <div id="prodPrice" class="price"></div>
       <div id="prodDesc" class="specs"></div>
 
       <div class="actions">
         <button id="btnBuyNow" class="btn btn-primary">Buy Now</button>
-        <button id="btnAddOrder" class="btn btn-outline">Add to My Orders</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Lightbox -->
 <div id="lightboxOverlay" onclick="closeLightbox()">
   <img id="lightboxImg">
 </div>
 
 <script>
-/* SCRIPT URL */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
 
-/* MENU LOGIC */
 function toggleMenu(){
-  const box = document.getElementById("menuBox");
-  box.style.display = box.style.display === "block" ? "none" : "block";
-}
-
-function goTrack(){ window.location.href = "track.html"; }
-function goMyOrders(){ window.location.href = "my-orders.html"; }
-function goSupport(){ window.open("https://wa.me/7745092723","_blank"); }
-function goLogin(){ window.location.href = "login.html"; }
-
-function logout(){
-  localStorage.removeItem("customerId");
-  localStorage.removeItem("customerName");
-  location.reload();
-}
-
-/* CHECK LOGIN */
-function checkLogin(){
-  const id = localStorage.getItem("customerId");
-  if(id){
-    document.getElementById("loginItem").style.display="none";
-    document.getElementById("logoutItem").style.display="block";
-  }
-}
-
-checkLogin();
-
-/* PRODUCT LOADING LOGIC SAME AS BEFORE */
-function normalizeMediaUrl(url){
-  if(!url) return "";
-  if(url.includes("googleusercontent")) return url;
-  const m = url.match(/[-A-Za-z0-9_]{20,}/);
-  return m ? `https://lh3.googleusercontent.com/d/${m[0]}=w1000` : url;
+  const box=document.getElementById("menuBox");
+  box.style.display = box.style.display==="block"?"none":"block";
 }
 
 function qs(id){ return document.getElementById(id); }
 
 function getQuery(){
-  const q = {};
+  const q={};
   location.search.slice(1).split("&").forEach(p=>{
-    const [k,v] = p.split("=");
-    q[decodeURIComponent(k)] = decodeURIComponent(v||"");
+    const [k,v]=p.split("=");
+    q[decodeURIComponent(k)]=decodeURIComponent(v||"");
   });
   return q;
 }
@@ -212,56 +195,39 @@ async function loadProduct(){
   const { sku } = getQuery();
   if(!sku) return;
 
-  const res = await fetch(`${SCRIPT_URL}?action=getProduct&sku=`+sku);
+  const res = await fetch(`${SCRIPT_URL}?action=getProduct&sku=${sku}`);
   const data = await res.json();
   if(!data.success) return;
 
-  const p = data.product;
+  const p=data.product;
 
-  qs("prodName").textContent = p.Name;
-  qs("prodSku").textContent = "SKU: " + p.SKU;
-  qs("prodPrice").textContent = "₹" + p.Price;
-  qs("prodRating").textContent = p.Rating ? ("★ " + p.Rating) : "New";
-  qs("prodDesc").textContent = p.Description;
+  qs("prodName").textContent=p.Name;
+  qs("prodSku").textContent="SKU: "+p.SKU;
+  qs("prodPrice").textContent="₹"+p.Price;
+  qs("prodDesc").textContent=p.Description;
 
   const imgs=[];
-  for(let i=1;i<=5;i++){ if(p["Image URL "+i]) imgs.push(normalizeMediaUrl(p["Image URL "+i])); }
+  for(let i=1;i<=5;i++){ if(p["Image URL "+i]) imgs.push(p["Image URL "+i]); }
 
-  qs("mainImage").src = imgs[0] || "";
-  const t = qs("thumbs");
-  t.innerHTML="";
-
+  qs("mainImage").src=imgs[0]||"";
+  const t=qs("thumbs"); t.innerHTML="";
   imgs.forEach(u=>{
     const d=document.createElement("div");
     d.className="thumb";
     d.innerHTML=`<img src="${u}">`;
-    d.onclick=()=> qs("mainImage").src = u;
+    d.onclick=()=>qs("mainImage").src=u;
     t.appendChild(d);
   });
 
-  qs("mainImage").onclick = ()=> openLightbox(qs("mainImage").src);
+  qs("mainImage").onclick=()=>openLightbox(qs("mainImage").src);
 
-  /* BUY NOW: requires login */
-  qs("btnBuyNow").onclick = ()=>{
-    if(!localStorage.getItem("customerId")){
-      window.location.href = "login.html";
-      return;
-    }
-    window.location.href = `order.html?sku=${p.SKU}`;
-  };
-
-  qs("btnAddOrder").onclick = ()=>{
-    if(!localStorage.getItem("customerId")){
-      window.location.href = "login.html";
-      return;
-    }
-    alert("Item saved to your account! (future expansion)");
+  qs("btnBuyNow").onclick=()=>{
+    window.location.href=`order.html?sku=${encodeURIComponent(p.SKU)}`;
   };
 }
 
-/* LIGHTBOX */
 function openLightbox(src){
-  qs("lightboxImg").src = src;
+  qs("lightboxImg").src=src;
   qs("lightboxOverlay").style.display="flex";
 }
 function closeLightbox(){
@@ -270,5 +236,6 @@ function closeLightbox(){
 
 document.addEventListener("DOMContentLoaded", loadProduct);
 </script>
+
 </body>
 </html>
