@@ -4,31 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order • Gauri Creations</title>
-<!-- Favicon -->
- <link rel="icon" href="favicon.ico" type="image/x-icon">
- <link rel="apple-touch-icon" href="favicon.ico">
-    
+
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="favicon.ico">
+
 <style>
-    body { margin: 0; font-family: "Poppins", sans-serif; background: linear-gradient(135deg, #86e1ff, #ffd4b8); padding: 20px; color: #222; }
-    .container { max-width: 520px; margin: auto; background: #ffffffd8; padding: 25px; border-radius: 22px; backdrop-filter: blur(10px); box-shadow: 0 6px 18px rgba(0,0,0,0.18); text-align: center; }
-    .logo { width: 130px; display: block; margin: 0 auto 20px; border-radius: 12px; }
-    h2 { margin-bottom: 6px; font-size: 22px; font-weight: 700; }
-    .login-info { font-size: 14px; margin-bottom: 10px; color:#333; font-weight:600; }
-
-    .product-box { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 18px; text-align: left; }
-    .product-img { width: 95px; height: 95px; border-radius: 15px; object-fit: cover; }
-
-    .input-field { width: 92%; margin: 12px auto 0; display: block; padding: 13px; border-radius: 12px; border: 1px solid #bbb; font-size: 15px; background:white; }
-
-    .summary { background: #fff; padding: 14px; border-radius: 15px; border: 1px solid #ddd; width: 92%; margin: 18px auto 0; text-align: left; }
-    .summary div { font-size: 15px; margin-bottom: 6px; }
-
-    .btn-proceed { width: 92%; padding: 14px; background: #007aff; color: white; border-radius: 14px; font-size: 17px; font-weight: 600; margin: 18px auto 0; border: none; display: block; cursor:pointer; }
-
-    .qty-row { width: 92%; margin: 18px auto 14px; display: flex; justify-content: space-between; align-items: center; }
-    .qty-btn { padding: 8px 16px; border-radius: 10px; background: #007aff; color: white; border: none; font-size: 18px; font-weight: 600; cursor:pointer; }
-
-    .logout { margin-top:6px; font-size:13px; color:#007aff; cursor:pointer; text-decoration:underline; }
+body { margin: 0; font-family: "Poppins", sans-serif; background: linear-gradient(135deg, #86e1ff, #ffd4b8); padding: 20px; color: #222; }
+.container { max-width: 520px; margin: auto; background: #ffffffd8; padding: 25px; border-radius: 22px; box-shadow: 0 6px 18px rgba(0,0,0,0.18); text-align: center; }
+.logo { width: 130px; display: block; margin: 0 auto 20px; border-radius: 12px; }
+.product-box { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; text-align: left; }
+.product-img { width: 95px; height: 95px; border-radius: 15px; object-fit: cover; }
+.input-field { width: 92%; margin: 12px auto 0; display: block; padding: 13px; border-radius: 12px; border: 1px solid #bbb; font-size: 15px; }
+.summary { background: #fff; padding: 14px; border-radius: 15px; border: 1px solid #ddd; width: 92%; margin: 18px auto 0; text-align: left; }
+.qty-row { width: 92%; margin: 18px auto 14px; display: flex; justify-content: space-between; align-items: center; }
+.qty-btn { padding: 8px 16px; border-radius: 10px; background: #007aff; color: white; border: none; font-size: 18px; font-weight: 600; cursor:pointer; }
+.btn-proceed { width: 92%; padding: 14px; background: #007aff; color: white; border-radius: 14px; font-size: 17px; font-weight: 600; margin: 18px auto 0; border: none; cursor:pointer; }
 </style>
 </head>
 
@@ -36,48 +26,46 @@
 
 <div class="container">
 
-    <img src="logo-gauri.jpeg" class="logo">
+<img src="logo-gauri.jpeg" class="logo">
 
-    <h2>Order Details</h2>
+<h2>Order Details</h2>
 
-    <div class="login-info" id="loginStatus">Guest Checkout</div>
+<div class="product-box">
+  <img id="prodImg" class="product-img">
+  <div>
+    <div id="prodName" style="font-size:18px;font-weight:600;">Product</div>
+    <div id="prodPrice" style="font-weight:600;color:#c62828;">₹0</div>
+    <div id="prodWeight" style="font-size:13px;color:#666;">Weight: - g</div>
+  </div>
+</div>
 
-    <div class="product-box">
-        <img id="prodImg" class="product-img">
-        <div>
-            <div id="prodName" style="font-size:18px;font-weight:600;">Product</div>
-            <div id="prodPrice" style="font-weight:600; color:#c62828;">₹0</div>
-            <div id="prodWeight" style="font-size:13px;color:#666;">Weight: - g</div>
-        </div>
-    </div>
+<div class="qty-row">
+  <button type="button" class="qty-btn" onclick="updateQty(-1)">−</button>
+  <div><strong>Quantity:</strong> <span id="qty">1</span></div>
+  <button type="button" class="qty-btn" onclick="updateQty(1)">+</button>
+</div>
 
-    <div class="qty-row">
-        <button class="qty-btn" onclick="updateQty(-1)">−</button>
-        <div><strong>Quantity:</strong> <span id="qty">1</span></div>
-        <button class="qty-btn" onclick="updateQty(1)">+</button>
-    </div>
+<input id="custName" class="input-field" placeholder="Your Full Name">
+<input id="custPhone" class="input-field" placeholder="Phone Number">
+<input id="custPincode" class="input-field" placeholder="Pincode (6 digits)">
+<textarea id="custAddress" class="input-field" rows="3" placeholder="Full Delivery Address"></textarea>
+<textarea id="custNotes" class="input-field" rows="2" placeholder="Notes (optional)"></textarea>
 
-    <input id="custName" class="input-field" placeholder="Your Full Name">
-    <input id="custPhone" class="input-field" placeholder="Phone Number">
-    <input id="custPincode" class="input-field" placeholder="Pincode (6 digits)">
-    <textarea id="custAddress" class="input-field" rows="3" placeholder="Full Delivery Address"></textarea>
-    <textarea id="custNotes" class="input-field" rows="2" placeholder="Notes (optional)"></textarea>
+<div class="summary">
+  <div><strong>Price:</strong> ₹<span id="sumPrice">0</span></div>
+  <div><strong>Delivery Charges:</strong> ₹<span id="sumDelivery">0</span></div>
+  <div><strong>Total Amount:</strong> ₹<span id="sumTotal">0</span></div>
+  <div><strong>Expected Delivery:</strong> <span id="deliveryDate">-</span></div>
+</div>
 
-    <div class="summary">
-        <div><strong>Price:</strong> ₹<span id="sumPrice">0</span></div>
-        <div><strong>Delivery Charges:</strong> ₹<span id="sumDelivery">0</span></div>
-        <div><strong>Total Amount:</strong> ₹<span id="sumTotal">0</span></div>
-        <div><strong>Expected Delivery:</strong> <span id="deliveryDate"></span></div>
-    </div>
-
-    <button class="btn-proceed" onclick="submitOrder()">Proceed to Payment</button>
+<button type="button" class="btn-proceed" onclick="submitOrder()">Proceed to Payment</button>
 
 </div>
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
 
-/* ===== DOM ===== */
+/* DOM */
 const qtyEl = document.getElementById("qty");
 const sumPriceEl = document.getElementById("sumPrice");
 const sumDeliveryEl = document.getElementById("sumDelivery");
@@ -90,29 +78,26 @@ const custPincodeEl = document.getElementById("custPincode");
 const custAddressEl = document.getElementById("custAddress");
 const custNotesEl = document.getElementById("custNotes");
 
-/* ===== STATE ===== */
+/* STATE */
 let qty = 1;
-let prodName = "";
 let prodPrice = 0;
+let prodName = "";
 let weightPerItem = 0;
 
-/* ===== HELPERS ===== */
-function shippingByWeight(g) {
-  if (g <= 250) return 49;
-  if (g <= 500) return 59;
-  if (g <= 1000) return 79;
-  return 79 + Math.ceil((g - 1000) / 500) * 30;
+/* SHIPPING */
+function shippingByWeight(g){
+  if(g<=250) return 49;
+  if(g<=500) return 59;
+  if(g<=1000) return 79;
+  return 79 + Math.ceil((g-1000)/500)*30;
 }
 
-function updateSummary() {
-  if (!prodPrice) return; // product not loaded yet
-
+/* SUMMARY */
+function updateSummary(){
+  if(!prodPrice) return;
   const subtotal = prodPrice * qty;
   const pin = custPincodeEl.value.trim();
-  const delivery = /^\d{6}$/.test(pin)
-    ? shippingByWeight(weightPerItem * qty)
-    : 0;
-
+  const delivery = /^\d{6}$/.test(pin) ? shippingByWeight(weightPerItem * qty) : 0;
   const total = subtotal + delivery;
 
   qtyEl.textContent = qty;
@@ -121,79 +106,76 @@ function updateSummary() {
   sumTotalEl.textContent = total;
 
   const d = new Date();
-  d.setDate(d.getDate() + 7);
+  d.setDate(d.getDate()+7);
   deliveryDateEl.textContent = d.toDateString();
 }
 
-function updateQty(v) {
-  qty = Math.max(1, qty + v);
+/* QTY */
+function updateQty(v){
+  qty = Math.max(1, qty+v);
   updateSummary();
 }
+window.updateQty = updateQty;
 
-/* ===== LOAD PRODUCT ===== */
-const params = new URLSearchParams(window.location.search);
-const sku = params.get("sku");
+/* LOAD PRODUCT */
+const sku = new URLSearchParams(location.search).get("sku") || "";
 
 fetch(`${SCRIPT_URL}?action=getProduct&sku=${encodeURIComponent(sku)}`)
-  .then(r => r.json())
-  .then(d => {
-    if (!d.success) return;
+.then(r=>r.json())
+.then(d=>{
+  if(!d.success) return alert("Product not found");
+  const p = d.product;
+  prodName = p["Name"];
+  prodPrice = Number(p["Price"]);
+  weightPerItem = Number(p["Weight"]||0);
 
-    const p = d.product;
-    prodName = p["Name"];
-    prodPrice = Number(p["Price"]);
-    weightPerItem = Number(p["Weight"] || 0);
+  prodName && (document.getElementById("prodName").textContent = prodName);
+  document.getElementById("prodPrice").textContent = "₹"+prodPrice;
+  document.getElementById("prodImg").src = p["Image URL 1"];
+  document.getElementById("prodWeight").textContent = `Weight: ${weightPerItem} g`;
 
-    document.getElementById("prodName").textContent = prodName;
-    document.getElementById("prodPrice").textContent = "₹" + prodPrice;
-    document.getElementById("prodImg").src = p["Image URL 1"];
-    document.getElementById("prodWeight").textContent = `Weight: ${weightPerItem} g`;
+  updateSummary();
+});
 
-    updateSummary(); // ✅ NOW it runs correctly
-  });
-
+/* PINCODE */
 custPincodeEl.addEventListener("input", updateSummary);
 
-/* ===== SUBMIT ORDER ===== */
-async function submitOrder() {
-  if (
-    !custNameEl.value ||
-    !custPhoneEl.value ||
-    !custAddressEl.value ||
-    !/^\d{6}$/.test(custPincodeEl.value)
-  ) {
+/* SUBMIT */
+async function submitOrder(){
+  if(!custNameEl.value || !custPhoneEl.value || !custAddressEl.value || !/^\d{6}$/.test(custPincodeEl.value)){
     alert("Please fill all required fields");
     return;
   }
 
-  const orderId = "GC" + Date.now();
   const subtotal = prodPrice * qty;
   const delivery = shippingByWeight(weightPerItem * qty);
+  const orderId = "GC"+Date.now();
 
-  await fetch(SCRIPT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "createOrder",
+  await fetch(SCRIPT_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      action:"createOrder",
       orderId,
-      product: prodName,
+      product:prodName,
       qty,
-      price: prodPrice,
+      price:prodPrice,
       subtotal,
       delivery,
-      total: subtotal + delivery,
-      name: custNameEl.value,
-      phone: custPhoneEl.value,
-      address: custAddressEl.value,
-      pincode: custPincodeEl.value,
-      notes: custNotesEl.value,
-      status: "PENDING"
+      total:subtotal+delivery,
+      name:custNameEl.value,
+      phone:custPhoneEl.value,
+      address:custAddressEl.value,
+      pincode:custPincodeEl.value,
+      notes:custNotesEl.value,
+      status:"PENDING"
     })
   });
 
-  window.location.href =
+  location.href =
     `payment.html?orderId=${orderId}&product=${encodeURIComponent(prodName)}&price=${subtotal}&qty=${qty}&delivery=${delivery}`;
 }
+window.submitOrder = submitOrder;
 </script>
 
 </body>
