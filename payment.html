@@ -203,40 +203,31 @@ body {
 const SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
 
-const p = new URLSearchParams(window.location.search);
-const orderId = p.get("orderId");
+const orderId = new URLSearchParams(window.location.search).get("orderId");
 
-if(!orderId){
-  alert("Invalid order");
+function checkPayment() {
+  if (!orderId) return;
+
+  fetch(`${SCRIPT_URL}?action=checkPayment&orderId=${orderId}`)
+    .then(r => r.json())
+    .then(d => {
+      if (d.success && d.paymentStatus === "Paid") {
+
+        clearInterval(pollInterval);
+        clearTimeout(fallbackTimeout);
+
+        document.getElementById("glassTrack").classList.add("success");
+        document.getElementById("sliderLabel").textContent =
+          "Payment Confirmed!";
+
+        setTimeout(() => {
+          window.location.href =
+            `confirmation.html?orderId=${orderId}`;
+        }, 1200);
+      }
+    })
+    .catch(() => {});
 }
-
-/* Load order details from backend */
-fetch(`${SCRIPT_URL}?action=getOrders`)
-.then(r=>r.json())
-.then(d=>{
-  if(!d.success) return alert("Unable to load order");
-
-  const order = d.orders.find(o => o["Order ID"] === orderId);
-  if(!order) return alert("Order not found");
-
-  document.getElementById("summaryOrderId").textContent = orderId;
-  document.getElementById("summaryProduct").textContent = order["Product Name"];
-  document.getElementById("summaryPrice").textContent = "₹" + order["Price"];
-  document.getElementById("summaryQty").textContent = order["Qty"];
-  document.getElementById("summaryShip").textContent = "₹" + order["Delivery"];
-  document.getElementById("summaryTotal").textContent = "₹" + order["Total"];
-
-  /* Build UPI link */
-  const UPI_ID = "vinayaksasane999-2@oksbi";
-  const MERCHANT = "Gauri Creations";
-  const total = order["Total"];
-
-  const upiLink =
-    `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT)}&am=${total}&cu=INR`;
-
-  document.getElementById("btnGpay").href = upiLink;
-  document.getElementById("btnPhonePe").href = upiLink;
-});
 </script>
 
 <script>
