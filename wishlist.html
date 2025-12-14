@@ -144,6 +144,9 @@
 </div>
 
 <script>
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbyNznWMbvHaiu7PjF-Kz5i35E1cNq5FobRnjJ2pAWcmhCL42R8f7A_WXxQUkQebdDE/exec";
+
 function getWishlist(){
   return JSON.parse(localStorage.getItem("gc_wishlist") || "[]");
 }
@@ -153,13 +156,12 @@ function saveWishlist(list){
 }
 
 function removeFromWishlist(sku){
-  let list = getWishlist();
-  list = list.filter(p => p.sku !== sku);
+  const list = getWishlist().filter(s => s !== sku);
   saveWishlist(list);
   renderWishlist();
 }
 
-function renderWishlist(){
+async function renderWishlist(){
   const grid = document.getElementById("grid");
   const empty = document.getElementById("emptyState");
   const list = getWishlist();
@@ -173,34 +175,47 @@ function renderWishlist(){
 
   empty.style.display = "none";
 
-  list.forEach(p=>{
-    const card = document.createElement("div");
-    card.className = "card";
+  for(const sku of list){
+    try{
+      const res = await fetch(
+        SCRIPT_URL + "?action=getProduct&sku=" + encodeURIComponent(sku)
+      );
+      const data = await res.json();
+      if(!data.success || !data.product) continue;
 
-    card.innerHTML = `
-      <div class="img-wrap">
-        <img src="${p.image}">
-        <div class="heart" onclick="removeFromWishlist('${p.sku}')">❤️</div>
-      </div>
+      const p = data.product;
 
-      <div class="name">${p.name}</div>
-      <div class="price">₹${p.price}</div>
+      const card = document.createElement("div");
+      card.className = "card";
 
-      <div class="actions">
-        <button class="btn btn-outline"
-          onclick="location.href='product.html?sku=${encodeURIComponent(p.sku)}'">
-          Know More
-        </button>
+      card.innerHTML = `
+        <div class="img-wrap">
+          <img src="${p["Image URL 1"]}">
+          <div class="heart" onclick="removeFromWishlist('${p.SKU}')">❤️</div>
+        </div>
 
-        <button class="btn btn-primary"
-          onclick="location.href='order.html?sku=${encodeURIComponent(p.sku)}'">
-          Buy Now
-        </button>
-      </div>
-    `;
+        <div class="name">${p.Name}</div>
+        <div class="price">₹${p.Price}</div>
 
-    grid.appendChild(card);
-  });
+        <div class="actions">
+          <button class="btn btn-outline"
+            onclick="location.href='product.html?sku=${encodeURIComponent(p.SKU)}'">
+            Know More
+          </button>
+
+          <button class="btn btn-primary"
+            onclick="location.href='order.html?sku=${encodeURIComponent(p.SKU)}'">
+            Buy Now
+          </button>
+        </div>
+      `;
+
+      grid.appendChild(card);
+
+    }catch(e){
+      console.error(e);
+    }
+  }
 }
 
 renderWishlist();
