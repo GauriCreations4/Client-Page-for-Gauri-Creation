@@ -4,128 +4,109 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Track Order • Gauri Creations</title>
-<!-- Favicon -->
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" href="favicon.ico">    
+
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="favicon.ico">    
 
 <style>
-    body {
-        margin: 0;
-        font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg, #86e1ff, #ffd4b8);
-        padding: 20px;
-        color: #222;
-    }
-
-    .container {
-        max-width: 430px;
-        margin: auto;
-        background: #ffffffd8;
-        padding: 25px;
-        border-radius: 22px;
-        text-align: center;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-        animation: fadeIn 0.8s ease;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .logo {
-        width: 120px;
-        border-radius: 14px;
-        margin-bottom: 10px;
-    }
-
-    input{
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #86e1ff, #ffd4b8);
+  padding: 20px;
+  color: #222;
+}
+.container {
+  max-width: 430px;
+  margin: auto;
+  background: #ffffffd8;
+  padding: 25px;
+  border-radius: 22px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  animation: fadeIn 0.8s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.logo {
+  width: 120px;
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+input{
   width:100%;
   box-sizing:border-box;
   display:block;
-  margin-left:auto;
-  margin-right:auto;
 }
-
-    .btn {
-        width: 100%;
-        padding: 14px;
-        background: #007aff;
-        color: white;
-        border-radius: 14px;
-        font-size: 17px;
-        font-weight: 600;
-        border: none;
-        margin-top: 15px;
-        cursor: pointer;
-    }
-
-    h3 {
-        margin-top: 20px;
-        font-size: 20px;
-        font-weight: 700;
-    }
-
-    .timeline {
-        margin-top: 25px;
-        text-align: left;
-        padding-left: 10px;
-    }
-
-    .step {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 20px;
-        opacity: 0.4;
-        transition: 0.3s ease;
-    }
-
-    .step.active {
-        opacity: 1;
-    }
-
-    .dot {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: #bbb;
-        margin-right: 12px;
-        margin-top: 3px;
-    }
-
-    .active .dot {
-        background: #007aff;
-        box-shadow: 0 0 10px #007aff;
-    }
-
-    .label {
-        font-size: 16px;
-        font-weight: 600;
-    }
-
-    .delivery {
-        margin-top: 15px;
-        font-size: 16px;
-        font-weight: 600;
-        color: #444;
-        text-align: center;
-    }
-
-    /* Back to Store Button */
-    .back-btn {
-        position: fixed;
-        top: 18px;
-        right: 18px;
-        background: #fff;
-        padding: 10px 16px;
-        border-radius: 999px;
-        font-weight: 600;
-        color: #007aff;
-        border: 1px solid #bcdcff;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        text-decoration: none;
-    }
+.btn {
+  width: 100%;
+  padding: 14px;
+  background: #007aff;
+  color: white;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  margin-top: 15px;
+  cursor: pointer;
+}
+h3 {
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: 700;
+}
+.timeline {
+  margin-top: 25px;
+  text-align: left;
+  padding-left: 10px;
+}
+.step {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  opacity: 0.4;
+  transition: 0.3s ease;
+}
+.step.active { opacity: 1; }
+.dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #bbb;
+  margin-right: 12px;
+  margin-top: 3px;
+}
+.active .dot {
+  background: #007aff;
+  box-shadow: 0 0 10px #007aff;
+}
+.label {
+  font-size: 16px;
+  font-weight: 600;
+}
+.delivery {
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #444;
+  text-align: center;
+}
+.back-btn {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  background: #fff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  color: #007aff;
+  border: 1px solid #bcdcff;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  text-decoration: none;
+}
 </style>
 </head>
 <body>
@@ -134,87 +115,82 @@
 
 <div class="container">
 
-    <img src="logo-gauri.jpeg" class="logo">
-    <h2>Track Your Order</h2>
+  <img src="logo-gauri.jpeg" class="logo">
+  <h2>Track Your Order</h2>
 
-    <input id="orderInput" placeholder="Enter Order ID">
-    <button class="btn" onclick="manualTrack()">Check Status</button>
+  <input id="orderInput" placeholder="Enter Order ID (GC-000001)">
+  <button class="btn" onclick="manualTrack()">Check Status</button>
 
-    <h3 id="orderTitle"></h3>
+  <h3 id="orderTitle"></h3>
 
-    <div class="timeline" id="timeline" style="display:none;">
-        <div class="step" id="step1"><div class="dot"></div><div class="label">Order Received</div></div>
-        <div class="step" id="step2"><div class="dot"></div><div class="label">Payment Verified</div></div>
-        <div class="step" id="step3"><div class="dot"></div><div class="label">Packing</div></div>
-        <div class="step" id="step4"><div class="dot"></div><div class="label">Shipped</div></div>
-        <div class="step" id="step5"><div class="dot"></div><div class="label">Out for Delivery</div></div>
-        <div class="step" id="step6"><div class="dot"></div><div class="label">Delivered</div></div>
-    </div>
+  <div class="timeline" id="timeline" style="display:none;">
+    <div class="step" id="step1"><div class="dot"></div><div class="label">Order Received</div></div>
+    <div class="step" id="step2"><div class="dot"></div><div class="label">Payment Verified</div></div>
+    <div class="step" id="step3"><div class="dot"></div><div class="label">Packing</div></div>
+    <div class="step" id="step4"><div class="dot"></div><div class="label">Shipped</div></div>
+    <div class="step" id="step5"><div class="dot"></div><div class="label">Out for Delivery</div></div>
+    <div class="step" id="step6"><div class="dot"></div><div class="label">Delivered</div></div>
+  </div>
 
-    <div class="delivery" id="deliveryDate"></div>
+  <div class="delivery" id="deliveryDate"></div>
 
 </div>
 
 <script>
-const API_URL = 
-  "https://script.google.com/macros/s/AKfycbwhyOU_ee33OYs_jowKaqvspE5ejvXhF6uJYa2l5C_Y9Fs7-zJ31P4arUh796000SCC/exec";
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwhyOU_ee33OYs_jowKaqvspE5ejvXhF6uJYa2l5C_Y9Fs7-zJ31P4arUh796000SCC/exec";
 
 const STATUS_INDEX = {
-    "Order Received": 1,
-    "Payment Verified": 2,
-    "Packing": 3,
-    "Shipped": 4,
-    "Out for Delivery": 5,
-    "Delivered": 6
+  "Order Received": 1,
+  "Payment Verified": 2,
+  "Packing": 3,
+  "Shipped": 4,
+  "Out for Delivery": 5,
+  "Delivered": 6
 };
 
 function highlightSteps(level) {
-    for (let i = 1; i <= 6; i++) {
-        let step = document.getElementById("step" + i);
-        if (i <= level) step.classList.add("active");
-        else step.classList.remove("active");
-    }
+  for (let i = 1; i <= 6; i++) {
+    const step = document.getElementById("step" + i);
+    step.classList.toggle("active", i <= level);
+  }
 }
 
-function fetchStatus(id) {
-    fetch(API_URL + "?track=" + id)
+function fetchStatus(orderId) {
+  fetch(`${API_URL}?action=trackOrder&orderId=${encodeURIComponent(orderId)}`)
     .then(res => res.json())
     .then(data => {
-        if (!data || !data.status) {
-            alert("Order not found");
-            return;
-        }
+      if (!data.success) {
+        alert("Order not found");
+        return;
+      }
 
-        document.getElementById("orderTitle").textContent = "Order ID: " + id;
-        document.getElementById("timeline").style.display = "block";
+      document.getElementById("orderTitle").textContent =
+        "Order ID: " + orderId;
 
-        highlightSteps(STATUS_INDEX[data.status]);
-
-        document.getElementById("deliveryDate").textContent =
-            data.deliveryDate ? "Expected Delivery: " + data.deliveryDate : "";
+      document.getElementById("timeline").style.display = "block";
+      highlightSteps(STATUS_INDEX[data.status] || 1);
     })
     .catch(() => alert("Network error. Please try again."));
 }
 
-/* Manual button click */
 function manualTrack() {
-    let id = document.getElementById("orderInput").value.trim().toUpperCase();
-    if (!id) {
-        alert("Please enter a valid Order ID");
-        return;
-    }
-    fetchStatus(id);
+  const id = document.getElementById("orderInput").value.trim().toUpperCase();
+  if (!id) {
+    alert("Please enter Order ID");
+    return;
+  }
+  fetchStatus(id);
 }
 
-/* ⭐ AUTO-RUN WHEN ?orderId=XYZ IS PRESENT */
+/* AUTO LOAD FROM ?orderId= */
 document.addEventListener("DOMContentLoaded", () => {
-    const params = new URLSearchParams(window.location.search);
-    const autoId = params.get("orderId");
-
-    if (autoId) {
-        document.getElementById("orderInput").value = autoId;
-        fetchStatus(autoId.trim().toUpperCase());
-    }
+  const params = new URLSearchParams(window.location.search);
+  const autoId = params.get("orderId");
+  if (autoId) {
+    document.getElementById("orderInput").value = autoId;
+    fetchStatus(autoId.toUpperCase());
+  }
 });
 </script>
 
