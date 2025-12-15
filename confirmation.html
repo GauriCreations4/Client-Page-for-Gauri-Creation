@@ -36,11 +36,60 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    .tick {
-        font-size: 56px;
-        color: #22c55e;
-        margin-bottom: 10px;
+    /* =========================
+       Google Pay style success
+       ========================= */
+    .gpay-success{
+        width:120px;
+        margin:10px auto 20px;
     }
+
+    .gpay-success svg{
+        width:100%;
+        display:block;
+    }
+
+    .pulse{
+        fill:#22c55e;
+        opacity:.25;
+        animation:pulse 1.2s ease-out forwards;
+    }
+
+    .ring{
+        fill:none;
+        stroke:#22c55e;
+        stroke-width:4;
+        stroke-dasharray:283;
+        stroke-dashoffset:283;
+        animation:ring 0.6s ease-out forwards;
+        animation-delay:.2s;
+    }
+
+    .check{
+        fill:none;
+        stroke:#22c55e;
+        stroke-width:6;
+        stroke-linecap:round;
+        stroke-linejoin:round;
+        stroke-dasharray:60;
+        stroke-dashoffset:60;
+        animation:check .4s ease-out forwards;
+        animation-delay:.8s;
+    }
+
+    @keyframes pulse{
+        0%{r:0;opacity:.4}
+        100%{r:50;opacity:0}
+    }
+
+    @keyframes ring{
+        to{stroke-dashoffset:0}
+    }
+
+    @keyframes check{
+        to{stroke-dashoffset:0}
+    }
+    /* ========================= */
 
     .btn {
         width: 100%;
@@ -56,10 +105,9 @@
     }
 
     .btn-track {
-        background: #2563eb; /* blue gradient match */
+        background: #2563eb;
         margin-top: 18px;
     }
-
 </style>
 
 </head>
@@ -67,7 +115,15 @@
 <body>
 
 <div class="card">
-    <div class="tick">✔</div>
+
+    <!-- UPDATED: Google Pay style tick -->
+    <div class="gpay-success">
+        <svg viewBox="0 0 100 100">
+            <circle class="pulse"/>
+            <circle class="ring" cx="50" cy="50" r="45"/>
+            <path class="check" d="M30 52 L45 66 L70 38"/>
+        </svg>
+    </div>
 
     <h2>Order Confirmed!</h2>
 
@@ -76,7 +132,6 @@
 
     <p>Thank you for your purchase 🤍<br>Your order has been successfully placed.</p>
 
-    <!-- NEW: Track Parcel Button -->
     <button class="btn btn-track" id="trackBtn">Track Your Parcel</button>
 
     <button class="btn" onclick="window.location.href='store.html'">Back to Store</button>
@@ -101,8 +156,12 @@ document.getElementById("deliveryDate").textContent = date.toDateString();
 document.getElementById("trackBtn").onclick = function () {
     window.location.href = `track.html?orderId=${orderId}`;
 };
+
+// subtle haptic feedback (mobile)
+if (navigator.vibrate) {
+    navigator.vibrate(40);
+}
 </script>
 
 </body>
-
 </html>
