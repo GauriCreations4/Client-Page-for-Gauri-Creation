@@ -152,7 +152,9 @@ custPincodeEl.addEventListener("input", updateSummary);
    FORM-BASED ORDER SUBMIT
    (CORS SAFE)
    ========================= */
-function submitOrder(){
+async function submitOrder(event){
+  if(event) event.preventDefault(); // ✅ STOP form submission
+
   const name = custNameEl.value.trim();
   const phone = custPhoneEl.value.trim();
   const address = custAddressEl.value.trim();
@@ -167,36 +169,41 @@ function submitOrder(){
   const delivery = shippingByWeight(weightPerItem * qty);
   const total = subtotal + delivery;
 
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = SCRIPT_URL;
-  form.style.display = "none";
+  const form = new FormData();
+  form.append("action","createOrder");
+  form.append("product",prodName);
+  form.append("qty",qty);
+  form.append("price",prodPrice);
+  form.append("subtotal",subtotal);
+  form.append("delivery",delivery);
+  form.append("total",total);
+  form.append("name",name);
+  form.append("phone",phone);
+  form.append("address",address);
+  form.append("pincode",pin);
+  form.append("notes",custNotesEl.value || "");
 
-  const fields = {
-    action: "createOrder",
-    product: prodName,
-    qty: qty,
-    price: prodPrice,
-    subtotal: subtotal,
-    delivery: delivery,
-    total: total,
-    name: name,
-    phone: phone,
-    address: address,
-    pincode: pin,
-    notes: custNotesEl.value || ""
-  };
+  try{
+    const res = await fetch(SCRIPT_URL,{
+      method:"POST",
+      body:form
+    });
 
-  for(const key in fields){
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = key;
-    input.value = fields[key];
-    form.appendChild(input);
+    const data = await res.json();
+
+    if(!data.success){
+      alert("Order failed. Please try again.");
+      return;
+    }
+
+    // ✅ FRONTEND REDIRECT (CORRECT)
+    window.location.href =
+      payment.html?orderId=${data.orderId};
+
+  }catch(err){
+    console.error(err);
+    alert("Network error. Please try again.");
   }
-
-  document.body.appendChild(form);
-  form.submit(); // 🔥 bypasses CORS completely
 }
 </script>
 
