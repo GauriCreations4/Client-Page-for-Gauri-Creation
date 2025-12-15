@@ -64,146 +64,75 @@ body { margin: 0; font-family: "Poppins", sans-serif; background: linear-gradien
 </div>
 
 <script>
-const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbwhyOU_ee33OYs_jowKaqvspE5ejvXhF6uJYa2l5C_Y9Fs7-zJ31P4arUh796000SCC/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwhyOU_ee33OYs_jowKaqvspE5ejvXhF6uJYa2l5C_Y9Fs7-zJ31P4arUh796000SCC/exec";
 
-/* DOM */
-const qtyEl = document.getElementById("qty");
-const sumPriceEl = document.getElementById("sumPrice");
-const sumDeliveryEl = document.getElementById("sumDelivery");
-const sumTotalEl = document.getElementById("sumTotal");
-const deliveryDateEl = document.getElementById("deliveryDate");
+let qty = 1, prodName="", prodPrice=0, weightPerItem=0;
 
-const custNameEl = document.getElementById("custName");
-const custPhoneEl = document.getElementById("custPhone");
-const custPincodeEl = document.getElementById("custPincode");
-const custAddressEl = document.getElementById("custAddress");
-const custNotesEl = document.getElementById("custNotes");
-
-/* STATE */
-let qty = 1;
-let prodName = "";
-let prodPrice = 0;
-let weightPerItem = 0;
-
-/* SHIPPING */
 function shippingByWeight(g){
-  if(g <= 250) return 49;
-  if(g <= 500) return 59;
-  if(g <= 1000) return 79;
-  return 79 + Math.ceil((g - 1000) / 500) * 30;
+  if(g<=250) return 49;
+  if(g<=500) return 59;
+  if(g<=1000) return 79;
+  return 79 + Math.ceil((g-1000)/500)*30;
 }
 
-/* SUMMARY */
 function updateSummary(){
   if(!prodPrice) return;
-
-  const subtotal = prodPrice * qty;
-  const pin = custPincodeEl.value.trim();
-  const delivery = /^\d{6}$/.test(pin)
-    ? shippingByWeight(weightPerItem * qty)
-    : 0;
-
-  const total = subtotal + delivery;
-
-  qtyEl.textContent = qty;
-  sumPriceEl.textContent = subtotal;
-  sumDeliveryEl.textContent = delivery;
-  sumTotalEl.textContent = total;
-
-  const d = new Date();
-  d.setDate(d.getDate() + 7);
-  deliveryDateEl.textContent = d.toDateString();
+  const subtotal = prodPrice*qty;
+  const pin = custPincode.value.trim();
+  const delivery = /^\d{6}$/.test(pin) ? shippingByWeight(weightPerItem*qty) : 0;
+  sumPrice.textContent=subtotal;
+  sumDelivery.textContent=delivery;
+  sumTotal.textContent=subtotal+delivery;
+  const d=new Date(); d.setDate(d.getDate()+7);
+  deliveryDate.textContent=d.toDateString();
 }
 
-function updateQty(v){
-  qty = Math.max(1, qty + v);
-  updateSummary();
-}
+function updateQty(v){ qty=Math.max(1,qty+v); updateSummary(); }
 
-/* LOAD PRODUCT */
-const sku = new URLSearchParams(window.location.search).get("sku");
-
-fetch(`${SCRIPT_URL}?action=getProduct&sku=${encodeURIComponent(sku)}`)
-.then(r => r.json())
-.then(d => {
-  if(!d.success || !d.product){
-    alert("Product not found");
-    return;
-  }
-
-  const p = d.product;
-  prodName = p["Name"];
-  prodPrice = Number(p["Price"]);
-  weightPerItem = Number(p["Weight"] || 0);
-
-  document.getElementById("prodName").textContent = prodName;
-  document.getElementById("prodPrice").textContent = "₹" + prodPrice;
-  document.getElementById("prodImg").src = p["Image URL 1"];
-  document.getElementById("prodWeight").textContent =
-    `Weight: ${weightPerItem} g`;
-
+const sku=new URLSearchParams(location.search).get("sku");
+fetch(`${SCRIPT_URL}?action=getProduct&sku=${sku}`)
+.then(r=>r.json()).then(d=>{
+  if(!d.success) return;
+  const p=d.product;
+  prodName=p.Name;
+  prodPrice=+p.Price;
+  weightPerItem=+p.Weight||0;
+  prodName&& (document.getElementById("prodName").textContent=prodName);
+  prodPrice&& (prodPriceEl.textContent="₹"+prodPrice);
+  prodImg.src=p["Image URL 1"];
+  prodWeight.textContent=`Weight: ${weightPerItem} g`;
   updateSummary();
 });
 
-custPincodeEl.addEventListener("input", updateSummary);
+custPincode.addEventListener("input",updateSummary);
 
-/* =========================
-   FORM-BASED ORDER SUBMIT
-   (CORS SAFE)
-   ========================= */
-async function submitOrder(event){
-  if(event) event.preventDefault(); // ✅ STOP form submission
+async function submitOrder(e){
+  e.preventDefault();
 
-  const name = custNameEl.value.trim();
-  const phone = custPhoneEl.value.trim();
-  const address = custAddressEl.value.trim();
-  const pin = custPincodeEl.value.trim();
-
-  if(!name || !phone || !address || !/^\d{6}$/.test(pin)){
+  if(!custName.value||!custPhone.value||!custAddress.value||!/^\d{6}$/.test(custPincode.value)){
     alert("Please fill all required fields");
     return;
   }
 
-  const subtotal = prodPrice * qty;
-  const delivery = shippingByWeight(weightPerItem * qty);
-  const total = subtotal + delivery;
-
-  const form = new FormData();
+  const form=new FormData();
   form.append("action","createOrder");
   form.append("product",prodName);
   form.append("qty",qty);
   form.append("price",prodPrice);
-  form.append("subtotal",subtotal);
-  form.append("delivery",delivery);
-  form.append("total",total);
-  form.append("name",name);
-  form.append("phone",phone);
-  form.append("address",address);
-  form.append("pincode",pin);
-  form.append("notes",custNotesEl.value || "");
+  form.append("subtotal",prodPrice*qty);
+  form.append("delivery",shippingByWeight(weightPerItem*qty));
+  form.append("total",+sumTotal.textContent);
+  form.append("name",custName.value);
+  form.append("phone",custPhone.value);
+  form.append("address",custAddress.value);
+  form.append("pincode",custPincode.value);
+  form.append("notes",custNotes.value||"");
 
-  try{
-    const res = await fetch(SCRIPT_URL,{
-      method:"POST",
-      body:form
-    });
+  const res=await fetch(SCRIPT_URL,{method:"POST",body:form});
+  const data=await res.json();
+  if(!data.success) return alert("Order failed");
 
-    const data = await res.json();
-
-    if(!data.success){
-      alert("Order failed. Please try again.");
-      return;
-    }
-
-    // ✅ FRONTEND REDIRECT (CORRECT)
-    window.location.href =
-      payment.html?orderId=${data.orderId};
-
-  }catch(err){
-    console.error(err);
-    alert("Network error. Please try again.");
-  }
+  window.location.href = `payment.html?orderId=${data.orderId}`;
 }
 </script>
 
