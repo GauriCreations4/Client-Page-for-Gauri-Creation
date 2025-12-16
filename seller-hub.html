@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Seller Hub • Gauri Creations</title>
-<!-- Favicon -->
+
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<link rel="apple-touch-icon" href="favicon.ico"> 
+<link rel="apple-touch-icon" href="favicon.ico">
 
 <style>
 body{
@@ -34,9 +34,7 @@ th,td{
   border-bottom:1px solid #ddd;
   text-align:left;
 }
-th{
-  background:#f1f5f9;
-}
+th{background:#f1f5f9}
 select,input{
   padding:6px;
   border-radius:8px;
@@ -58,14 +56,6 @@ select,input{
   background:#22c55e;
   color:#fff;
 }
-.badge{
-  padding:4px 10px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:600;
-}
-.shipped{background:#2563eb;color:#fff}
-.packed{background:#f59e0b;color:#fff}
 </style>
 </head>
 
@@ -91,7 +81,8 @@ select,input{
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwhyOU_ee33OYs_jowKaqvspE5ejvXhF6uJYa2l5C_Y9Fs7-zJ31P4arUh796000SCC/exec";
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbwhyOU_ee33OYs_jowKaqvspE5ejvXhF6uJYa2l5C_Y9Fs7-zJ31P4arUh796000SCC/exec";
 
 const STATUS_FLOW = [
   "Packing",
@@ -109,7 +100,8 @@ async function loadOrders(){
   tbody.innerHTML = "";
 
   data.orders
-    .filter(o => o["Payment Status"] === "PAID")
+    /* ✅ FIXED LINE */
+    .filter(o => String(o["Payment Status"]).toLowerCase() === "paid")
     .reverse()
     .forEach(o=>{
       const tr = document.createElement("tr");
@@ -118,6 +110,7 @@ async function loadOrders(){
         <td>${o["Order ID"]}</td>
         <td>${o["Customer Name"]}<br><small>${o["Phone"]}</small></td>
         <td style="max-width:200px">${o["Address"]||"-"}</td>
+
         <td>
           <select onchange="updateOrder('${o["Order ID"]}','status',this.value)">
             ${STATUS_FLOW.map(s=>`
@@ -125,27 +118,30 @@ async function loadOrders(){
             `).join("")}
           </select>
         </td>
+
         <td>
           <input placeholder="AWB No"
             value="${o["AWB"]||""}"
             onchange="updateOrder('${o["Order ID"]}','awb',this.value)">
         </td>
+
         <td>
           <input type="date"
             value="${o["Expected Delivery Date"]||""}"
             onchange="updateOrder('${o["Order ID"]}','expectedDelivery',this.value)">
         </td>
-      <td>
-  <button class="btn btn-primary"
-    onclick="window.open('${SCRIPT_URL}?action=printLabel&orderId=${o["Order ID"]}','_blank')">
-    🖨️ Print Label
-  </button>
-  <br><br>
-  <button class="btn btn-support"
-    onclick="support('${o["Phone"]}')">
-    Support
-  </button>
-</td>
+
+        <td>
+          <button class="btn btn-primary"
+            onclick="window.open('${SCRIPT_URL}?action=printLabel&orderId=${o["Order ID"]}','_blank')">
+            🖨️ Print Label
+          </button>
+          <br><br>
+          <button class="btn btn-support"
+            onclick="support('${o["Phone"]}')">
+            Support
+          </button>
+        </td>
       `;
       tbody.appendChild(tr);
     });
@@ -170,6 +166,4 @@ loadOrders();
 </script>
 
 </body>
-
 </html>
-
