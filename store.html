@@ -242,6 +242,7 @@ async function loadProducts(){
   const wishlist = getWishlist();
 
   products.forEach(p=>{
+    console.log("IMG:", p["Image URL 1"]);
     const card=document.createElement("div");
     card.className="product-card";
 
