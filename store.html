@@ -6,112 +6,219 @@
 <title>Gauri Creations • Store</title>
 
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<link rel="apple-touch-icon" href="favicon.ico"> 
+<link rel="apple-touch-icon" href="favicon.ico">
 
 <style>
-/* --- YOUR EXISTING CSS (UNCHANGED) --- */
-:root{
-  --bg-grad: linear-gradient(135deg,#e3f2ff,#ffe5f3);
-  --glass: rgba(255,255,255,0.78);
-  --glass-strong: rgba(255,255,255,0.92);
-  --glass-border: rgba(148,163,184,0.6);
-  --shadow-strong: 0 20px 45px rgba(15,23,42,0.30);
-  --accent-grad: linear-gradient(135deg,#2563eb,#ec4899);
-  --muted:#6b7280;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;min-height:100vh;font-family:'Poppins',sans-serif;
-  background:var(--bg-grad);padding:18px 14px 28px;
-  display:flex;justify-content:center;
-}
-.shell{width:100%;max-width:1150px}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
-  gap:14px
-}
-.product-card{
-  border-radius:16px;
-  background:var(--glass-strong);
-  border:1px solid rgba(209,213,219,0.7);
-  padding:10px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-.product-img-wrap{
-  height:140px;
-  border-radius:12px;
-  overflow:hidden;
-  background:#fff;
-}
-.product-img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-.btn-primary{
-  background:var(--accent-grad);
-  color:#fff;
-  border-radius:999px;
-  padding:6px 10px;
-  border:none;
-  font-size:12px;
-  font-weight:600;
-}
+  :root{
+    --bg-grad: linear-gradient(135deg,#e3f2ff,#ffe5f3);
+    --glass: rgba(255,255,255,0.78);
+    --glass-strong: rgba(255,255,255,0.92);
+    --glass-border: rgba(148,163,184,0.6);
+    --shadow-strong: 0 20px 45px rgba(15,23,42,0.30);
+    --accent-grad: linear-gradient(135deg,#2563eb,#ec4899);
+    --muted:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;min-height:100vh;font-family:'Poppins',sans-serif;
+    background:var(--bg-grad);padding:18px 14px 28px;
+    display:flex;justify-content:center;
+  }
+
+  .menu-wrapper{position:fixed;top:15px;right:15px;z-index:9999}
+  .menu-button{
+    padding:10px 16px;border-radius:999px;
+    background:var(--accent-grad);color:#fff;
+    font-weight:600;font-size:13px;cursor:pointer;
+    box-shadow:0 8px 18px rgba(0,0,0,0.18)
+  }
+  .menu-list{
+    display:none;position:absolute;right:0;top:48px;
+    background:white;border-radius:12px;min-width:160px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.18);overflow:hidden
+  }
+  .menu-list a{
+    display:block;padding:10px 14px;text-decoration:none;
+    color:#333;font-size:14px;border-bottom:1px solid #eee
+  }
+  .menu-list a:last-child{border-bottom:none}
+  .menu-list a:hover{background:#f3f4f6}
+
+  .shell{width:100%;max-width:1150px}
+  .hero{display:grid;grid-template-columns:3fr 2.2fr;gap:12px;margin-bottom:14px}
+  @media(max-width:820px){.hero{grid-template-columns:1fr}}
+
+  .hero-main{
+    background:linear-gradient(135deg,rgba(255,255,255,0.96),rgba(239,246,255,0.98));
+    border-radius:22px;padding:16px;
+    border:1px solid var(--glass-border);
+    box-shadow:var(--shadow-strong)
+  }
+  .hero-title{font-size:24px;font-weight:800}
+  .hero-sub{font-size:13px;color:var(--muted)}
+  .hero-side{
+    border-radius:22px;padding:14px;
+    background:radial-gradient(circle at top left,rgba(255,255,255,0.98),rgba(219,234,254,0.98));
+    border:1px solid var(--glass-border);
+    box-shadow:var(--shadow-strong)
+  }
+
+  .filters{
+    background:var(--glass);border-radius:20px;padding:12px;
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(18px);
+    box-shadow:var(--shadow-strong);margin-bottom:14px
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
+    gap:14px
+  }
+
+  .product-card{
+    border-radius:16px;background:var(--glass-strong);
+    border:1px solid rgba(209,213,219,0.7);
+    box-shadow:0 10px 30px rgba(15,23,42,0.12);
+    padding:10px;display:flex;flex-direction:column;
+    gap:8px;position:relative
+  }
+
+  .product-img-wrap{
+    border-radius:12px;overflow:hidden;background:#fff;
+    height:140px;display:flex;align-items:center;
+    justify-content:center;position:relative
+  }
+
+  .product-img{width:100%;height:100%;object-fit:cover}
+
+  .wish-btn{
+    position:absolute;top:8px;right:8px;
+    background:#fff;border-radius:50%;
+    padding:6px;cursor:pointer;font-size:14px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.18)
+  }
+
+  .product-actions{display:flex;gap:8px;margin-top:6px}
+
+  .btn-primary{
+    background:var(--accent-grad);color:#fff;
+    border-radius:999px;padding:6px 10px;
+    border:none;font-size:12px;font-weight:600;
+    cursor:pointer
+  }
 </style>
 </head>
 
 <body>
 
+<div class="menu-wrapper">
+  <div class="menu-button" onclick="toggleMenu()">☰ Menu</div>
+  <div id="menuList" class="menu-list">
+    <a href="my-orders.html">📦 My Orders</a>
+    <a href="track.html">🚚 Track Parcel</a>
+    <a href="wishlist.html">❤️ Wishlist</a>
+    <a href="mailto:gauricreations04@gmail.com">📩 Support (Email)</a>
+    <a href="https://wa.me/917745092723">💬 WhatsApp Support</a>
+    <a href="#" onclick="logoutUser()">🚪 Logout</a>
+  </div>
+</div>
+
 <div class="shell">
+  <section class="hero">
+    <div class="hero-main">
+      <img src="logo-gauri.jpeg" style="width:120px;border-radius:10px;margin-bottom:10px">
+      <div class="hero-title" id="welcomeText">Gauri Creations Store</div>
+      <div class="hero-sub">Discover exclusive handcrafted designs…</div>
+    </div>
+    <aside class="hero-side">
+      <div><b>Total products</b></div>
+      <div id="summaryTotal">0</div>
+    </aside>
+  </section>
+
+  <section class="filters">
+    <input id="searchInput" placeholder="Search products…">
+  </section>
+
   <section id="grid" class="grid"></section>
 </div>
 
 <script>
-const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
+const user = JSON.parse(localStorage.getItem("gc_customer") || "null");
+document.getElementById("welcomeText").textContent =
+  user ? ("Welcome, " + user.name) : "Welcome to Gauri Creations";
 
-/* ✅ IMAGE PICKER — THIS IS THE FIX */
-function getProductImage(p){
+function toggleMenu(){
+  const m=document.getElementById("menuList");
+  m.style.display = m.style.display==="block"?"none":"block";
+}
+function logoutUser(){
+  localStorage.removeItem("gc_customer");
+  window.location.href="login.html";
+}
+
+/* ❤️ Wishlist helpers */
+function getWishlist(){ return JSON.parse(localStorage.getItem("gc_wishlist")||"[]"); }
+function saveWishlist(list){ localStorage.setItem("gc_wishlist",JSON.stringify(list)); }
+function toggleWishlist(sku,el){
+  const list=getWishlist(); const i=list.indexOf(sku);
+  if(i>=0){ list.splice(i,1); el.textContent="🤍"; }
+  else{ list.push(sku); el.textContent="❤️"; }
+  saveWishlist(list);
+}
+
+/* ✅ IMAGE FIX — DO NOT REMOVE */
+function getImg(p){
   return (
     p["Image URL 1"] ||
-    p["Image URL 2"] ||
-    p["Image URL 3"] ||
-    p["Image URL 4"] ||
-    p["Image URL 5"] ||
-    "placeholder.jpg"
+    p["Image URL 1 "] ||
+    p.imageUrl1 ||
+    ""
   );
 }
 
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
+
 async function loadProducts(){
-  const res = await fetch(SCRIPT_URL + "?action=getProducts");
+  const res = await fetch(SCRIPT_URL+"?action=getProducts");
   const data = await res.json();
   const products = data.products || [];
 
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
+  const grid=document.getElementById("grid");
+  grid.innerHTML="";
+  document.getElementById("summaryTotal").textContent=products.length;
+
+  const wishlist=getWishlist();
 
   products.forEach(p=>{
-    const img = encodeURI(getProductImage(p));
+    const liked = wishlist.includes(p.SKU) ? "❤️" : "🤍";
 
-    const card = document.createElement("div");
-    card.className = "product-card";
+    const card=document.createElement("div");
+    card.className="product-card";
 
-    card.innerHTML = `
+    card.innerHTML=`
       <div class="product-img-wrap">
-        <img src="${img}" class="product-img" loading="lazy">
+        <img src="${getImg(p)}" class="product-img"
+             onerror="this.src='placeholder.jpg'">
+        <div class="wish-btn" onclick="toggleWishlist('${p.SKU}',this)">
+          ${liked}
+        </div>
       </div>
       <strong>${p.Name}</strong>
       <div>₹${p.Price}</div>
-      <button class="btn-primary" onclick="location.href='product.html?sku=${p.SKU}'">
-        Know More
-      </button>
-    `;
-
+      <div class="product-actions">
+        <button class="btn-primary" onclick="goToProduct('${p.SKU}')">
+          Know More
+        </button>
+      </div>`;
     grid.appendChild(card);
   });
+}
+
+function goToProduct(sku){
+  window.location.href="product.html?sku="+encodeURIComponent(sku);
 }
 
 loadProducts();
