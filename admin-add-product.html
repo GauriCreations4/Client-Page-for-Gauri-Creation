@@ -6,7 +6,6 @@
 <title>Add Product • Gauri Creations</title>
 
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<link rel="apple-touch-icon" href="favicon.ico">
 
 <style>
   :root {
@@ -111,6 +110,10 @@
     cursor:pointer;
     font-size:12px;
   }
+  
+  .drop-zone:hover {
+    background:#eee;
+  }
 
   .preview-grid {
     margin-top:10px;
@@ -143,16 +146,6 @@
     padding:3px 7px;
     font-size:10px;
     cursor:pointer;
-  }
-
-  .preview-label{
-    position:absolute;
-    bottom:4px; left:4px;
-    background:#0009;
-    color:white;
-    font-size:10px;
-    padding:2px 6px;
-    border-radius:999px;
   }
 
   .video-chip{
@@ -237,7 +230,7 @@
 
 <div class="field-row">
   <div><label>Height</label><input id="height" class="input" type="number"/></div>
-  <div><label>Video URL</label><input id="videoUrlInput" class="input" type="text"/></div>
+  <div><label>Video URL</label><input id="videoUrlInput" class="input" type="text" placeholder="Or upload video below"/></div>
 </div>
 
 <label>Description</label>
@@ -246,13 +239,17 @@
 
 <section class="section-card">
 <label>Images</label>
-<div id="imageDropZone" class="drop-zone">Click or drag images</div>
+<div id="imageDropZone" class="drop-zone" onclick="document.getElementById('imageInput').click()">
+  Click here to select images
+</div>
 <input id="imageInput" type="file" accept="image/*" multiple hidden>
 <div id="imagePreview" class="preview-grid"></div>
 
 <br>
 <label>Video</label>
-<div id="videoDropZone" class="drop-zone">Click or drag video</div>
+<div id="videoDropZone" class="drop-zone" onclick="document.getElementById('videoInput').click()">
+  Click here to select video
+</div>
 <input id="videoInput" type="file" accept="video/*" hidden>
 <div id="videoInfo" class="video-chip" style="display:none;">
 🎬 <span id="videoName"></span>
@@ -269,69 +266,208 @@
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
+// Wait for page to fully load before running script
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
 
-let imageFiles = [];
-let videoFile = null;
+    // Global variables
+    let imageFiles = [];
+    let videoFile = null;
 
-const qs = id => document.getElementById(id);
-const imagePreview = qs("imagePreview");
-const imageInput = qs("imageInput");
-const videoInput = qs("videoInput");
-const videoInfo = qs("videoInfo");
-const videoNameEl = qs("videoName");
-const statusText = qs("statusText");
-const saveBtn = qs("saveBtn");
+    // Element Selectors
+    const qs = id => document.getElementById(id);
+    const imageInput = qs("imageInput");
+    const imagePreview = qs("imagePreview");
+    const videoInput = qs("videoInput");
+    const videoInfo = qs("videoInfo");
+    const videoNameEl = qs("videoName");
+    const statusText = qs("statusText");
+    const saveBtn = qs("saveBtn");
 
-/* 🔥 RESET FIX (ONLY ADDITION) */
-function resetForm(){
-  ["name","price","category","stock","weight","length","width","height","description","videoUrlInput"]
-  .forEach(id => qs(id).value = "");
+    /* ================== 1. IMAGE HANDLING ================== */
+    
+    if(imageInput){
+      imageInput.onchange = () => {
+        const files = Array.from(imageInput.files);
+        
+        if (imageFiles.length + files.length > 5) {
+          alert("Maximum 5 images allowed.");
+          return;
+        }
+        
+        files.forEach(file => {
+          imageFiles.push(file);
+          
+          // Create preview
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const div = document.createElement("div");
+            div.className = "preview-card";
+            div.innerHTML = `
+              <img src="${e.target.result}">
+              <button class="remove-btn" type="button">×</button>
+            `;
+            
+            // Add remove logic
+            div.querySelector(".remove-btn").onclick = function() {
+              imageFiles = imageFiles.filter(f => f.name !== file.name);
+              div.remove();
+            };
+            
+            imagePreview.appendChild(div);
+          };
+          reader.readAsDataURL(file);
+        });
+        imageInput.value = ""; // Reset to allow re-selecting same file
+      };
+    }
 
-  imageFiles = [];
-  imagePreview.innerHTML = "";
-  imageInput.value = "";
+    /* ================== 2. VIDEO HANDLING ================== */
 
-  videoFile = null;
-  videoInput.value = "";
-  videoInfo.style.display = "none";
-  videoNameEl.textContent = "";
+    if(videoInput){
+      videoInput.onchange = () => {
+        if (videoInput.files[0]) {
+          videoFile = videoInput.files[0];
+          videoInfo.style.display = "inline-flex";
+          videoNameEl.textContent = videoFile.name;
+          qs("videoUrlInput").value = ""; 
+          qs("videoUrlInput").disabled = true;
+          qs("videoUrlInput").placeholder = "File selected: " + videoFile.name;
+        }
+      };
+    }
 
-  saveBtn.disabled = false;
-  saveBtn.innerHTML = "➕ Add Product";
-  statusText.textContent = "Fill details and click Add Product.";
-  statusText.className = "status-text";
-}
+    /* ================== 3. HELPER: CONVERT TO BASE64 ================== */
 
-/* SUBMIT */
-saveBtn.onclick = async () => {
-  saveBtn.disabled = true;
-  saveBtn.innerHTML = "⏳ Saving…";
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
 
-  const body = {
-    name: qs("name").value,
-    price: qs("price").value,
-    category: qs("category").value,
-    stock: qs("stock").value,
-    weight: qs("weight").value,
-    length: qs("length").value,
-    width: qs("width").value,
-    height: qs("height").value,
-    description: qs("description").value
-  };
+    /* ================== 4. SUBMIT LOGIC ================== */
 
-  const res = await fetch(SCRIPT_URL + "?action=createProduct", {
-    method: "POST",
-    body: JSON.stringify(body)
-  });
+    if(saveBtn){
+      saveBtn.onclick = async () => {
+        // Validation
+        if (!qs("name").value || !qs("price").value) {
+          alert("Please fill in Product Name and Price.");
+          return;
+        }
 
-  const data = await res.json();
-  if(data.success){
-    statusText.textContent = "Product saved ✔";
-    statusText.className = "status-text ok";
-    setTimeout(resetForm, 1200);
-  }
-};
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = "⏳ Uploading Media...";
+        statusText.textContent = "Please wait, uploading images...";
+        statusText.className = "status-text";
+
+        try {
+          // A. Upload Images
+          let uploadedImageUrls = [];
+          for (const file of imageFiles) {
+            const base64 = await toBase64(file);
+            const res = await fetch(SCRIPT_URL, {
+              method: "POST",
+              body: JSON.stringify({ 
+                action: "uploadMedia",
+                fileName: file.name,
+                mimeType: file.type,
+                base64: base64
+              })
+            });
+            const data = await res.json();
+            if (data.success) uploadedImageUrls.push(data.url);
+          }
+
+          // B. Upload Video
+          let finalVideoUrl = qs("videoUrlInput").value;
+          if (videoFile) {
+            statusText.textContent = "Uploading video (this may take time)...";
+            const vBase64 = await toBase64(videoFile);
+            const vRes = await fetch(SCRIPT_URL, {
+              method: "POST",
+              body: JSON.stringify({
+                action: "uploadMedia",
+                fileName: videoFile.name,
+                mimeType: videoFile.type,
+                base64: vBase64
+              })
+            });
+            const vData = await vRes.json();
+            if (vData.success) finalVideoUrl = vData.url;
+          }
+
+          // C. Save Product
+          saveBtn.innerHTML = "⏳ Saving Product...";
+          
+          const productBody = {
+            action: "createProduct",
+            name: qs("name").value,
+            price: qs("price").value,
+            category: qs("category").value,
+            stock: qs("stock").value,
+            weight: qs("weight").value,
+            length: qs("length").value,
+            width: qs("width").value,
+            height: qs("height").value,
+            description: qs("description").value,
+            videoUrl: finalVideoUrl,
+            imageUrl1: uploadedImageUrls[0] || "",
+            imageUrl2: uploadedImageUrls[1] || "",
+            imageUrl3: uploadedImageUrls[2] || "",
+            imageUrl4: uploadedImageUrls[3] || "",
+            imageUrl5: uploadedImageUrls[4] || ""
+          };
+
+          const finalRes = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify(productBody)
+          });
+
+          const finalData = await finalRes.json();
+
+          if (finalData.success) {
+            statusText.textContent = "Product Saved Successfully! ✔";
+            statusText.className = "status-text ok";
+            setTimeout(resetForm, 2000);
+          } else {
+            throw new Error(finalData.message || "Unknown error");
+          }
+
+        } catch (err) {
+          console.error(err);
+          statusText.textContent = "Error: " + err.message;
+          statusText.className = "status-text err";
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = "➕ Add Product";
+        }
+      };
+    }
+
+    function resetForm(){
+      ["name","price","category","stock","weight","length","width","height","description","videoUrlInput"]
+      .forEach(id => qs(id).value = "");
+      
+      qs("videoUrlInput").disabled = false;
+      qs("videoUrlInput").placeholder = "Or upload video below";
+      
+      imageFiles = [];
+      imagePreview.innerHTML = "";
+      imageInput.value = "";
+      
+      videoFile = null;
+      videoInput.value = "";
+      videoInfo.style.display = "none";
+      videoNameEl.textContent = "";
+
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = "➕ Add Product";
+      statusText.textContent = "Fill details and click Add Product.";
+      statusText.className = "status-text";
+    }
+
+});
 </script>
 </body>
 </html>
