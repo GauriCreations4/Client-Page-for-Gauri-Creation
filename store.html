@@ -17,6 +17,7 @@
     --shadow-strong: 0 20px 45px rgba(15,23,42,0.30);
     --accent-grad: linear-gradient(135deg,#2563eb,#ec4899);
     --muted:#6b7280;
+    --primary: #2563eb;
   }
   *{box-sizing:border-box}
   body{
@@ -76,6 +77,47 @@
     border-radius: 12px;
     border: 1px solid #ccc;
     background: rgba(255,255,255,0.8);
+    margin-bottom: 12px;
+  }
+
+  /* 🔥 NEW CATEGORY BAR STYLES */
+  .category-bar {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE */
+    white-space: nowrap;
+  }
+  .category-bar::-webkit-scrollbar { 
+    display: none; /* Chrome/Safari */
+  }
+
+  .cat-chip {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #444;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .cat-chip:hover {
+    background: #f0f9ff;
+    border-color: var(--primary);
+  }
+
+  .cat-chip.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
   }
 
   .grid{
@@ -89,7 +131,12 @@
     border:1px solid rgba(209,213,219,0.7);
     box-shadow:0 10px 30px rgba(15,23,42,0.12);
     padding:10px;display:flex;flex-direction:column;
-    gap:8px;position:relative
+    gap:8px;position:relative;
+    transition: transform 0.2s;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-5px);
   }
 
   .product-img-wrap{
@@ -146,7 +193,10 @@
   </section>
 
   <section class="filters">
-    <input id="searchInput" placeholder="Search products…">
+    <input id="searchInput" placeholder="Search products…" onkeyup="filterProducts()">
+    
+    <div id="categoryBar" class="category-bar">
+        </div>
   </section>
 
   <section id="grid" class="grid"></section>
@@ -176,34 +226,28 @@ function toggleWishlist(sku,el){
   saveWishlist(list);
 }
 
-/* ✅ IMAGE FIX: 
-   This function detects Google Drive links and converts them 
-   to a special URL that doesn't get blocked by "Rate Limits"
-*/
+/* ✅ IMAGE FIX */
 function getImg(p){
-  // 1. Get URL from various potential column names
   let url = p["Image URL 1"] || p["Image URL 1 "] || p.imageUrl1 || p.Image || "";
-  
-  // 2. Fallback: Search all keys if column name is different
   if (!url) {
     Object.keys(p).forEach(k => {
       if(k.toLowerCase().includes("image") && p[k]) url = p[k];
     });
   }
-
-  // 3. Convert Drive Link to High-Speed Link
   if (url && url.includes("drive.google.com") && url.includes("id=")) {
     const idMatch = url.match(/id=([^&]+)/);
     if (idMatch && idMatch[1]) {
-      // This domain is much faster and doesn't block grid images
       return "https://lh3.googleusercontent.com/d/" + idMatch[1];
     }
   }
-  
   return url;
 }
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
+
+// Global variables to hold data
+let allProducts = [];
+let activeCategory = 'All';
 
 async function loadProducts(){
   const grid = document.getElementById("grid");
@@ -211,26 +255,90 @@ async function loadProducts(){
   try {
     const res = await fetch(SCRIPT_URL+"?action=getProducts");
     const data = await res.json();
-    const products = data.products || [];
+    allProducts = data.products || []; // Save to global variable
 
-    grid.innerHTML="";
-    document.getElementById("summaryTotal").textContent=products.length;
+    // 1. Setup Categories
+    setupCategories(allProducts);
 
-    const wishlist=getWishlist();
+    // 2. Initial Render
+    renderGrid(allProducts);
 
+    document.getElementById("summaryTotal").textContent = allProducts.length;
+
+  } catch (err) {
+    console.error("Error loading products:", err);
+    grid.innerHTML = "<p style='grid-column:1/-1;text-align:center'>Failed to load products.</p>";
+  }
+}
+
+/* 🔥 DYNAMIC CATEGORY LOGIC */
+function setupCategories(products) {
+    const bar = document.getElementById("categoryBar");
+    
+    // Get unique categories
+    const categories = ['All', ...new Set(products.map(p => p.Category || p.category || 'Other'))];
+    
+    // Clean existing buttons
+    bar.innerHTML = "";
+
+    categories.forEach(cat => {
+        const btn = document.createElement("div");
+        btn.className = `cat-chip ${cat === 'All' ? 'active' : ''}`;
+        btn.textContent = cat;
+        
+        // Click Event
+        btn.onclick = () => {
+            // Remove active class from all
+            document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
+            // Add active class to clicked
+            btn.classList.add('active');
+            
+            activeCategory = cat;
+            filterProducts(); // Re-run filter
+        };
+        
+        bar.appendChild(btn);
+    });
+}
+
+/* 🔥 FILTER LOGIC (Combines Search + Category) */
+function filterProducts() {
+    const search = document.getElementById("searchInput").value.toLowerCase();
+    
+    const filtered = allProducts.filter(p => {
+        const pName = (p.Name || "").toLowerCase();
+        const pCat = (p.Category || p.category || "Other");
+        
+        // Check Category Match
+        const catMatch = activeCategory === 'All' || pCat === activeCategory;
+        
+        // Check Search Match
+        const searchMatch = pName.includes(search);
+        
+        return catMatch && searchMatch;
+    });
+    
+    renderGrid(filtered);
+}
+
+function renderGrid(products) {
+    const grid = document.getElementById("grid");
+    const wishlist = getWishlist();
+    grid.innerHTML = "";
+    
     if(products.length === 0){
-       grid.innerHTML = "<p style='grid-column:1/-1;text-align:center'>No products found.</p>";
+       grid.innerHTML = "<p style='grid-column:1/-1;text-align:center;color:#666'>No products found.</p>";
        return;
     }
 
-    products.forEach(p=>{
+    products.forEach(p => {
       const liked = wishlist.includes(p.SKU) ? "❤️" : "🤍";
       const imageUrl = getImg(p);
 
-      const card=document.createElement("div");
-      card.className="product-card";
+      const card = document.createElement("div");
+      card.className = "product-card";
 
-      card.innerHTML=`
+      card.innerHTML = `
         <div class="product-img-wrap">
           <img src="${imageUrl}" class="product-img"
                loading="lazy"
@@ -249,16 +357,11 @@ async function loadProducts(){
         </div>`;
       grid.appendChild(card);
     });
-    
-  } catch (err) {
-    console.error("Error loading products:", err);
-    grid.innerHTML = "<p style='grid-column:1/-1;text-align:center'>Failed to load products. Please try again.</p>";
-  }
 }
 
 function goToProduct(sku){
   if(!sku) return;
-  window.location.href="product.html?sku="+encodeURIComponent(sku);
+  window.location.href = "product.html?sku="+encodeURIComponent(sku);
 }
 
 loadProducts();
