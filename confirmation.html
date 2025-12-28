@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order Confirmed • Gauri Creations</title>
-<!-- Favicon -->
 <link rel="icon" href="favicon.ico" type="image/x-icon">
 <link rel="apple-touch-icon" href="favicon.ico">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
 <style>
     body {
@@ -19,6 +20,7 @@
         align-items: center;
         justify-content: center;
         min-height: 100vh;
+        overflow-x: hidden; /* Prevents scrollbar during animation */
     }
 
     .card {
@@ -29,6 +31,8 @@
         text-align: center;
         box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         animation: fadeIn 0.6s ease;
+        position: relative;
+        z-index: 10; /* Ensures card stays above confetti */
     }
 
     @keyframes fadeIn {
@@ -102,6 +106,11 @@
         font-weight: 600;
         cursor: pointer;
         margin-top: 15px;
+        transition: transform 0.1s;
+    }
+    
+    .btn:active {
+        transform: scale(0.98);
     }
 
     .btn-track {
@@ -116,10 +125,9 @@
 
 <div class="card">
 
-    <!-- UPDATED: Google Pay style tick -->
     <div class="gpay-success">
         <svg viewBox="0 0 100 100">
-            <circle class="pulse"/>
+            <circle class="pulse" cx="50" cy="50" r="50"/>
             <circle class="ring" cx="50" cy="50" r="45"/>
             <path class="check" d="M30 52 L45 66 L70 38"/>
         </svg>
@@ -138,14 +146,18 @@
 </div>
 
 <script>
+/* 1. ORDER DETAILS LOGIC */
 let orderId = new URLSearchParams(window.location.search).get("orderId");
 
-// FIX: remove JSON object if present
+// Robust parsing if ID is wrapped in JSON
 try {
-    orderId = JSON.parse(orderId).orderId;
+    if(orderId && (orderId.startsWith('{') || orderId.startsWith('"'))) {
+       const parsed = JSON.parse(orderId);
+       orderId = parsed.orderId || parsed; 
+    }
 } catch (e) {}
 
-document.getElementById("orderId").textContent = orderId;
+document.getElementById("orderId").textContent = orderId || "Pending";
 
 // Delivery = 7 days from today
 let date = new Date();
@@ -157,10 +169,44 @@ document.getElementById("trackBtn").onclick = function () {
     window.location.href = `track.html?orderId=${orderId}`;
 };
 
-// subtle haptic feedback (mobile)
+// Haptic feedback (Mobile)
 if (navigator.vibrate) {
-    navigator.vibrate(40);
+    navigator.vibrate([100, 50, 100]); // Double buzz for success
 }
+
+/* 2. 🔥 CONFETTI ANIMATION LOGIC */
+function launchConfetti() {
+  var duration = 3 * 1000; // 3 seconds
+  var animationEnd = Date.now() + duration;
+  var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+  function randomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  var interval = setInterval(function() {
+    var timeLeft = animationEnd - Date.now();
+
+    if (timeLeft <= 0) {
+      return clearInterval(interval);
+    }
+
+    var particleCount = 50 * (timeLeft / duration);
+    
+    // Shoot from left and right
+    confetti(Object.assign({}, defaults, { 
+        particleCount, 
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } 
+    }));
+    confetti(Object.assign({}, defaults, { 
+        particleCount, 
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } 
+    }));
+  }, 250);
+}
+
+// Trigger instantly on load
+window.onload = launchConfetti;
 </script>
 
 </body>
