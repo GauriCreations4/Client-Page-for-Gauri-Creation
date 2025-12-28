@@ -70,6 +70,14 @@
     box-shadow:var(--shadow-strong);margin-bottom:14px
   }
 
+  #searchInput {
+    width: 100%;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    background: rgba(255,255,255,0.8);
+  }
+
   .grid{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
@@ -127,7 +135,7 @@
 <div class="shell">
   <section class="hero">
     <div class="hero-main">
-      <img src="logo-gauri.jpeg" style="width:120px;border-radius:10px;margin-bottom:10px">
+      <img src="logo-gauri.jpeg" style="width:120px;border-radius:10px;margin-bottom:10px" onerror="this.style.display='none'">
       <div class="hero-title" id="welcomeText">Gauri Creations Store</div>
       <div class="hero-sub">Discover exclusive handcrafted designs…</div>
     </div>
@@ -168,56 +176,88 @@ function toggleWishlist(sku,el){
   saveWishlist(list);
 }
 
-/* ✅ IMAGE FIX — DO NOT REMOVE */
+/* ✅ IMAGE FIX: 
+   This function detects Google Drive links and converts them 
+   to a special URL that doesn't get blocked by "Rate Limits"
+*/
 function getImg(p){
-  return (
-    p["Image URL 1"] ||
-    p["Image URL 1 "] ||
-    p.imageUrl1 ||
-    ""
-  );
+  // 1. Get URL from various potential column names
+  let url = p["Image URL 1"] || p["Image URL 1 "] || p.imageUrl1 || p.Image || "";
+  
+  // 2. Fallback: Search all keys if column name is different
+  if (!url) {
+    Object.keys(p).forEach(k => {
+      if(k.toLowerCase().includes("image") && p[k]) url = p[k];
+    });
+  }
+
+  // 3. Convert Drive Link to High-Speed Link
+  if (url && url.includes("drive.google.com") && url.includes("id=")) {
+    const idMatch = url.match(/id=([^&]+)/);
+    if (idMatch && idMatch[1]) {
+      // This domain is much faster and doesn't block grid images
+      return "https://lh3.googleusercontent.com/d/" + idMatch[1];
+    }
+  }
+  
+  return url;
 }
 
-const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
 
 async function loadProducts(){
-  const res = await fetch(SCRIPT_URL+"?action=getProducts");
-  const data = await res.json();
-  const products = data.products || [];
+  const grid = document.getElementById("grid");
+  
+  try {
+    const res = await fetch(SCRIPT_URL+"?action=getProducts");
+    const data = await res.json();
+    const products = data.products || [];
 
-  const grid=document.getElementById("grid");
-  grid.innerHTML="";
-  document.getElementById("summaryTotal").textContent=products.length;
+    grid.innerHTML="";
+    document.getElementById("summaryTotal").textContent=products.length;
 
-  const wishlist=getWishlist();
+    const wishlist=getWishlist();
 
-  products.forEach(p=>{
-    const liked = wishlist.includes(p.SKU) ? "❤️" : "🤍";
+    if(products.length === 0){
+       grid.innerHTML = "<p style='grid-column:1/-1;text-align:center'>No products found.</p>";
+       return;
+    }
 
-    const card=document.createElement("div");
-    card.className="product-card";
+    products.forEach(p=>{
+      const liked = wishlist.includes(p.SKU) ? "❤️" : "🤍";
+      const imageUrl = getImg(p);
 
-    card.innerHTML=`
-      <div class="product-img-wrap">
-        <img src="${getImg(p)}" class="product-img"
-             onerror="this.src='placeholder.jpg'">
-        <div class="wish-btn" onclick="toggleWishlist('${p.SKU}',this)">
-          ${liked}
+      const card=document.createElement("div");
+      card.className="product-card";
+
+      card.innerHTML=`
+        <div class="product-img-wrap">
+          <img src="${imageUrl}" class="product-img"
+               loading="lazy"
+               referrerpolicy="no-referrer"
+               onerror="this.onerror=null;this.src='https://via.placeholder.com/150?text=No+Image'">
+          <div class="wish-btn" onclick="toggleWishlist('${p.SKU}',this)">
+            ${liked}
+          </div>
         </div>
-      </div>
-      <strong>${p.Name}</strong>
-      <div>₹${p.Price}</div>
-      <div class="product-actions">
-        <button class="btn-primary" onclick="goToProduct('${p.SKU}')">
-          Know More
-        </button>
-      </div>`;
-    grid.appendChild(card);
-  });
+        <strong>${p.Name || "Unnamed"}</strong>
+        <div>₹${p.Price || "0"}</div>
+        <div class="product-actions">
+          <button class="btn-primary" onclick="goToProduct('${p.SKU}')">
+            Know More
+          </button>
+        </div>`;
+      grid.appendChild(card);
+    });
+    
+  } catch (err) {
+    console.error("Error loading products:", err);
+    grid.innerHTML = "<p style='grid-column:1/-1;text-align:center'>Failed to load products. Please try again.</p>";
+  }
 }
 
 function goToProduct(sku){
+  if(!sku) return;
   window.location.href="product.html?sku="+encodeURIComponent(sku);
 }
 
