@@ -13,7 +13,7 @@ body { margin: 0; font-family: "Poppins", sans-serif; background: linear-gradien
 .container { max-width: 520px; margin: auto; background: #ffffffd8; padding: 25px; border-radius: 22px; backdrop-filter: blur(10px); box-shadow: 0 6px 18px rgba(0,0,0,0.18); text-align: center; }
 .logo { width: 130px; display: block; margin: 0 auto 20px; border-radius: 12px; }
 .product-box { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 18px; text-align: left; }
-.product-img { width: 95px; height: 95px; border-radius: 15px; object-fit: cover; }
+.product-img { width: 95px; height: 95px; border-radius: 15px; object-fit: cover; background: #eee; }
 .input-field { width: 92%; margin: 12px auto 0; display: block; padding: 13px; border-radius: 12px; border: 1px solid #bbb; font-size: 15px; background:white; }
 .summary { background: #fff; padding: 14px; border-radius: 15px; border: 1px solid #ddd; width: 92%; margin: 18px auto 0; text-align: left; }
 .summary div { font-size: 15px; margin-bottom: 6px; }
@@ -34,7 +34,7 @@ body { margin: 0; font-family: "Poppins", sans-serif; background: linear-gradien
 <div class="product-box">
   <img id="prodImg" class="product-img">
   <div>
-    <div id="prodName" style="font-size:18px;font-weight:600;">Product</div>
+    <div id="prodName" style="font-size:18px;font-weight:600;">Loading...</div>
     <div id="prodPrice" style="font-weight:600; color:#c62828;">₹0</div>
     <div id="prodWeight" style="font-size:13px;color:#666;">Weight: - g</div>
   </div>
@@ -64,10 +64,9 @@ body { margin: 0; font-family: "Poppins", sans-serif; background: linear-gradien
 </div>
 
 <script>
-const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
 
-/* DOM */
+/* DOM Elements */
 const qtyEl = document.getElementById("qty");
 const sumPrice = document.getElementById("sumPrice");
 const sumDelivery = document.getElementById("sumDelivery");
@@ -86,7 +85,33 @@ let prodName = "";
 let prodPrice = 0;
 let weightPerItem = 0;
 
-/* SHIPPING */
+/* ✅ 1. IMAGE FIX: Smart Link Converter */
+function getImg(p) {
+  // 1. Try to find the URL in common column names
+  let url = p["Image URL 1"] || p["Image URL 1 "] || p["imageUrl1"] || p["Image"] || "";
+  
+  // 2. If no URL found, check all keys
+  if (!url) {
+    const keys = Object.keys(p);
+    for (const k of keys) {
+      if (k.toLowerCase().includes("image") && p[k]) {
+        url = p[k];
+        break;
+      }
+    }
+  }
+
+  // 3. Convert Drive Links to "Direct" Links (High Speed)
+  if (url && url.includes("drive.google.com") && url.includes("id=")) {
+    const match = url.match(/id=([^&]+)/);
+    if (match && match[1]) {
+      return "https://lh3.googleusercontent.com/d/" + match[1]; 
+    }
+  }
+  return url;
+}
+
+/* SHIPPING LOGIC */
 function shippingByWeight(g){
   if(g <= 250) return 49;
   if(g <= 500) return 59;
@@ -94,7 +119,7 @@ function shippingByWeight(g){
   return 79 + Math.ceil((g - 1000) / 500) * 30;
 }
 
-/* SUMMARY (FIXED) */
+/* UPDATE UI */
 function updateSummary(){
   qtyEl.textContent = qty;
 
@@ -136,11 +161,17 @@ fetch(`${SCRIPT_URL}?action=getProduct&sku=${encodeURIComponent(sku)}`)
   prodPrice = Number(p["Price"]);
   weightPerItem = Number(p["Weight"] || 0);
 
+  // Set Product Details
   document.getElementById("prodName").textContent = prodName;
   document.getElementById("prodPrice").textContent = "₹" + prodPrice;
-  document.getElementById("prodImg").src = p["Image URL 1"];
-  document.getElementById("prodWeight").textContent =
-    `Weight: ${weightPerItem} g`;
+  document.getElementById("prodWeight").textContent = `Weight: ${weightPerItem} g`;
+  
+  // Set Image using the FIX
+  const imgUrl = getImg(p);
+  document.getElementById("prodImg").src = imgUrl;
+  document.getElementById("prodImg").onerror = function() {
+      this.src = 'https://via.placeholder.com/150?text=No+Image';
+  };
 
   updateSummary();
 });
@@ -160,6 +191,10 @@ async function submitOrder(e){
   const delivery = shippingByWeight(weightPerItem * qty);
   const total = subtotal + delivery;
 
+  const btn = document.querySelector(".btn-proceed");
+  btn.disabled = true;
+  btn.textContent = "Processing...";
+
   const form = new FormData();
   form.append("action","createOrder");
   form.append("product",prodName);
@@ -174,13 +209,22 @@ async function submitOrder(e){
   form.append("pincode",custPincode.value);
   form.append("notes",custNotes.value||"");
 
-  const res = await fetch(SCRIPT_URL,{method:"POST",body:form});
-  const data = await res.json();
+  try {
+      const res = await fetch(SCRIPT_URL,{method:"POST",body:form});
+      const data = await res.json();
 
-  if(data.success){
-    window.location.href = `payment.html?orderId=${data.orderId}`;
-  }else{
-    alert("Order failed");
+      if(data.success){
+        window.location.href = `payment.html?orderId=${data.orderId}`;
+      }else{
+        alert("Order failed: " + (data.message || "Unknown error"));
+        btn.disabled = false;
+        btn.textContent = "Proceed to Payment";
+      }
+  } catch(err) {
+      console.error(err);
+      alert("Network Error. Please try again.");
+      btn.disabled = false;
+      btn.textContent = "Proceed to Payment";
   }
 }
 </script>
