@@ -35,13 +35,12 @@
       width:100%;
       background:white;
       color:black;
-      font-family: 'Arial', sans-serif; /* Standard font for courier labels */
+      font-family: 'Arial', sans-serif;
     }
     
-    /* Label Container (Matches A4 or Thermal) */
     .label-page {
       width: 100%;
-      max-width: 800px; /* A4 Width constraint */
+      max-width: 800px;
       margin: 0 auto;
       border: 2px solid #000;
       page-break-after: always;
@@ -152,62 +151,73 @@
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
 
-// Global store for orders to access data for printing
+// Global store for orders
 let globalOrders = [];
 
 const STATUS_FLOW = ["Packing", "Shipped", "Out for Delivery", "Delivered"];
 
 async function loadOrders(){
-  const res = await fetch(SCRIPT_URL + "?action=listOrders");
-  const data = await res.json();
-  if(!data.success) return alert("Failed to load orders");
+  try {
+    const res = await fetch(SCRIPT_URL + "?action=listOrders");
+    const data = await res.json();
+    if(!data.success) return alert("Failed to load orders");
 
-  globalOrders = data.orders; // Save for printing
-  const tbody = document.querySelector("#ordersTable tbody");
-  tbody.innerHTML = "";
+    globalOrders = data.orders;
+    const tbody = document.querySelector("#ordersTable tbody");
+    tbody.innerHTML = "";
 
-  globalOrders
-    .filter(o => String(o["Payment Status"]).toLowerCase() === "paid")
-    .reverse()
-    .forEach(o => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td><b>${o["Order ID"]}</b><br><small>${o["Date"] || ""}</small></td>
-        <td>${o["Customer Name"]}<br><small>${o["Address"]}</small></td>
-        <td>
-          <select onchange="updateOrder('${o["Order ID"]}','status',this.value)">
-            ${STATUS_FLOW.map(s => `<option ${o["Status"]===s?"selected":""}>${s}</option>`).join("")}
-          </select>
-        </td>
-        <td>
-           <input style="width:100px" placeholder="AWB" value="${o["AWB"]||""}" 
-                  onchange="updateOrder('${o["Order ID"]}','awb',this.value)">
-        </td>
-        <td>
-          <button class="btn btn-primary" onclick="printLabel('${o["Order ID"]}')">
-            🖨️ Label
-          </button>
-          <div style="height:5px"></div>
-          <button class="btn btn-support" onclick="support('${o["Phone"]}')">
-            📞 Chat
-          </button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
+    globalOrders
+      .filter(o => String(o["Payment Status"]).toLowerCase() === "paid")
+      .reverse()
+      .forEach(o => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><b>${o["Order ID"]}</b><br><small>${o["Date"] || ""}</small></td>
+          <td>${o["Customer Name"]}<br><small>${o["Phone"]}</small></td>
+          <td>
+            <select onchange="updateOrder('${o["Order ID"]}','status',this.value)">
+              ${STATUS_FLOW.map(s => `<option ${o["Status"]===s?"selected":""}>${s}</option>`).join("")}
+            </select>
+          </td>
+          <td>
+             <input style="width:100px" placeholder="AWB" value="${o["AWB"]||""}" 
+                    onchange="updateOrder('${o["Order ID"]}','awb',this.value)">
+          </td>
+          <td>
+            <button class="btn btn-primary" onclick="printLabel('${o["Order ID"]}')">
+              🖨️ Label
+            </button>
+            <div style="height:5px"></div>
+            <button class="btn btn-support" onclick="support('${o["Phone"]}')">
+              📞 Chat
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+  } catch(e) {
+    console.error(e);
+    alert("Error loading orders.");
+  }
 }
 
-/* 🔥 GENERATE PROFESSIONAL LABEL */
+/* 🔥 FIXED: GENERATE PROFESSIONAL LABEL */
 function printLabel(orderId) {
   const order = globalOrders.find(o => o["Order ID"] === orderId);
   if (!order) return alert("Order data not found!");
 
-  const printDiv = document.getElementById("printArea");
+  // 1. SMART DATA FETCHING (Fixes 'undefined')
+  const price = parseFloat(order["Price"] || order["price"] || 0);
+  const qty = parseInt(order["Qty"] || order["qty"] || 1);
+  const total = order["Total Amount"] || order["Total"] || (price * qty);
+  const pincode = order["Pincode"] || order["Pin"] || order["Zip"] || "";
+  const address = order["Address"] || "";
   
-  // Calculate Dummy Routing Code based on Pincode (Just for visual realism)
-  const pincode = order["Pincode"] || "000000";
+  // Calculate Routing Code (Visual Dummy)
   const routingCode = `MH/${pincode.substring(0,3)}/${Math.floor(Math.random()*90)+10}`;
 
+  const printDiv = document.getElementById("printArea");
+  
   printDiv.innerHTML = `
     <div class="label-page">
       <div class="courier-header">
@@ -215,8 +225,8 @@ function printLabel(orderId) {
         <div class="address-box">
           <div style="font-weight:bold; font-size:14px; margin-bottom:5px">DELIVER TO:</div>
           <div style="font-size:16px; font-weight:bold">${order["Customer Name"]}</div>
-          <div>${order["Address"]}</div>
-          <div>${order["Pincode"]}, Maharashtra</div>
+          <div>${address}</div>
+          <div>${pincode ? pincode + "," : ""} Maharashtra</div>
           <div style="margin-top:8px"><b>Mobile:</b> ${order["Phone"]}</div>
           
           <div class="routing-codes">
@@ -237,7 +247,7 @@ function printLabel(orderId) {
            </tr>
            <tr>
              <td>${order["Product Name"] || "Handcrafted Item"}</td>
-             <td>${order["Qty"] || "1"}</td>
+             <td>${qty}</td>
              <td>Fragile / Decor</td>
            </tr>
         </table>
@@ -273,14 +283,14 @@ function printLabel(orderId) {
             </tr>
             <tr>
                <td>${order["Product Name"]}</td>
-               <td>${order["Qty"]}</td>
-               <td>₹${order["Price"]}</td>
+               <td>${qty}</td>
+               <td>Rs.${price}</td>
                <td>0%</td>
-               <td>₹${order["Total Amount"]}</td>
+               <td>Rs.${total}</td>
             </tr>
             <tr>
                <td colspan="4" style="text-align:right"><b>Grand Total:</b></td>
-               <td><b>₹${order["Total Amount"]}</b></td>
+               <td><b>Rs.${total}</b></td>
             </tr>
          </table>
          
@@ -294,7 +304,7 @@ function printLabel(orderId) {
 
   // Generate QR Code
   new QRCode(document.getElementById(`qrcode-${orderId}`), {
-    text: `${orderId} | ${order["Customer Name"]}`,
+    text: `${orderId} | ${order["Customer Name"]} | ${total}`,
     width: 128,
     height: 128
   });
@@ -307,7 +317,7 @@ function printLabel(orderId) {
   });
 
   // Trigger Print
-  setTimeout(() => window.print(), 500); // Small delay to let QR render
+  setTimeout(() => window.print(), 500);
 }
 
 async function updateOrder(orderId, field, value){
