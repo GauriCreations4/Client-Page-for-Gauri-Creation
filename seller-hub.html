@@ -4,58 +4,128 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Seller Hub • Gauri Creations</title>
-
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<link rel="apple-touch-icon" href="favicon.ico">
+
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
-body{
-  margin:0;
-  font-family:Poppins,system-ui;
-  background:linear-gradient(135deg,#e3f2ff,#ffe5f3);
-  padding:20px;
-}
-.container{
-  max-width:1200px;
-  margin:auto;
-  background:#ffffffee;
-  padding:22px;
-  border-radius:22px;
-  box-shadow:0 20px 40px rgba(0,0,0,.2);
-}
-h2{margin-bottom:15px}
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:14px;
-}
-th,td{
-  padding:10px;
-  border-bottom:1px solid #ddd;
-  text-align:left;
-}
-th{background:#f1f5f9}
-select,input{
-  padding:6px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  font-size:13px;
-}
-.btn{
-  padding:6px 14px;
-  border:none;
-  border-radius:999px;
-  cursor:pointer;
-  font-weight:600;
-}
-.btn-primary{
-  background:linear-gradient(135deg,#2563eb,#ec4899);
-  color:#fff;
-}
-.btn-support{
-  background:#22c55e;
-  color:#fff;
-}
+  /* --- DASHBOARD STYLES (Screen Only) --- */
+  body { margin:0; font-family:Poppins,system-ui; background:linear-gradient(135deg,#e3f2ff,#ffe5f3); padding:20px; }
+  .container { max-width:1200px; margin:auto; background:#ffffffee; padding:22px; border-radius:22px; box-shadow:0 20px 40px rgba(0,0,0,.2); }
+  h2 { margin-bottom:15px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th,td { padding:10px; border-bottom:1px solid #ddd; text-align:left; vertical-align:middle; }
+  th { background:#f1f5f9; }
+  select,input { padding:6px; border-radius:8px; border:1px solid #ccc; font-size:13px; }
+  .btn { padding:6px 14px; border:none; border-radius:999px; cursor:pointer; font-weight:600; font-size:12px; display:inline-flex; align-items:center; gap:4px; }
+  .btn-primary { background:linear-gradient(135deg,#2563eb,#ec4899); color:#fff; }
+  .btn-support { background:#22c55e; color:#fff; }
+
+  /* --- PRINT TEMPLATE STYLES (Hidden on Screen) --- */
+  #printArea { display:none; }
+
+  @media print {
+    body * { visibility:hidden; }
+    #printArea, #printArea * { visibility:visible; }
+    #printArea {
+      display:block;
+      position:absolute;
+      left:0; top:0;
+      width:100%;
+      background:white;
+      color:black;
+      font-family: 'Arial', sans-serif; /* Standard font for courier labels */
+    }
+    
+    /* Label Container (Matches A4 or Thermal) */
+    .label-page {
+      width: 100%;
+      max-width: 800px; /* A4 Width constraint */
+      margin: 0 auto;
+      border: 2px solid #000;
+      page-break-after: always;
+    }
+
+    /* SECTION 1: COURIER HEADER */
+    .courier-header {
+      display: flex;
+      border-bottom: 2px solid #000;
+      height: 220px;
+    }
+    .qr-box {
+      width: 160px;
+      padding: 10px;
+      border-right: 2px solid #000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .address-box {
+      flex: 1;
+      padding: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .routing-codes {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      border: 1px solid #000;
+      padding: 5px;
+      text-align: center;
+    }
+    .large-code {
+      font-size: 24px;
+      font-weight: 900;
+      margin-top: 5px;
+    }
+
+    /* SECTION 2: PRODUCT SUMMARY */
+    .product-summary {
+      padding: 10px;
+      border-bottom: 2px solid #000;
+    }
+    .mini-table {
+      width: 100%;
+      font-size: 11px;
+      border: 1px solid #000;
+    }
+    .mini-table th { background: #eee; border: 1px solid #000; padding: 4px; }
+    .mini-table td { border: 1px solid #000; padding: 4px; }
+
+    /* SECTION 3: INVOICE */
+    .invoice-section {
+      padding: 15px;
+    }
+    .invoice-header {
+      text-align: center;
+      font-weight: bold;
+      text-decoration: underline;
+      margin-bottom: 10px;
+    }
+    .invoice-details {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin-bottom: 15px;
+    }
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+    .invoice-table th, .invoice-table td {
+      border: 1px solid #000;
+      padding: 6px;
+      text-align: left;
+    }
+    .footer-note {
+      font-size: 10px;
+      font-style: italic;
+    }
+  }
 </style>
 </head>
 
@@ -63,16 +133,13 @@ select,input{
 
 <div class="container">
   <h2>🚚 Seller Hub – Shipping & Fulfillment</h2>
-
   <table id="ordersTable">
     <thead>
       <tr>
         <th>Order ID</th>
         <th>Customer</th>
-        <th>Address</th>
         <th>Status</th>
         <th>AWB</th>
-        <th>Delivery Date</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -80,74 +147,49 @@ select,input{
   </table>
 </div>
 
-<script>
-const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
+<div id="printArea"></div>
 
-const STATUS_FLOW = [
-  "Packing",
-  "Shipped",
-  "Out for Delivery",
-  "Delivered"
-];
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
+
+// Global store for orders to access data for printing
+let globalOrders = [];
+
+const STATUS_FLOW = ["Packing", "Shipped", "Out for Delivery", "Delivered"];
 
 async function loadOrders(){
   const res = await fetch(SCRIPT_URL + "?action=listOrders");
   const data = await res.json();
   if(!data.success) return alert("Failed to load orders");
 
+  globalOrders = data.orders; // Save for printing
   const tbody = document.querySelector("#ordersTable tbody");
   tbody.innerHTML = "";
 
-  data.orders
+  globalOrders
     .filter(o => String(o["Payment Status"]).toLowerCase() === "paid")
     .reverse()
-    .forEach(o=>{
+    .forEach(o => {
       const tr = document.createElement("tr");
-
       tr.innerHTML = `
-        <td>${o["Order ID"]}</td>
-        <td>${o["Customer Name"]}<br><small>${o["Phone"]}</small></td>
-        <td style="max-width:200px">${o["Address"] || "-"}</td>
-
+        <td><b>${o["Order ID"]}</b><br><small>${o["Date"] || ""}</small></td>
+        <td>${o["Customer Name"]}<br><small>${o["Address"]}</small></td>
         <td>
           <select onchange="updateOrder('${o["Order ID"]}','status',this.value)">
-            ${STATUS_FLOW.map(s=>`
-              <option ${o["Status"]===s?"selected":""}>${s}</option>
-            `).join("")}
+            ${STATUS_FLOW.map(s => `<option ${o["Status"]===s?"selected":""}>${s}</option>`).join("")}
           </select>
         </td>
-
         <td>
-          <input placeholder="AWB No"
-            value="${o["AWB"]||""}"
-            onchange="updateOrder('${o["Order ID"]}','awb',this.value)">
+           <input style="width:100px" placeholder="AWB" value="${o["AWB"]||""}" 
+                  onchange="updateOrder('${o["Order ID"]}','awb',this.value)">
         </td>
-
         <td>
-          <input type="date"
-            value="${o["Expected Delivery Date"]||""}"
-            onchange="updateOrder('${o["Order ID"]}','expectedDelivery',this.value)">
-        </td>
-
-        <td>
-          <button class="btn btn-primary"
-            onclick="window.open('${SCRIPT_URL}?action=printLabel&orderId=${o["Order ID"]}&type=courier','_blank')">
-            🖨️ Courier Label
+          <button class="btn btn-primary" onclick="printLabel('${o["Order ID"]}')">
+            🖨️ Label
           </button>
-
-          <br><br>
-
-          <button class="btn btn-primary"
-            onclick="window.open('${SCRIPT_URL}?action=printLabel&orderId=${o["Order ID"]}&type=brand','_blank')">
-            🎨 Brand Label
-          </button>
-
-          <br><br>
-
-          <button class="btn btn-support"
-            onclick="support('${o["Phone"]}')">
-            Support
+          <div style="height:5px"></div>
+          <button class="btn btn-support" onclick="support('${o["Phone"]}')">
+            📞 Chat
           </button>
         </td>
       `;
@@ -155,10 +197,122 @@ async function loadOrders(){
     });
 }
 
+/* 🔥 GENERATE PROFESSIONAL LABEL */
+function printLabel(orderId) {
+  const order = globalOrders.find(o => o["Order ID"] === orderId);
+  if (!order) return alert("Order data not found!");
+
+  const printDiv = document.getElementById("printArea");
+  
+  // Calculate Dummy Routing Code based on Pincode (Just for visual realism)
+  const pincode = order["Pincode"] || "000000";
+  const routingCode = `MH/${pincode.substring(0,3)}/${Math.floor(Math.random()*90)+10}`;
+
+  printDiv.innerHTML = `
+    <div class="label-page">
+      <div class="courier-header">
+        <div class="qr-box" id="qrcode-${orderId}"></div>
+        <div class="address-box">
+          <div style="font-weight:bold; font-size:14px; margin-bottom:5px">DELIVER TO:</div>
+          <div style="font-size:16px; font-weight:bold">${order["Customer Name"]}</div>
+          <div>${order["Address"]}</div>
+          <div>${order["Pincode"]}, Maharashtra</div>
+          <div style="margin-top:8px"><b>Mobile:</b> ${order["Phone"]}</div>
+          
+          <div class="routing-codes">
+             <div>COD: PREPAID</div>
+             <div class="large-code">${routingCode}</div>
+             <div>Standard Delivery</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-summary">
+        <b>Package Contents:</b>
+        <table class="mini-table" style="margin-top:5px">
+           <tr>
+             <th>SKU / Product</th>
+             <th>Qty</th>
+             <th>Type</th>
+           </tr>
+           <tr>
+             <td>${order["Product Name"] || "Handcrafted Item"}</td>
+             <td>${order["Qty"] || "1"}</td>
+             <td>Fragile / Decor</td>
+           </tr>
+        </table>
+        <div style="text-align:center; margin-top:10px">
+           <svg id="barcode-${orderId}"></svg>
+        </div>
+      </div>
+
+      <div class="invoice-section">
+         <div class="invoice-header">TAX INVOICE / BILL OF SUPPLY</div>
+         
+         <div class="invoice-details">
+            <div>
+               <b>Sold By:</b><br>
+               Gauri Creations Pvt Ltd<br>
+               Vasai Virar, Maharashtra 401208<br>
+               GSTIN: 27ABCDE1234F1Z5
+            </div>
+            <div style="text-align:right">
+               <b>Order ID:</b> ${orderId}<br>
+               <b>Invoice Date:</b> ${new Date().toLocaleDateString()}<br>
+               <b>Payment:</b> Online / Paid
+            </div>
+         </div>
+
+         <table class="invoice-table">
+            <tr>
+               <th>Description</th>
+               <th>Qty</th>
+               <th>Rate</th>
+               <th>Tax</th>
+               <th>Total</th>
+            </tr>
+            <tr>
+               <td>${order["Product Name"]}</td>
+               <td>${order["Qty"]}</td>
+               <td>₹${order["Price"]}</td>
+               <td>0%</td>
+               <td>₹${order["Total Amount"]}</td>
+            </tr>
+            <tr>
+               <td colspan="4" style="text-align:right"><b>Grand Total:</b></td>
+               <td><b>₹${order["Total Amount"]}</b></td>
+            </tr>
+         </table>
+         
+         <div class="footer-note">
+           * This is a computer generated invoice and does not require a physical signature.<br>
+           * Returns valid only for damaged products with unboxing video.
+         </div>
+      </div>
+    </div>
+  `;
+
+  // Generate QR Code
+  new QRCode(document.getElementById(`qrcode-${orderId}`), {
+    text: `${orderId} | ${order["Customer Name"]}`,
+    width: 128,
+    height: 128
+  });
+
+  // Generate Barcode
+  JsBarcode(`#barcode-${orderId}`, orderId, {
+    format: "CODE128",
+    height: 40,
+    displayValue: true
+  });
+
+  // Trigger Print
+  setTimeout(() => window.print(), 500); // Small delay to let QR render
+}
+
 async function updateOrder(orderId, field, value){
   const payload = { orderId };
   payload[field] = value;
-
   await fetch(SCRIPT_URL + "?action=updateOrderStatus",{
     method:"POST",
     body:JSON.stringify(payload)
@@ -166,8 +320,7 @@ async function updateOrder(orderId, field, value){
 }
 
 function support(phone){
-  const msg = "Hello Gauri Creations, I need help regarding my order.";
-  window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`);
+  window.open(`https://wa.me/91${phone}`);
 }
 
 loadOrders();
