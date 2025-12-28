@@ -4,10 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Add Product • Gauri Creations</title>
-<!-- Favicon -->
+
 <link rel="icon" href="favicon.ico" type="image/x-icon">
 <link rel="apple-touch-icon" href="favicon.ico">
-  
+
 <style>
   :root {
     --bg-grad: linear-gradient(135deg, #86e1ff, #ffd4b8);
@@ -102,7 +102,6 @@
     .field-row{ grid-template-columns:1fr; }
   }
 
-  /* Dropzone styles */
   .drop-zone {
     border:1.5px dashed #999;
     padding:14px;
@@ -111,11 +110,6 @@
     text-align:center;
     cursor:pointer;
     font-size:12px;
-  }
-
-  .drop-zone.hover {
-    background:#e7f0ff;
-    border-color:#2563eb;
   }
 
   .preview-grid {
@@ -195,356 +189,149 @@
   .status-text.ok{ color:#15803d; }
   .status-text.err{ color:#e11d48; }
 </style>
-
 </head>
-<body>
 
+<body>
 <div class="shell">
 <div class="card">
 
-  <div class="card-header">
-    <div>
-      <div class="card-title">Add New Product</div>
-      <div class="card-sub">Upload images & details. Backend auto-converts Google Drive links.</div>
-    </div>
-    <a href="admin.html" class="pill-link">← Back</a>
+<div class="card-header">
+  <div>
+    <div class="card-title">Add New Product</div>
+    <div class="card-sub">Upload images & details.</div>
   </div>
+  <a href="admin.html" class="pill-link">← Back</a>
+</div>
 
-  <div class="layout">
+<div class="layout">
+<section class="section-card">
+<label>Product Name *</label>
+<input id="name" class="input" type="text"/>
 
-    <!-- LEFT SIDE -->
-    <section class="section-card">
-      <div class="section-title">Basic Details</div>
-      <div class="section-sub">Shown everywhere in store & product page.</div>
-
-      <label>Product Name *</label>
-      <input id="name" class="input" type="text"/>
-
-      <div class="field-row">
-        <div>
-          <label>Price (₹) *</label>
-          <input id="price" class="input" type="number"/>
-        </div>
-        <div>
-          <label>Category *</label>
-          <input id="category" class="input" type="text"/>
-        </div>
-      </div>
-
-      <div class="field-row">
-        <div>
-          <label>Stock *</label>
-          <input id="stock" class="input" type="number"/>
-        </div>
-        <div>
-          <label>Weight</label>
-          <input id="weight" class="input" type="text"/>
-        </div>
-      </div>
-
-      <div class="field-row">
-        <div>
-          <label>Length</label>
-          <input id="length" class="input" type="number"/>
-        </div>
-        <div>
-          <label>Width</label>
-          <input id="width" class="input" type="number"/>
-        </div>
-      </div>
-
-      <div class="field-row">
-        <div>
-          <label>Height</label>
-          <input id="height" class="input" type="number"/>
-        </div>
-        <div>
-          <label>Video URL (optional)</label>
-          <input id="videoUrlInput" class="input" type="text" placeholder="Google Drive / YouTube link"/>
-        </div>
-      </div>
-
-      <label>Description</label>
-      <textarea id="description" class="textarea"></textarea>
-
-    </section>
-
-    <!-- RIGHT SIDE (MEDIA) -->
-    <section class="section-card">
-      <div class="section-title">Media Upload</div>
-      <div class="section-sub">Backend will auto-convert Google Drive URLs → working image links.</div>
-
-      <label>Product Images (max 5)</label>
-      <div id="imageDropZone" class="drop-zone">Click or drag images here</div>
-      <input id="imageInput" type="file" accept="image/*" multiple style="display:none;">
-      <div id="imagePreview" class="preview-grid"></div>
-
-      <br/>
-      <label>Product Video (optional)</label>
-      <div id="videoDropZone" class="drop-zone">Click or drag video here</div>
-      <input id="videoInput" type="file" accept="video/*" style="display:none;">
-      <div id="videoInfo" class="video-chip" style="display:none;">
-        🎬 <span id="videoName"></span>
-      </div>
-
-    </section>
-
+<div class="field-row">
+  <div>
+    <label>Price (₹) *</label>
+    <input id="price" class="input" type="number"/>
   </div>
-
-  <div class="footer-row">
-    <div id="statusText" class="status-text">Fill details and click Add Product.</div>
-    <button id="saveBtn" class="btn-primary">➕ Add Product</button>
+  <div>
+    <label>Category *</label>
+    <input id="category" class="input" type="text"/>
   </div>
+</div>
+
+<div class="field-row">
+  <div>
+    <label>Stock *</label>
+    <input id="stock" class="input" type="number"/>
+  </div>
+  <div>
+    <label>Weight</label>
+    <input id="weight" class="input" type="text"/>
+  </div>
+</div>
+
+<div class="field-row">
+  <div><label>Length</label><input id="length" class="input" type="number"/></div>
+  <div><label>Width</label><input id="width" class="input" type="number"/></div>
+</div>
+
+<div class="field-row">
+  <div><label>Height</label><input id="height" class="input" type="number"/></div>
+  <div><label>Video URL</label><input id="videoUrlInput" class="input" type="text"/></div>
+</div>
+
+<label>Description</label>
+<textarea id="description" class="textarea"></textarea>
+</section>
+
+<section class="section-card">
+<label>Images</label>
+<div id="imageDropZone" class="drop-zone">Click or drag images</div>
+<input id="imageInput" type="file" accept="image/*" multiple hidden>
+<div id="imagePreview" class="preview-grid"></div>
+
+<br>
+<label>Video</label>
+<div id="videoDropZone" class="drop-zone">Click or drag video</div>
+<input id="videoInput" type="file" accept="video/*" hidden>
+<div id="videoInfo" class="video-chip" style="display:none;">
+🎬 <span id="videoName"></span>
+</div>
+</section>
+</div>
+
+<div class="footer-row">
+  <div id="statusText" class="status-text">Fill details and click Add Product.</div>
+  <button id="saveBtn" class="btn-primary">➕ Add Product</button>
+</div>
 
 </div>
 </div>
+
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFU0tpoO8_T_sjGzyU31_x18rJz1z7Xlbc4ak1vYUKcOkPvxyi4ZilEe3Xc0mOaLgt/exec";
 
 let imageFiles = [];
 let videoFile = null;
 
-// Helper to get element
-const qs = (id) => document.getElementById(id);
-
-// DOM Elements
-const imageDropZone = qs("imageDropZone");
-const imageInput = qs("imageInput");
+const qs = id => document.getElementById(id);
 const imagePreview = qs("imagePreview");
-
-const videoDropZone = qs("videoDropZone");
+const imageInput = qs("imageInput");
 const videoInput = qs("videoInput");
 const videoInfo = qs("videoInfo");
 const videoNameEl = qs("videoName");
-
 const statusText = qs("statusText");
 const saveBtn = qs("saveBtn");
 
-/* ------------------------------
-   IMAGE DRAG/DROP HANDLERS
------------------------------- */
-imageDropZone.addEventListener("click", () => imageInput.click());
+/* 🔥 RESET FIX (ONLY ADDITION) */
+function resetForm(){
+  ["name","price","category","stock","weight","length","width","height","description","videoUrlInput"]
+  .forEach(id => qs(id).value = "");
 
-imageDropZone.addEventListener("dragover", (e) => {
-  e.preventDefault();
-  imageDropZone.classList.add("hover");
-});
-imageDropZone.addEventListener("dragleave", () => {
-  imageDropZone.classList.remove("hover");
-});
-imageDropZone.addEventListener("drop", (e) => {
-  e.preventDefault();
-  imageDropZone.classList.remove("hover");
-  handleImageFiles(e.dataTransfer.files);
-});
-
-imageInput.addEventListener("change", (e) => handleImageFiles(e.target.files));
-
-function handleImageFiles(fileList) {
-  const files = Array.from(fileList).filter(f => f.type.startsWith("image/"));
-  const slotsLeft = 5 - imageFiles.length;
-  const toAdd = files.slice(0, slotsLeft);
-
-  imageFiles = imageFiles.concat(toAdd);
-  renderImagePreview();
-
-  if (files.length > slotsLeft) {
-    alert("Maximum 5 images allowed. Extra images ignored.");
-  }
-}
-
-function renderImagePreview() {
+  imageFiles = [];
   imagePreview.innerHTML = "";
-  imageFiles.forEach((file, i) => {
-    const card = document.createElement("div");
-    card.className = "preview-card";
+  imageInput.value = "";
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      card.innerHTML = `
-        <img src="${reader.result}">
-        <div class="preview-label">Img ${i + 1}</div>
-        <button class="remove-btn" onclick="removeImage(${i})">✕</button>
-      `;
-    };
-    reader.readAsDataURL(file);
+  videoFile = null;
+  videoInput.value = "";
+  videoInfo.style.display = "none";
+  videoNameEl.textContent = "";
 
-    imagePreview.appendChild(card);
-  });
+  saveBtn.disabled = false;
+  saveBtn.innerHTML = "➕ Add Product";
+  statusText.textContent = "Fill details and click Add Product.";
+  statusText.className = "status-text";
 }
 
-window.removeImage = function(index) {
-  imageFiles.splice(index, 1);
-  renderImagePreview();
-};
-
-/* ------------------------------
-   VIDEO DRAG/DROP HANDLERS
------------------------------- */
-videoDropZone.addEventListener("click", () => videoInput.click());
-
-videoDropZone.addEventListener("dragover", (e) => {
-  e.preventDefault();
-  videoDropZone.classList.add("hover");
-});
-videoDropZone.addEventListener("dragleave", () => {
-  videoDropZone.classList.remove("hover");
-});
-videoDropZone.addEventListener("drop", (e) => {
-  e.preventDefault();
-  videoDropZone.classList.remove("hover");
-
-  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith("video/"));
-  if (files.length) {
-    videoFile = files[0];
-    videoNameEl.textContent = videoFile.name;
-    videoInfo.style.display = "inline-flex";
-  }
-});
-
-videoInput.addEventListener("change", (e) => {
-  const f = e.target.files[0];
-  if (f && f.type.startsWith("video/")) {
-    videoFile = f;
-    videoNameEl.textContent = videoFile.name;
-    videoInfo.style.display = "inline-flex";
-  }
-});
-
-/* ------------------------------
-   UPLOAD FILE TO DRIVE
------------------------------- */
-async function uploadFileToDrive(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = async () => {
-      try {
-        const base64 = reader.result;
-
-        const res = await fetch(SCRIPT_URL + "?action=uploadMedia", {
-          method: "POST",
-          body: JSON.stringify({
-            base64,
-            fileName: file.name,
-            mimeType: file.type
-          })
-        });
-
-        const data = await res.json();
-        if (data.success && data.url) {
-          resolve(data.url); // backend will auto-convert to googleusercontent
-        } else {
-          reject("Upload failed");
-        }
-
-      } catch (err) {
-        reject(err);
-      }
-    };
-
-    reader.readAsDataURL(file);
-  });
-}
-
-/* ------------------------------
-   SUBMIT PRODUCT
------------------------------- */
-saveBtn.addEventListener("click", submitProduct);
-
-async function submitProduct() {
-  const name = qs("name").value.trim();
-  const price = qs("price").value.trim();
-  const category = qs("category").value.trim();
-  const stock = qs("stock").value.trim();
-  const weight = qs("weight").value.trim();
-  const length = qs("length").value.trim();
-  const width = qs("width").value.trim();
-  const height = qs("height").value.trim();
-  const description = qs("description").value.trim();
-
-  const videoUrlField = qs("videoUrlInput").value.trim();
-
-  if (!name || !price || !category || !stock) {
-    statusText.textContent = "Please fill Product Name, Price, Category, and Stock.";
-    statusText.className = "status-text err";
-    return;
-  }
-
+/* SUBMIT */
+saveBtn.onclick = async () => {
   saveBtn.disabled = true;
   saveBtn.innerHTML = "⏳ Saving…";
 
-  statusText.textContent = "Uploading media to Drive…";
+  const body = {
+    name: qs("name").value,
+    price: qs("price").value,
+    category: qs("category").value,
+    stock: qs("stock").value,
+    weight: qs("weight").value,
+    length: qs("length").value,
+    width: qs("width").value,
+    height: qs("height").value,
+    description: qs("description").value
+  };
 
-  let imageUrls = ["","","","",""];
-  let videoUrl = "";
+  const res = await fetch(SCRIPT_URL + "?action=createProduct", {
+    method: "POST",
+    body: JSON.stringify(body)
+  });
 
-  try {
-    // Upload IMAGES
-    for (let i = 0; i < imageFiles.length; i++) {
-      const uploadedURL = await uploadFileToDrive(imageFiles[i]);
-      imageUrls[i] = uploadedURL;
-      statusText.textContent = `Uploading images… (${i + 1}/${imageFiles.length})`;
-    }
-
-    // Upload VIDEO or use link
-    if (videoFile) {
-      videoUrl = await uploadFileToDrive(videoFile);
-    } else if (videoUrlField) {
-      videoUrl = videoUrlField; // backend will convert if Drive link
-    }
-
-    statusText.textContent = "Saving product details…";
-
-    // BODY sent to backend
-    const body = {
-      name,
-      price,
-      category,
-      stock,
-      weight,
-      length,
-      width,
-      height,
-      description,
-      videoUrl,
-      imageUrl1: imageUrls[0],
-      imageUrl2: imageUrls[1],
-      imageUrl3: imageUrls[2],
-      imageUrl4: imageUrls[3],
-      imageUrl5: imageUrls[4]
-    };
-
-    const res = await fetch(SCRIPT_URL + "?action=createProduct", {
-      method: "POST",
-      body: JSON.stringify(body)
-    });
-
-    const data = await res.json();
-
-    if (!data.success) {
-      throw new Error(data.message || "Could not create product");
-    }
-
-    statusText.textContent = "Product Saved ✔";
+  const data = await res.json();
+  if(data.success){
+    statusText.textContent = "Product saved ✔";
     statusText.className = "status-text ok";
-    saveBtn.innerHTML = "✔ Saved";
-
-    // Reset form after short delay
-    setTimeout(() => {
-      saveBtn.disabled = false;
-      saveBtn.innerHTML = "➕ Add Another Product";
-      statusText.textContent = "You can add another product now.";
-    }, 1500);
-
-  } catch (err) {
-    console.error(err);
-    statusText.textContent = "Error: " + err;
-    statusText.className = "status-text err";
-    saveBtn.disabled = false;
-    saveBtn.innerHTML = "➕ Add Product";
+    setTimeout(resetForm, 1200);
   }
-}
+};
 </script>
-
 </body>
 </html>
