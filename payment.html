@@ -98,7 +98,7 @@ body {
   box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
 }
 
-/* 🔥 LIQUID TOGGLE STYLES */
+/* 🔥 ANIMATION STYLES: Left-Right Scanning */
 .wait-area {
   margin-top: 25px;
   display: none; /* Hidden initially */
@@ -106,17 +106,17 @@ body {
   align-items: center;
 }
 
-.liquid-switch {
+.switch-track {
   position: relative;
   width: 100px;
   height: 50px;
   background: #e2e8f0;
   border-radius: 50px;
-  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+  transition: background 0.3s;
 }
 
-.liquid-thumb {
+.switch-thumb {
   position: absolute;
   top: 5px;
   left: 5px;
@@ -125,18 +125,24 @@ body {
   background: white;
   border-radius: 50%;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* THIS IS THE LEFT-RIGHT ANIMATION */
+  animation: scanning 1.2s ease-in-out infinite alternate;
 }
 
-/* State: ON (Payment Successful) */
-.liquid-switch.active {
-  background: #22c55e;
-  box-shadow: 0 5px 20px rgba(34, 197, 94, 0.4);
+@keyframes scanning {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(50px); } /* Moves to the right end */
 }
 
-.liquid-switch.active .liquid-thumb {
-  transform: translateX(50px);
-  background: #fff;
+/* State: SUCCESS (Green & Stopped) */
+.switch-track.active {
+  background: #22c55e; /* Green */
+}
+
+.switch-track.active .switch-thumb {
+  animation: none; /* Stop moving */
+  transform: translateX(50px); /* Stay on the right */
 }
 
 .status-text {
@@ -179,10 +185,10 @@ body {
   </button>
 
   <div class="wait-area" id="waitArea">
-    <div class="liquid-switch" id="statusSwitch">
-      <div class="liquid-thumb"></div>
+    <div class="switch-track" id="statusSwitch">
+      <div class="switch-thumb"></div>
     </div>
-    <div class="status-text" id="statusText">Confirming Payment...</div>
+    <div class="status-text" id="statusText">Verifying Payment...</div>
   </div>
 
 </div>
@@ -211,17 +217,17 @@ fetch(`${SCRIPT_URL}?action=getOrders`)
   document.getElementById("btnPhonePe").href = upi;
 });
 
-/* 2. START CHECKING */
+/* 2. START POLLING */
 function startPaymentCheck(){
-  // Hide button, show toggle
+  // Hide button, show animation
   document.getElementById("confirmButton").style.display = "none";
   document.getElementById("waitArea").style.display = "flex";
   
   checkPayment(); // Check immediately
-  pollInterval = setInterval(checkPayment, 4000); // Then every 4 sec
+  pollInterval = setInterval(checkPayment, 4000); // Check every 4 sec
 }
 
-/* 3. CHECK STATUS & TRIGGER ANIMATION */
+/* 3. CHECK STATUS & STOP ANIMATION */
 function checkPayment(){
   fetch(`${SCRIPT_URL}?action=checkPayment&orderId=${orderId}`)
   .then(r=>r.json())
@@ -229,16 +235,16 @@ function checkPayment(){
     if(d.success && d.paymentStatus === "Paid"){
       clearInterval(pollInterval);
       
-      // 🔥 Trigger Liquid Animation
+      // 🔥 Stop Animation & Turn Green
       const switchEl = document.getElementById("statusSwitch");
       const textEl = document.getElementById("statusText");
 
-      switchEl.classList.add("active"); // Flips the switch
-      textEl.textContent = "Payment Verified!";
+      switchEl.classList.add("active"); // Turns Green & Stops Motion
+      textEl.textContent = "Payment Successful!";
       textEl.style.color = "#22c55e";
       textEl.style.fontWeight = "bold";
       
-      // Redirect after 1.5 seconds
+      // Redirect
       setTimeout(()=>{
         window.location.href = `confirmation.html?orderId=${orderId}`;
       }, 1500);
